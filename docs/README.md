@@ -27,6 +27,13 @@ Start here: **[../CLAUDE.md](../CLAUDE.md)** - Quick reference for development c
 
 ### Architecture Documentation
 
+- **[architecture/monorepo-structure.md](architecture/monorepo-structure.md)** - Bun workspaces monorepo design
+  - Workspace structure with internal packages
+  - Package purposes and dependencies
+  - Monolith vs monorepo comparison
+  - Migration roadmap
+  - Development workflow
+
 - **[architecture/business-rules.md](architecture/business-rules.md)** - Business logic and rules
   - Points system
   - Tiebreaker criteria

@@ -1,13 +1,21 @@
 # GoolStar Quick Reference Card
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Bun + Monorepo)
 
 ```bash
-npm install              # Install dependencies
-npm run dev              # Start dev server (localhost:3000)
-npm run lint            # Check code with Biome
-npm run format          # Format code with Biome
-npm run build           # Build for production
+bun install              # Install all workspace dependencies
+bun run dev              # Start dev server (localhost:3000)
+bun run lint            # Check code with Biome
+bun run format          # Format code with Biome
+bun run build           # Build for production
+
+# Database
+bun run db:push         # Push migrations to Supabase
+bun run db:types        # Generate TypeScript types
+
+# Workspace-specific
+bun --filter @goolstar/web dev        # Dev only web app
+bun add pkg --workspace @goolstar/web # Add to web workspace
 ```
 
 ## 📚 Documentation Map
@@ -16,6 +24,7 @@ npm run build           # Build for production
 |------|------|
 | **Overview** | [docs/README.md](docs/README.md) |
 | **Development setup** | [CLAUDE.md](CLAUDE.md) |
+| **Monorepo structure** | [docs/architecture/monorepo-structure.md](docs/architecture/monorepo-structure.md) |
 | **Database tables** | [docs/database/schema.md](docs/database/schema.md) |
 | **Auto-update logic** | [docs/database/triggers.md](docs/database/triggers.md) |
 | **SQL queries** | [docs/database/functions.md](docs/database/functions.md) |

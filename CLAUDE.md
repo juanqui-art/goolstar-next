@@ -10,21 +10,30 @@ Current status: Fresh Next.js 16 project (bootstrap phase) with detailed archite
 
 ## Development Commands
 
-### Common Tasks
+### Common Tasks (Using Bun)
 
 ```bash
-# Development server
-npm run dev
+# Development server (runs apps/web)
+bun run dev
 
 # Build for production
-npm run build
+bun run build
 
 # Start production server
-npm start
+bun run start
 
 # Linting & code quality
-npm run lint           # Check code with Biome
-npm run format         # Format code with Biome
+bun run lint           # Check code with Biome
+bun run format         # Format code with Biome
+
+# Monorepo workspaces
+bun --filter @goolstar/web dev        # Dev in web app only
+bun --filter '*' lint                 # Lint all packages
+bun add package-name --workspace @goolstar/web  # Add to web workspace
+
+# Database operations
+bun run db:push        # Push migrations to Supabase
+bun run db:types       # Generate TypeScript types from DB
 ```
 
 ### Environment Setup
@@ -55,59 +64,51 @@ npm run format         # Format code with Biome
 - Biome 2.2 for linting and formatting (replaces ESLint/Prettier)
 - All Biome rules configured in `biome.json`
 
-### Project Structure (Current/Planned)
+### Project Structure: Bun Monorepo with Workspaces
+
+**See:** [docs/architecture/monorepo-structure.md](docs/architecture/monorepo-structure.md) for complete monorepo architecture.
 
 ```
-app/
-├── (auth)/              # Login/Register pages
-├── (dashboard)/         # Protected routes with layout
-│   ├── torneos/         # Tournament management
-│   ├── equipos/         # Team management
-│   ├── jugadores/       # Player management
-│   ├── partidos/        # Match management
-│   ├── financiero/      # Financial/payments
-│   └── admin/           # Admin panel
-├── api/                 # API routes and Server Actions
-├── layout.tsx           # Root layout
-├── page.tsx             # Home page
-└── globals.css          # Global styles
-
-components/
-├── ui/                  # Reusable UI components (shadcn/ui)
-├── torneos/             # Tournament-specific components
-├── equipos/             # Team-specific components
-├── jugadores/           # Player-specific components
-├── partidos/            # Match-specific components
-├── financiero/          # Financial-specific components
-└── layout/              # Navigation, sidebar, footer
-
-lib/
-├── supabase/            # Supabase client initialization
-│   ├── client.ts        # Client-side Supabase instance
-│   ├── server.ts        # Server-side Supabase instance
-│   └── middleware.ts    # Auth middleware
-├── validations/         # Zod schemas for form validation
-├── utils/               # Helper functions
-└── hooks/               # Custom React hooks
-
-supabase/               # Database migrations & configuration
-├── migrations/          # SQL migration files (ordered)
-├── functions/           # Edge Functions
-├── seed.sql             # Test data
-└── config.toml          # Supabase CLI config
-
-types/                  # TypeScript type definitions
-├── database.ts          # Auto-generated from Supabase
-├── models.ts            # Domain models
-└── api.ts               # API response types
-
-actions/                # Server Actions (data mutations)
-├── torneos.ts
-├── equipos.ts
-├── jugadores.ts
-├── partidos.ts
-└── financiero.ts
+goolstar_next/                         # Monorepo root
+├── apps/web/                          # Main Next.js app
+│   ├── app/                           # Next.js App Router
+│   │   ├── (auth)/                    # Login/Register
+│   │   ├── (dashboard)/               # Protected routes
+│   │   ├── api/                       # API routes
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components/                    # React components
+│   ├── public/
+│   ├── next.config.ts
+│   └── package.json                   # "@goolstar/web"
+│
+├── packages/
+│   ├── database/                      # 🔥 Supabase config + types
+│   │   ├── src/client.ts              # Supabase client
+│   │   ├── src/server.ts              # Server client
+│   │   ├── supabase/migrations/       # SQL migrations
+│   │   └── package.json               # "@goolstar/database"
+│   │
+│   ├── schemas/                       # 📋 Zod validations
+│   │   ├── src/torneo.ts
+│   │   ├── src/equipo.ts
+│   │   └── package.json               # "@goolstar/schemas"
+│   │
+│   ├── business/                      # 🧮 Pure business logic (Phase 2+)
+│   │   ├── src/rules/
+│   │   └── package.json               # "@goolstar/business"
+│   │
+│   └── typescript-config/             # ⚙️ Shared TS configs
+│       └── package.json               # "@goolstar/typescript-config"
+│
+└── docs/                              # Documentation (preserved)
 ```
+
+**Key Points:**
+- Single app (`apps/web`) for MVP development
+- Internal packages (`@goolstar/*`) for shared code
+- Prepare for future mobile app, admin panel, etc.
+- All imports use `@goolstar/database`, `@goolstar/schemas`
 
 ### Database Architecture (Critical)
 
