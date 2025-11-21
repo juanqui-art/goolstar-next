@@ -1,4 +1,4 @@
-# CLAUDE.md
+# CLAUDE.md - GoolStar Development Guide
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -6,14 +6,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **GoolStar** is a modern tournament management system for indoor soccer, being migrated from Django to a Next.js + Supabase stack. The application manages teams, players, matches, standings, cards/suspensions, and financial transactions for sports tournaments.
 
-Current status: Fresh Next.js 16 project (bootstrap phase) with detailed architecture planned in `info_project.md`.
+**Current Status:** Fresh Next.js 16 project (bootstrap phase)
+**Architecture:** Single app monolito (simple + fast for MVP)
+**Timeline:** 4-5 weeks for MVP
+**See also:** [ROADMAP.md](ROADMAP.md) for detailed implementation phases
 
 ## Development Commands
 
 ### Common Tasks (Using Bun)
 
 ```bash
-# Development server (runs apps/web)
+# Development server
 bun run dev
 
 # Build for production
@@ -25,15 +28,25 @@ bun run start
 # Linting & code quality
 bun run lint           # Check code with Biome
 bun run format         # Format code with Biome
+```
 
-# Monorepo workspaces
-bun --filter @goolstar/web dev        # Dev in web app only
-bun --filter '*' lint                 # Lint all packages
-bun add package-name --workspace @goolstar/web  # Add to web workspace
+### Database Operations (Supabase CLI)
 
-# Database operations
-bun run db:push        # Push migrations to Supabase
-bun run db:types       # Generate TypeScript types from DB
+```bash
+# Start local Supabase (requires Docker)
+supabase start
+
+# Stop local Supabase
+supabase stop
+
+# Push migrations to local DB
+supabase db push
+
+# Generate TypeScript types from schema
+supabase gen types typescript --local > types/database.ts
+
+# Create new migration
+supabase migration new migration_name
 ```
 
 ### Environment Setup
@@ -64,51 +77,71 @@ bun run db:types       # Generate TypeScript types from DB
 - Biome 2.2 for linting and formatting (replaces ESLint/Prettier)
 - All Biome rules configured in `biome.json`
 
-### Project Structure: Bun Monorepo with Workspaces
+### Project Structure: Monolito Simple
 
-**See:** [docs/architecture/monorepo-structure.md](docs/architecture/monorepo-structure.md) for complete monorepo architecture.
+**See:** [docs/architecture/current-structure.md](docs/architecture/current-structure.md) for detailed project structure.
 
 ```
-goolstar_next/                         # Monorepo root
-├── apps/web/                          # Main Next.js app
-│   ├── app/                           # Next.js App Router
-│   │   ├── (auth)/                    # Login/Register
-│   │   ├── (dashboard)/               # Protected routes
-│   │   ├── api/                       # API routes
-│   │   ├── layout.tsx
-│   │   └── page.tsx
-│   ├── components/                    # React components
-│   ├── public/
-│   ├── next.config.ts
-│   └── package.json                   # "@goolstar/web"
-│
-├── packages/
-│   ├── database/                      # 🔥 Supabase config + types
-│   │   ├── src/client.ts              # Supabase client
-│   │   ├── src/server.ts              # Server client
-│   │   ├── supabase/migrations/       # SQL migrations
-│   │   └── package.json               # "@goolstar/database"
-│   │
-│   ├── schemas/                       # 📋 Zod validations
-│   │   ├── src/torneo.ts
-│   │   ├── src/equipo.ts
-│   │   └── package.json               # "@goolstar/schemas"
-│   │
-│   ├── business/                      # 🧮 Pure business logic (Phase 2+)
-│   │   ├── src/rules/
-│   │   └── package.json               # "@goolstar/business"
-│   │
-│   └── typescript-config/             # ⚙️ Shared TS configs
-│       └── package.json               # "@goolstar/typescript-config"
-│
-└── docs/                              # Documentation (preserved)
+goolstar_next/
+├── app/                                # Next.js App Router
+│   ├── (auth)/                         # Login/Register routes
+│   ├── (dashboard)/                    # Protected dashboard routes
+│   │   ├── torneos/
+│   │   ├── equipos/
+│   │   ├── jugadores/
+│   │   ├── partidos/
+│   │   ├── financiero/
+│   │   └── admin/
+│   ├── api/                            # API routes
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/                         # React components
+│   ├── ui/                             # shadcn/ui components
+│   ├── torneos/
+│   ├── equipos/
+│   ├── jugadores/
+│   ├── partidos/
+│   └── layout/
+├── lib/                                # Utilities & business logic
+│   ├── supabase/
+│   │   ├── client.ts                   # Client-side Supabase
+│   │   ├── server.ts                   # Server-side Supabase
+│   │   └── types.ts                    # Generated from DB
+│   ├── validations/                    # Zod schemas
+│   │   ├── torneo.ts
+│   │   ├── equipo.ts
+│   │   ├── jugador.ts
+│   │   ├── partido.ts
+│   │   └── financiero.ts
+│   ├── utils/                          # Pure utilities
+│   │   ├── points.ts
+│   │   ├── standings.ts
+│   │   ├── suspension.ts
+│   │   └── format.ts
+│   └── hooks/                          # Custom React hooks
+│       ├── use-torneos.ts
+│       └── use-equipos.ts
+├── actions/                            # Server Actions
+│   ├── torneos.ts
+│   ├── equipos.ts
+│   └── jugadores.ts
+├── supabase/
+│   ├── migrations/                     # SQL migrations (001-010)
+│   └── config.toml
+├── public/
+├── types/                              # Generated database types
+├── .env.example
+├── next.config.ts
+├── package.json
+└── tsconfig.json
 ```
 
 **Key Points:**
-- Single app (`apps/web`) for MVP development
-- Internal packages (`@goolstar/*`) for shared code
-- Prepare for future mobile app, admin panel, etc.
-- All imports use `@goolstar/database`, `@goolstar/schemas`
+- Single app, simpler structure
+- All code in `/lib` organized by responsibility
+- Imports use `@/lib/...` pattern
+- Easy to scale within single app
+- Migration path to monorepo documented (see docs/architecture/decision-monolito.md)
 
 ### Database Architecture (Critical)
 
@@ -208,29 +241,59 @@ Key files:
 
 ### Adding a New Feature (e.g., Tournament CRUD)
 
-1. Create Zod schema in `lib/validations/torneo.ts`
-2. Create Server Action in `actions/torneos.ts` for mutations
-3. Create API route in `app/api/torneos/route.ts` if needed
-4. Create React component in `components/torneos/`
-5. Create page in `app/(dashboard)/torneos/`
-6. Add database query helpers as needed
+1. **Create Zod schema** in `lib/validations/torneo.ts`
+2. **Create Server Action** in `actions/torneos.ts` for mutations
+3. **Create components** in `components/torneos/`
+4. **Create page** in `app/(dashboard)/torneos/`
+5. **Add API routes** in `app/api/torneos/route.ts` if needed
+6. **Test** with dev server
+
+**Pattern:**
+```typescript
+// lib/validations/torneo.ts
+import { z } from "zod"
+export const torneoSchema = z.object({
+  nombre: z.string().min(1),
+  fecha_inicio: z.date(),
+})
+
+// actions/torneos.ts
+"use server"
+import { torneoSchema } from "@/lib/validations/torneo"
+export async function createTorneo(data: unknown) {
+  const torneo = torneoSchema.parse(data)
+  // TODO: Save to Supabase
+}
+
+// app/(dashboard)/torneos/page.tsx
+import { TorneoForm } from "@/components/torneos/torneo-form"
+export default function TorneosPage() {
+  return <TorneoForm />
+}
+```
 
 ### Running Locally
 
 ```bash
 # Install dependencies
-npm install
+bun install
 
-# Start Supabase (requires Docker)
+# Start Supabase (requires Docker - for local database)
 supabase start
 
-# Set environment variables
+# Copy & configure environment
 cp .env.example .env.local
-# Edit .env.local with Supabase URLs/keys
+# Edit .env.local with Supabase URLs from: supabase status
 
 # Start dev server
-npm run dev
+bun run dev
 # Open http://localhost:3000
+```
+
+**First time setup:**
+```bash
+# After starting Supabase, generate types from schema
+supabase gen types typescript --local > types/database.ts
 ```
 
 ## Resources

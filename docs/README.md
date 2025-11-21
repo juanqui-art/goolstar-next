@@ -4,8 +4,12 @@ Complete documentation for the GoolStar tournament management system (Next.js + 
 
 ## Quick Navigation
 
-### For Claude Code Users
-Start here: **[../CLAUDE.md](../CLAUDE.md)** - Quick reference for development commands and architecture.
+### Start Here 🚀
+
+1. **[../QUICK_START.md](../QUICK_START.md)** - Get running in 5 minutes
+2. **[../CLAUDE.md](../CLAUDE.md)** - Development guide and patterns
+3. **[../ROADMAP.md](../ROADMAP.md)** - Implementation phases (read this!)
+4. **[architecture/current-structure.md](architecture/current-structure.md)** - Project structure explained
 
 ### Database Documentation
 
@@ -27,12 +31,24 @@ Start here: **[../CLAUDE.md](../CLAUDE.md)** - Quick reference for development c
 
 ### Architecture Documentation
 
-- **[architecture/monorepo-structure.md](architecture/monorepo-structure.md)** - Bun workspaces monorepo design
-  - Workspace structure with internal packages
-  - Package purposes and dependencies
-  - Monolith vs monorepo comparison
-  - Migration roadmap
-  - Development workflow
+- **[architecture/current-structure.md](architecture/current-structure.md)** - Current monolito project structure
+  - Directory organization
+  - Component patterns
+  - Library structure
+  - Import conventions
+  - Data flow examples
+
+- **[architecture/decision-monolito.md](architecture/decision-monolito.md)** - ADR: Why we chose monolito
+  - Decision rationale
+  - Trade-offs
+  - Migration path to monorepo
+  - Future triggers
+
+- **[architecture/future-monorepo-migration.md](architecture/future-monorepo-migration.md)** - When & how to migrate to monorepo
+  - Monorepo benefits
+  - Migration checklist
+  - Triggers for migration
+  - Bun workspaces setup
 
 - **[architecture/business-rules.md](architecture/business-rules.md)** - Business logic and rules
   - Points system
@@ -170,13 +186,15 @@ Total: 15+ tables with proper relationships, constraints, and indexes.
 
 ## Implementation Phases
 
-1. **Phase 1** (1-2 days): Setup + Schema
-2. **Phase 2** (2-3 days): Basic CRUD (Tournaments, Teams, Players)
-3. **Phase 3** (3-4 days): Match management
-4. **Phase 4** (2-3 days): Standings and statistics
-5. **Phase 5** (2-3 days): Financial system
-6. **Phase 6** (2-3 days): Admin panel
-7. **Phase 7** (2-3 days): Testing and deployment
+**See [../ROADMAP.md](../ROADMAP.md) for complete implementation plan with detailed tasks.**
+
+1. **Phase 0** (1-2 days): Setup Base - Supabase, Auth, UI
+2. **Phase 1** (3-4 days): CRUD Básico - Torneos, Equipos, Jugadores
+3. **Phase 2** (3-4 days): Gestión Partidos - Matches, Goals, Cards
+4. **Phase 3** (2-3 days): Estadísticas - Standings, Live updates
+5. **Phase 4** (2-3 days): Sistema Financiero - Payments, Debt
+6. **Phase 5** (2-3 days): Admin Panel - Document verification
+7. **Phase 6** (2-3 days): Testing & Deploy - E2E tests, Production
 
 **Total: 4-5 weeks** (20-25 business days)
 
