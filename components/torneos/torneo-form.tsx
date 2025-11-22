@@ -1,9 +1,10 @@
-"use client"
+"use client";
 
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -12,15 +13,30 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { torneoSchema, type Torneo } from "@/lib/validations/torneo"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { type Torneo, torneoSchema } from "@/lib/validations/torneo";
 
 interface TorneoFormProps {
-  initialData?: Partial<Torneo>
-  onSubmit?: (data: Torneo) => void | Promise<void>
+  initialData?: Partial<Torneo>;
+  onSubmit?: (data: Torneo) => void | Promise<void>;
+  categorias?: Array<{ id: string; nombre: string }>;
 }
 
-export function TorneoForm({ initialData, onSubmit }: TorneoFormProps) {
+export function TorneoForm({
+  initialData,
+  onSubmit,
+  categorias = [],
+}: TorneoFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const form = useForm<Torneo>({
     resolver: zodResolver(torneoSchema),
     defaultValues: initialData || {
@@ -30,15 +46,22 @@ export function TorneoForm({ initialData, onSubmit }: TorneoFormProps) {
       tiene_fase_grupos: true,
       tiene_eliminacion_directa: true,
     },
-  })
+  });
 
   const handleSubmit = async (data: Torneo) => {
-    // TODO: Connect to Server Action createTorneo() or updateTorneo()
-    console.log("Form data:", data)
-    if (onSubmit) {
-      await onSubmit(data)
+    try {
+      setIsSubmitting(true);
+      // TODO: Connect to Server Action createTorneo() or updateTorneo()
+      console.log("Form data:", data);
+      if (onSubmit) {
+        await onSubmit(data);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <Form {...form}>
@@ -60,27 +83,149 @@ export function TorneoForm({ initialData, onSubmit }: TorneoFormProps) {
           )}
         />
 
-        {/* TODO: Add remaining fields:
-          - categoria_id (select)
-          - fecha_inicio (date picker)
-          - fecha_fin (date picker, optional)
-          - tiene_fase_grupos (checkbox)
-          - tiene_eliminacion_directa (checkbox)
-        */}
+        <FormField
+          control={form.control}
+          name="categoria_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Categoría</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona una categoría" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {categorias.length === 0 ? (
+                    <SelectItem value="none" disabled>
+                      No hay categorías disponibles
+                    </SelectItem>
+                  ) : (
+                    categorias.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.nombre}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                Selecciona la categoría del torneo
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        <p className="text-sm text-gray-500">
-          TODO: Add remaining form fields (categoria_id, fecha_inicio, fecha_fin, phase toggles)
-        </p>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="fecha_inicio"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fecha de Inicio</FormLabel>
+                <FormControl>
+                  <Input
+                    type="date"
+                    value={
+                      field.value instanceof Date
+                        ? field.value.toISOString().split("T")[0]
+                        : ""
+                    }
+                    onChange={(e) => field.onChange(new Date(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="fecha_fin"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fecha de Fin (Opcional)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="date"
+                    value={
+                      field.value instanceof Date
+                        ? field.value.toISOString().split("T")[0]
+                        : ""
+                    }
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value ? new Date(e.target.value) : undefined,
+                      )
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="space-y-4">
+          <FormField
+            control={form.control}
+            name="tiene_fase_grupos"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Fase de Grupos</FormLabel>
+                  <FormDescription>
+                    El torneo incluirá una fase de grupos
+                  </FormDescription>
+                </div>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="tiene_eliminacion_directa"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Eliminación Directa</FormLabel>
+                  <FormDescription>
+                    El torneo incluirá una fase de eliminación directa
+                    (playoffs)
+                  </FormDescription>
+                </div>
+              </FormItem>
+            )}
+          />
+        </div>
 
         <div className="flex gap-2">
-          <Button type="submit">
-            {initialData ? "Actualizar" : "Crear"} Torneo
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting
+              ? "Guardando..."
+              : initialData
+                ? "Actualizar"
+                : "Crear"}{" "}
+            Torneo
           </Button>
-          <Button type="button" variant="outline">
+          <Button type="button" variant="outline" disabled={isSubmitting}>
             Cancelar
           </Button>
         </div>
       </form>
     </Form>
-  )
+  );
 }

@@ -1,5 +1,8 @@
-"use client"
+"use client";
 
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -7,23 +10,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+} from "@/components/ui/table";
 
 interface Partido {
-  id: string
-  fecha: string
-  equipo_1: string
-  equipo_2: string
-  resultado?: string
-  estado: "programado" | "en_curso" | "finalizado"
-  cancha?: string
+  id: string;
+  fecha: string;
+  equipo_1: string;
+  equipo_2: string;
+  resultado?: string;
+  estado: "programado" | "en_curso" | "finalizado";
+  cancha?: string;
 }
 
 interface PartidoListProps {
-  partidos: Partido[]
+  partidos: Partido[];
 }
 
 export function PartidoList({ partidos }: PartidoListProps) {
@@ -32,14 +32,14 @@ export function PartidoList({ partidos }: PartidoListProps) {
       <p className="text-center text-gray-500 py-8">
         No hay partidos registrados aún.
       </p>
-    )
+    );
   }
 
   const estadoBadge = {
     programado: "bg-blue-100 text-blue-800",
     en_curso: "bg-green-100 text-green-800",
     finalizado: "bg-gray-100 text-gray-800",
-  }
+  };
 
   return (
     <Table>
@@ -83,5 +83,5 @@ export function PartidoList({ partidos }: PartidoListProps) {
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

@@ -1,12 +1,18 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 
 interface BalanceCardProps {
-  equipoNombre: string
-  totalDeuda: number
-  totalPagado: number
-  totalPendiente: number
-  porcentajePagado: number
+  equipoNombre: string;
+  totalDeuda: number;
+  totalPagado: number;
+  totalPendiente: number;
+  porcentajePagado: number;
 }
 
 export function BalanceCard({
@@ -30,11 +36,15 @@ export function BalanceCard({
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Pagado</span>
-            <span className="font-medium text-green-600">${totalPagado.toFixed(2)}</span>
+            <span className="font-medium text-green-600">
+              ${totalPagado.toFixed(2)}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Pendiente</span>
-            <span className="font-medium text-red-600">${totalPendiente.toFixed(2)}</span>
+            <span className="font-medium text-red-600">
+              ${totalPendiente.toFixed(2)}
+            </span>
           </div>
         </div>
 
@@ -47,5 +57,5 @@ export function BalanceCard({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

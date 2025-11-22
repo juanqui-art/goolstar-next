@@ -1,3 +1,5 @@
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -5,21 +7,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+} from "@/components/ui/table";
 
 interface Usuario {
-  id: string
-  email: string
-  rol: "admin" | "director_equipo" | "jugador"
-  nombre?: string
-  activo: boolean
-  fecha_registro: string
+  id: string;
+  email: string;
+  rol: "admin" | "director_equipo" | "jugador";
+  nombre?: string;
+  activo: boolean;
+  fecha_registro: string;
 }
 
 interface UserListProps {
-  usuarios: Usuario[]
+  usuarios: Usuario[];
 }
 
 export function UserList({ usuarios }: UserListProps) {
@@ -28,14 +28,14 @@ export function UserList({ usuarios }: UserListProps) {
       <p className="text-center text-gray-500 py-8">
         No hay usuarios registrados.
       </p>
-    )
+    );
   }
 
   const rolBadge = {
     admin: "bg-purple-100 text-purple-800",
     director_equipo: "bg-blue-100 text-blue-800",
     jugador: "bg-gray-100 text-gray-800",
-  }
+  };
 
   return (
     <Table>
@@ -81,5 +81,5 @@ export function UserList({ usuarios }: UserListProps) {
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

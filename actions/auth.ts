@@ -1,9 +1,9 @@
-"use server"
+"use server";
 
-import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
-import { createServerSupabaseClient } from "@/lib/supabase/server"
-import { loginSchema, registerSchema } from "@/lib/validations/auth"
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { loginSchema, registerSchema } from "@/lib/validations/auth";
 
 /**
  * Login with email and password
@@ -12,24 +12,24 @@ import { loginSchema, registerSchema } from "@/lib/validations/auth"
 export async function login(formData: unknown) {
   try {
     // Validate input
-    const { email, password } = loginSchema.parse(formData)
-    const supabase = await createServerSupabaseClient()
+    const { email, password } = loginSchema.parse(formData);
+    const supabase = await createServerSupabaseClient();
 
     // Sign in with Supabase Auth
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
-    })
+    });
 
-    if (error) throw error
+    if (error) throw error;
 
     // Revalidate and redirect
-    revalidatePath("/", "layout")
-    redirect("/")
+    revalidatePath("/", "layout");
+    redirect("/");
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : "Login failed",
-    }
+    };
   }
 }
 
@@ -40,8 +40,8 @@ export async function login(formData: unknown) {
 export async function register(formData: unknown) {
   try {
     // Validate input
-    const { email, password } = registerSchema.parse(formData)
-    const supabase = await createServerSupabaseClient()
+    const { email, password } = registerSchema.parse(formData);
+    const supabase = await createServerSupabaseClient();
 
     // Sign up with Supabase Auth
     const { error } = await supabase.auth.signUp({
@@ -50,17 +50,17 @@ export async function register(formData: unknown) {
       options: {
         emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
       },
-    })
+    });
 
-    if (error) throw error
+    if (error) throw error;
 
     // Revalidate and redirect to login with message
-    revalidatePath("/", "layout")
-    redirect("/login?message=Check your email to confirm your account")
+    revalidatePath("/", "layout");
+    redirect("/login?message=Check your email to confirm your account");
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : "Registration failed",
-    }
+    };
   }
 }
 
@@ -69,14 +69,14 @@ export async function register(formData: unknown) {
  * Called by navbar logout button
  */
 export async function logout() {
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
 
   // Sign out from Supabase Auth
-  await supabase.auth.signOut()
+  await supabase.auth.signOut();
 
   // Revalidate and redirect
-  revalidatePath("/", "layout")
-  redirect("/login")
+  revalidatePath("/", "layout");
+  redirect("/login");
 }
 
 /**
@@ -84,15 +84,18 @@ export async function logout() {
  * Called by components that need user info
  */
 export async function getCurrentUser() {
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
 
   try {
-    const { data: { user }, error } = await supabase.auth.getUser()
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
-    if (error) throw error
+    if (error) throw error;
 
-    return user
-  } catch (error) {
-    return null
+    return user;
+  } catch (_error) {
+    return null;
   }
 }

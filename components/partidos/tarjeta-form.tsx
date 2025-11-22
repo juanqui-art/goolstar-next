@@ -1,27 +1,33 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface TarjetaFormProps {
-  partidoId: string
-  equipoId: string
-  onSubmit?: () => void
+  partidoId: string;
+  equipoId: string;
+  onSubmit?: () => void;
 }
 
-export function TarjetaForm({ partidoId, equipoId, onSubmit }: TarjetaFormProps) {
-  const [jugadorId, setJugadorId] = useState("")
-  const [minuto, setMinuto] = useState<number>(0)
-  const [tipoTarjeta, setTipoTarjeta] = useState<"amarilla" | "roja">("amarilla")
-  const [submitting, setSubmitting] = useState(false)
+export function TarjetaForm({
+  partidoId,
+  equipoId,
+  onSubmit,
+}: TarjetaFormProps) {
+  const [jugadorId, setJugadorId] = useState("");
+  const [minuto, setMinuto] = useState<number>(0);
+  const [tipoTarjeta, setTipoTarjeta] = useState<"amarilla" | "roja">(
+    "amarilla",
+  );
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
 
     // TODO: Connect to Server Action registrarTarjeta()
     console.log("Registering tarjeta:", {
@@ -30,13 +36,13 @@ export function TarjetaForm({ partidoId, equipoId, onSubmit }: TarjetaFormProps)
       jugadorId,
       minuto,
       tipoTarjeta,
-    })
+    });
 
     setTimeout(() => {
-      setSubmitting(false)
-      if (onSubmit) onSubmit()
-    }, 1000)
-  }
+      setSubmitting(false);
+      if (onSubmit) onSubmit();
+    }, 1000);
+  };
 
   return (
     <Card>
@@ -70,7 +76,12 @@ export function TarjetaForm({ partidoId, equipoId, onSubmit }: TarjetaFormProps)
 
           <div className="space-y-2">
             <Label>Tipo de Tarjeta</Label>
-            <RadioGroup value={tipoTarjeta} onValueChange={(value) => setTipoTarjeta(value as "amarilla" | "roja")}>
+            <RadioGroup
+              value={tipoTarjeta}
+              onValueChange={(value) =>
+                setTipoTarjeta(value as "amarilla" | "roja")
+              }
+            >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="amarilla" id="amarilla" />
                 <Label htmlFor="amarilla">Amarilla</Label>
@@ -88,5 +99,5 @@ export function TarjetaForm({ partidoId, equipoId, onSubmit }: TarjetaFormProps)
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -1,43 +1,52 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface DocumentoUploadProps {
-  jugadorId: string
-  onUploadComplete?: () => void
+  jugadorId: string;
+  onUploadComplete?: () => void;
 }
 
-export function DocumentoUpload({ jugadorId, onUploadComplete }: DocumentoUploadProps) {
-  const [file, setFile] = useState<File | null>(null)
-  const [uploading, setUploading] = useState(false)
+export function DocumentoUpload({
+  jugadorId,
+  onUploadComplete,
+}: DocumentoUploadProps) {
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0])
+    if (e.target.files?.[0]) {
+      setFile(e.target.files[0]);
     }
-  }
+  };
 
   const handleUpload = async () => {
-    if (!file) return
+    if (!file) return;
 
-    setUploading(true)
+    setUploading(true);
     // TODO: Implement file upload to Supabase Storage
     // TODO: Create documento record in database
-    console.log("Uploading file:", file.name, "for jugador:", jugadorId)
+    console.log("Uploading file:", file.name, "for jugador:", jugadorId);
 
     // Simulate upload
     setTimeout(() => {
-      setUploading(false)
-      setFile(null)
+      setUploading(false);
+      setFile(null);
       if (onUploadComplete) {
-        onUploadComplete()
+        onUploadComplete();
       }
-    }, 2000)
-  }
+    }, 2000);
+  };
 
   return (
     <Card>
@@ -61,17 +70,15 @@ export function DocumentoUpload({ jugadorId, onUploadComplete }: DocumentoUpload
 
         {file && (
           <div className="text-sm text-gray-600">
-            Archivo seleccionado: <span className="font-medium">{file.name}</span>
+            Archivo seleccionado:{" "}
+            <span className="font-medium">{file.name}</span>
           </div>
         )}
 
-        <Button
-          onClick={handleUpload}
-          disabled={!file || uploading}
-        >
+        <Button onClick={handleUpload} disabled={!file || uploading}>
           {uploading ? "Subiendo..." : "Subir Documento"}
         </Button>
       </CardContent>
     </Card>
-  )
+  );
 }

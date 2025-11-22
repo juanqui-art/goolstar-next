@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "zod";
 
 /**
  * Schema for creating and updating teams
@@ -18,6 +18,6 @@ export const equipoSchema = z.object({
     .optional(),
   escudo_url: z.string().url("Invalid URL").optional(),
   nivel: z.enum(["1", "2", "3", "4", "5"]).default("3"),
-})
+});
 
-export type Equipo = z.infer<typeof equipoSchema>
+export type Equipo = z.infer<typeof equipoSchema>;

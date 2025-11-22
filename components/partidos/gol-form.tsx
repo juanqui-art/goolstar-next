@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface GolFormProps {
-  partidoId: string
-  equipoId: string
-  onSubmit?: () => void
+  partidoId: string;
+  equipoId: string;
+  onSubmit?: () => void;
 }
 
 export function GolForm({ partidoId, equipoId, onSubmit }: GolFormProps) {
-  const [jugadorId, setJugadorId] = useState("")
-  const [minuto, setMinuto] = useState<number>(0)
-  const [submitting, setSubmitting] = useState(false)
+  const [jugadorId, setJugadorId] = useState("");
+  const [minuto, setMinuto] = useState<number>(0);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
 
     // TODO: Connect to Server Action registrarGol()
     console.log("Registering gol:", {
@@ -27,13 +27,13 @@ export function GolForm({ partidoId, equipoId, onSubmit }: GolFormProps) {
       equipoId,
       jugadorId,
       minuto,
-    })
+    });
 
     setTimeout(() => {
-      setSubmitting(false)
-      if (onSubmit) onSubmit()
-    }, 1000)
-  }
+      setSubmitting(false);
+      if (onSubmit) onSubmit();
+    }, 1000);
+  };
 
   return (
     <Card>
@@ -71,5 +71,5 @@ export function GolForm({ partidoId, equipoId, onSubmit }: GolFormProps) {
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }

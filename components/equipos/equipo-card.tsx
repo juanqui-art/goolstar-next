@@ -1,15 +1,22 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface EquipoCardProps {
-  id: string
-  nombre: string
-  colorPrincipal: string
-  categoria: string
-  jugadores?: number
-  nivel: string
+  id: string;
+  nombre: string;
+  colorPrincipal: string;
+  categoria: string;
+  jugadores?: number;
+  nivel: string;
 }
 
 export function EquipoCard({
@@ -47,12 +54,14 @@ export function EquipoCard({
       </CardContent>
       <CardFooter className="flex gap-2">
         <Link href={`/equipos/${id}`}>
-          <Button variant="outline" size="sm">Ver Detalles</Button>
+          <Button variant="outline" size="sm">
+            Ver Detalles
+          </Button>
         </Link>
         <Link href={`/equipos/${id}/financiero`}>
           <Button size="sm">Finanzas</Button>
         </Link>
       </CardFooter>
     </Card>
-  )
+  );
 }

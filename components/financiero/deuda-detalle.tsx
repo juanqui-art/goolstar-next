@@ -1,21 +1,27 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface DeudaDetalleProps {
-  equipoNombre: string
+  equipoNombre: string;
   conceptos: Array<{
-    concepto: string
-    monto: number
-    pagado: boolean
-    fechaVencimiento?: string
-  }>
+    concepto: string;
+    monto: number;
+    pagado: boolean;
+    fechaVencimiento?: string;
+  }>;
 }
 
 export function DeudaDetalle({ equipoNombre, conceptos }: DeudaDetalleProps) {
   const deudaPendiente = conceptos
     .filter((c) => !c.pagado)
-    .reduce((sum, c) => sum + c.monto, 0)
+    .reduce((sum, c) => sum + c.monto, 0);
 
   return (
     <Card>
@@ -43,7 +49,9 @@ export function DeudaDetalle({ equipoNombre, conceptos }: DeudaDetalleProps) {
               <div
                 key={index}
                 className={`flex justify-between items-center p-3 rounded border ${
-                  item.pagado ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
+                  item.pagado
+                    ? "bg-green-50 border-green-200"
+                    : "bg-red-50 border-red-200"
                 }`}
               >
                 <div className="flex-1">
@@ -56,7 +64,9 @@ export function DeudaDetalle({ equipoNombre, conceptos }: DeudaDetalleProps) {
                 </div>
                 <div className="text-right">
                   <p className="font-bold">${item.monto.toFixed(2)}</p>
-                  <p className={`text-sm ${item.pagado ? "text-green-600" : "text-red-600"}`}>
+                  <p
+                    className={`text-sm ${item.pagado ? "text-green-600" : "text-red-600"}`}
+                  >
                     {item.pagado ? "Pagado" : "Pendiente"}
                   </p>
                 </div>
@@ -66,5 +76,5 @@ export function DeudaDetalle({ equipoNombre, conceptos }: DeudaDetalleProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
