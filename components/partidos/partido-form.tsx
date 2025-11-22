@@ -52,7 +52,7 @@ export function PartidoForm({
       torneo_id: "",
       equipo_1_id: "",
       equipo_2_id: "",
-      fecha: new Date(),
+      fecha: undefined,
       cancha: "",
     }) as Partido,
   });

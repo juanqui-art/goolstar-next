@@ -51,10 +51,11 @@ async function getTorneoData(torneoId: string) {
 async function getFixtureData(torneoId: string) {
   const supabase = await createServerSupabaseClient();
 
-  // Get all jornadas
+  // Get all jornadas for this tournament
   const { data: jornadas } = await supabase
     .from("jornadas")
     .select("*")
+    .eq("torneo_id", torneoId)
     .order("numero");
 
   // Get all matches for this tournament with team names
@@ -62,9 +63,8 @@ async function getFixtureData(torneoId: string) {
     .from("partidos")
     .select(`
       *,
-      equipo_local:equipo_1_id (id, nombre),
-      equipo_visitante:equipo_2_id (id, nombre),
-      jornada:jornada_id (id, nombre, numero, fecha, activa)
+      equipo_local:equipos!partidos_equipo_1_id_fkey (id, nombre),
+      equipo_visitante:equipos!partidos_equipo_2_id_fkey (id, nombre)
     `)
     .eq("torneo_id", torneoId);
 
@@ -72,8 +72,23 @@ async function getFixtureData(torneoId: string) {
   const fixture = jornadas?.map(jornada => {
     const matches = partidos?.filter(p => p.jornada_id === jornada.id) || [];
     return {
-      jornada,
-      partidos: matches,
+      jornada: {
+        id: jornada.id,
+        nombre: `Jornada ${jornada.numero}`,
+        numero: jornada.numero,
+        fecha: jornada.fecha_prevista,
+        activa: true, // TODO: Add activa field to jornadas table
+      },
+      partidos: matches.map(p => ({
+        id: p.id,
+        fecha: p.fecha,
+        cancha: p.cancha,
+        completado: p.completado,
+        goles_equipo_1: p.goles_equipo_1,
+        goles_equipo_2: p.goles_equipo_2,
+        equipo_local: p.equipo_local ? { id: p.equipo_local.id, nombre: p.equipo_local.nombre } : null,
+        equipo_visitante: p.equipo_visitante ? { id: p.equipo_visitante.id, nombre: p.equipo_visitante.nombre } : null,
+      })),
     };
   }) || [];
 

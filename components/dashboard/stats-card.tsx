@@ -35,7 +35,7 @@ export function StatsCard({
   icon,
 }: StatsCardProps) {
   return (
-    <Card>
+    <Card className="transition-all hover:shadow-md hover:scale-[1.02] cursor-pointer">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="space-y-1">
           <CardTitle className="text-sm font-medium">{title}</CardTitle>
@@ -43,7 +43,11 @@ export function StatsCard({
             <CardDescription className="text-xs">{description}</CardDescription>
           )}
         </div>
-        {icon && <div className="text-muted-foreground">{icon}</div>}
+        {icon && (
+          <div className="text-muted-foreground p-2 bg-muted rounded-lg">
+            {icon}
+          </div>
+        )}
       </CardHeader>
       <CardContent>
         <div className="flex items-center justify-between">
@@ -53,7 +57,7 @@ export function StatsCard({
           )}
           {trend && !badge && (
             <div
-              className={`text-xs ${
+              className={`text-xs font-medium ${
                 trend === "up"
                   ? "text-green-600"
                   : trend === "down"

@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -6,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { formatDate, formatTime } from "@/lib/utils/format";
 
 interface Match {
@@ -48,16 +51,25 @@ export function RecentMatches({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+        <div className="space-y-1">
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </div>
+        <Link href="/partidos">
+          <Button variant="ghost" size="sm" className="gap-1">
+            Ver todos
+            <ArrowRight className="h-3 w-3" />
+          </Button>
+        </Link>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {matches.map((match) => (
-            <div
+            <Link
               key={match.id}
-              className="flex items-center justify-between border-b pb-3 last:border-b-0 last:pb-0"
+              href={`/partidos/${match.id}`}
+              className="flex items-center justify-between border-b pb-3 last:border-b-0 last:pb-0 hover:bg-muted/50 -mx-2 px-2 py-2 rounded-md transition-colors"
             >
               <div className="space-y-1 flex-1">
                 <div className="flex items-center gap-2">
@@ -92,7 +104,7 @@ export function RecentMatches({
                   <div className="text-xs">Cancha {match.cancha}</div>
                 )}
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </CardContent>

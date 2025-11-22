@@ -21,8 +21,8 @@ interface Partido {
   completado: boolean;
   goles_equipo_1: number | null;
   goles_equipo_2: number | null;
-  equipo_local: { id: string; nombre: string } | null;
-  equipo_visitante: { id: string; nombre: string } | null;
+  equipo_local?: { id: string; nombre: string } | null;
+  equipo_visitante?: { id: string; nombre: string } | null;
 }
 
 interface CalendarioPartidosProps {
