@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -5,21 +6,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
+} from "@/components/ui/table";
 
 interface Transaction {
-  id: string
-  fecha: string
-  concepto: string
-  monto: number
-  es_ingreso: boolean
-  pagado: boolean
-  observaciones?: string
+  id: string;
+  fecha: string;
+  concepto: string;
+  monto: number;
+  es_ingreso: boolean;
+  pagado: boolean;
+  observaciones?: string;
 }
 
 interface HistorialPagosProps {
-  transactions: Transaction[]
+  transactions: Transaction[];
 }
 
 export function HistorialPagos({ transactions }: HistorialPagosProps) {
@@ -28,7 +28,7 @@ export function HistorialPagos({ transactions }: HistorialPagosProps) {
       <p className="text-center text-gray-500 py-8">
         No hay transacciones registradas.
       </p>
-    )
+    );
   }
 
   return (
@@ -47,26 +47,32 @@ export function HistorialPagos({ transactions }: HistorialPagosProps) {
         {transactions.map((transaction) => (
           <TableRow key={transaction.id}>
             <TableCell>{transaction.fecha}</TableCell>
-            <TableCell className="font-medium">{transaction.concepto}</TableCell>
+            <TableCell className="font-medium">
+              {transaction.concepto}
+            </TableCell>
             <TableCell>
               <Badge variant={transaction.es_ingreso ? "default" : "outline"}>
                 {transaction.es_ingreso ? "Ingreso" : "Gasto"}
               </Badge>
             </TableCell>
-            <TableCell className={`text-right font-medium ${
-              transaction.es_ingreso ? "text-green-600" : "text-red-600"
-            }`}>
-              {transaction.es_ingreso ? "+" : "-"}${transaction.monto.toFixed(2)}
+            <TableCell
+              className={`text-right font-medium ${
+                transaction.es_ingreso ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {transaction.es_ingreso ? "+" : "-"}$
+              {transaction.monto.toFixed(2)}
             </TableCell>
             <TableCell>
               {transaction.pagado ? (
-                <Badge variant="default" className="bg-green-100 text-green-800">
+                <Badge
+                  variant="default"
+                  className="bg-green-100 text-green-800"
+                >
                   Pagado
                 </Badge>
               ) : (
-                <Badge variant="destructive">
-                  Pendiente
-                </Badge>
+                <Badge variant="destructive">Pendiente</Badge>
               )}
             </TableCell>
             <TableCell className="text-sm text-gray-600">
@@ -76,5 +82,5 @@ export function HistorialPagos({ transactions }: HistorialPagosProps) {
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

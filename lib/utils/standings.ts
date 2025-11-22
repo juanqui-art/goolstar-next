@@ -14,23 +14,23 @@
  */
 export interface TeamStanding {
   /** Unique team identifier (UUID) */
-  equipoId: string
+  equipoId: string;
   /** Team name */
-  nombre: string
+  nombre: string;
   /** Partidos jugados (Matches played) */
-  PJ: number
+  PJ: number;
   /** Partidos ganados (Wins) */
-  PG: number
+  PG: number;
   /** Partidos empatados (Draws) */
-  PE: number
+  PE: number;
   /** Partidos perdidos (Losses) */
-  PP: number
+  PP: number;
   /** Goles a favor (Goals for) */
-  GF: number
+  GF: number;
   /** Goles en contra (Goals against) */
-  GC: number
+  GC: number;
   /** Total points */
-  puntos: number
+  puntos: number;
 }
 
 /**
@@ -57,19 +57,19 @@ export interface TeamStanding {
 export function sortStandings(standings: TeamStanding[]): TeamStanding[] {
   return [...standings].sort((a, b) => {
     // 1. Compare by points
-    if (b.puntos !== a.puntos) return b.puntos - a.puntos
+    if (b.puntos !== a.puntos) return b.puntos - a.puntos;
 
     // 2. Compare by goal difference
-    const diffA = a.GF - a.GC
-    const diffB = b.GF - b.GC
-    if (diffB !== diffA) return diffB - diffA
+    const diffA = a.GF - a.GC;
+    const diffB = b.GF - b.GC;
+    if (diffB !== diffA) return diffB - diffA;
 
     // 3. Compare by goals for
-    if (b.GF !== a.GF) return b.GF - a.GF
+    if (b.GF !== a.GF) return b.GF - a.GF;
 
     // 4. If still tied, maintain original order (or implement head-to-head)
-    return 0
-  })
+    return 0;
+  });
 }
 
 /**
@@ -88,11 +88,11 @@ export function sortStandings(standings: TeamStanding[]): TeamStanding[] {
  */
 export function getTeamPosition(
   standings: TeamStanding[],
-  equipoId: string
+  equipoId: string,
 ): number {
-  const sorted = sortStandings(standings)
-  const index = sorted.findIndex((t) => t.equipoId === equipoId)
-  return index === -1 ? 0 : index + 1
+  const sorted = sortStandings(standings);
+  const index = sorted.findIndex((t) => t.equipoId === equipoId);
+  return index === -1 ? 0 : index + 1;
 }
 
 /**
@@ -110,10 +110,10 @@ export function getTeamPosition(
  */
 export function getQualifiedTeams(
   standings: TeamStanding[],
-  numQualified: number
+  numQualified: number,
 ): TeamStanding[] {
-  const sorted = sortStandings(standings)
-  return sorted.slice(0, numQualified)
+  const sorted = sortStandings(standings);
+  return sorted.slice(0, numQualified);
 }
 
 /**
@@ -129,8 +129,8 @@ export function getQualifiedTeams(
  * ```
  */
 export function calculateWinRate(standing: TeamStanding): number {
-  if (standing.PJ === 0) return 0
-  return (standing.PG / standing.PJ) * 100
+  if (standing.PJ === 0) return 0;
+  return (standing.PG / standing.PJ) * 100;
 }
 
 /**
@@ -146,8 +146,8 @@ export function calculateWinRate(standing: TeamStanding): number {
  * ```
  */
 export function calculatePointsPerMatch(standing: TeamStanding): number {
-  if (standing.PJ === 0) return 0
-  return standing.puntos / standing.PJ
+  if (standing.PJ === 0) return 0;
+  return standing.puntos / standing.PJ;
 }
 
 /**
@@ -163,5 +163,5 @@ export function calculatePointsPerMatch(standing: TeamStanding): number {
  * ```
  */
 export function getStandingSummary(standing: TeamStanding): string {
-  return `${standing.PJ} PJ | ${standing.PG}G ${standing.PE}E ${standing.PP}P | ${standing.GF}-${standing.GC} | ${standing.puntos} pts`
+  return `${standing.PJ} PJ | ${standing.PG}G ${standing.PE}E ${standing.PP}P | ${standing.GF}-${standing.GC} | ${standing.puntos} pts`;
 }

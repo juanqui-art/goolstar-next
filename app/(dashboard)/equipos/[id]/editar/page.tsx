@@ -1,9 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { EquipoForm } from "@/components/equipos/equipo-form"
+import { EquipoForm } from "@/components/equipos/equipo-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function EditarEquipoPage({ params }: { params: { id: string } }) {
+export default function EditarEquipoPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   // TODO: Replace with getEquipo(params.id) Server Action
-  const equipo = null
+  const equipo = null;
 
   return (
     <div className="space-y-6">
@@ -25,5 +29,5 @@ export default function EditarEquipoPage({ params }: { params: { id: string } })
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

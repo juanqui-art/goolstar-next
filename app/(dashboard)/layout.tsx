@@ -1,14 +1,14 @@
-import { Navbar } from "@/components/layout/navbar"
-import { Sidebar, defaultNavItems } from "@/components/layout/sidebar"
-import { Footer } from "@/components/layout/footer"
+import { Footer } from "@/components/layout/footer";
+import { Navbar } from "@/components/layout/navbar";
+import { defaultNavItems, Sidebar } from "@/components/layout/sidebar";
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   // TODO: Get current user from auth when implemented
-  const user = null
+  const user = null;
 
   return (
     <div className="flex h-screen flex-col">
@@ -29,5 +29,5 @@ export default function DashboardLayout({
       {/* Footer */}
       <Footer />
     </div>
-  )
+  );
 }

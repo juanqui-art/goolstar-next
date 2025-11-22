@@ -13,11 +13,11 @@
  */
 export interface Transaction {
   /** Amount in USD */
-  monto: number
+  monto: number;
   /** true = payment (reduces debt), false = fee (increases debt) */
-  es_ingreso: boolean
+  es_ingreso: boolean;
   /** true = completed, false = pending */
-  pagado: boolean
+  pagado: boolean;
 }
 
 /**
@@ -42,8 +42,8 @@ export function calculateTotalDebt(transacciones: Transaction[]): number {
     .filter((t) => !t.pagado)
     .reduce((total, t) => {
       // es_ingreso = payment (negative), not es_ingreso = fee (positive)
-      return total + (t.es_ingreso ? -t.monto : t.monto)
-    }, 0)
+      return total + (t.es_ingreso ? -t.monto : t.monto);
+    }, 0);
 }
 
 /**
@@ -65,21 +65,21 @@ export function calculateTotalDebt(transacciones: Transaction[]): number {
 export function calculateDebtBreakdown(transacciones: Transaction[]) {
   const paid = transacciones
     .filter((t) => t.pagado)
-    .reduce((sum, t) => sum + t.monto, 0)
+    .reduce((sum, t) => sum + t.monto, 0);
 
   const pending = transacciones
     .filter((t) => !t.pagado)
-    .reduce((sum, t) => sum + t.monto, 0)
+    .reduce((sum, t) => sum + t.monto, 0);
 
-  const total = paid + pending
-  const percentagePaid = total > 0 ? (paid / total) * 100 : 0
+  const total = paid + pending;
+  const percentagePaid = total > 0 ? (paid / total) * 100 : 0;
 
   return {
     paid,
     pending,
     total,
     percentagePaid,
-  }
+  };
 }
 
 /**
@@ -98,7 +98,7 @@ export function calculateDebtBreakdown(transacciones: Transaction[]) {
  * ```
  */
 export function hasDebt(transacciones: Transaction[]): boolean {
-  return calculateTotalDebt(transacciones) > 0
+  return calculateTotalDebt(transacciones) > 0;
 }
 
 /**
@@ -120,7 +120,7 @@ export function hasDebt(transacciones: Transaction[]): boolean {
 export function calculateTotalFees(transacciones: Transaction[]): number {
   return transacciones
     .filter((t) => !t.es_ingreso)
-    .reduce((sum, t) => sum + t.monto, 0)
+    .reduce((sum, t) => sum + t.monto, 0);
 }
 
 /**
@@ -142,7 +142,7 @@ export function calculateTotalFees(transacciones: Transaction[]): number {
 export function calculateTotalPayments(transacciones: Transaction[]): number {
   return transacciones
     .filter((t) => t.es_ingreso)
-    .reduce((sum, t) => sum + t.monto, 0)
+    .reduce((sum, t) => sum + t.monto, 0);
 }
 
 /**
@@ -162,15 +162,15 @@ export function calculateTotalPayments(transacciones: Transaction[]): number {
  */
 export function getPaymentStatusColor(
   paid: number,
-  total: number
+  total: number,
 ): "green" | "yellow" | "red" {
-  if (total === 0) return "green"
+  if (total === 0) return "green";
 
-  const percentage = (paid / total) * 100
+  const percentage = (paid / total) * 100;
 
-  if (percentage >= 100) return "green"
-  if (percentage >= 50) return "yellow"
-  return "red"
+  if (percentage >= 100) return "green";
+  if (percentage >= 50) return "yellow";
+  return "red";
 }
 
 /**
@@ -194,12 +194,12 @@ export function getPaymentStatusColor(
  * - critical: $200+
  */
 export function getDebtPriority(
-  debt: number
+  debt: number,
 ): "low" | "medium" | "high" | "critical" {
-  if (debt <= 0) return "low"
-  if (debt <= 50) return "medium"
-  if (debt <= 200) return "high"
-  return "critical"
+  if (debt <= 0) return "low";
+  if (debt <= 50) return "medium";
+  if (debt <= 200) return "high";
+  return "critical";
 }
 
 /**
@@ -219,19 +219,19 @@ export function getDebtPriority(
  */
 export function getPaymentStatus(
   fechaVencimiento: Date | string | null,
-  pagado: boolean
+  pagado: boolean,
 ): "completed" | "pending" | "overdue" {
-  if (pagado) return "completed"
+  if (pagado) return "completed";
 
-  if (!fechaVencimiento) return "pending"
+  if (!fechaVencimiento) return "pending";
 
   const vencimiento =
     typeof fechaVencimiento === "string"
       ? new Date(fechaVencimiento)
-      : fechaVencimiento
-  const now = new Date()
+      : fechaVencimiento;
+  const now = new Date();
 
-  return vencimiento < now ? "overdue" : "pending"
+  return vencimiento < now ? "overdue" : "pending";
 }
 
 /**
@@ -251,13 +251,13 @@ export function getPaymentStatus(
  * ```
  */
 export function sortTransactionsByDate(
-  transacciones: (Transaction & { fecha: Date | string })[]
+  transacciones: (Transaction & { fecha: Date | string })[],
 ): typeof transacciones {
   return [...transacciones].sort((a, b) => {
-    const dateA = typeof a.fecha === "string" ? new Date(a.fecha) : a.fecha
-    const dateB = typeof b.fecha === "string" ? new Date(b.fecha) : b.fecha
-    return dateB.getTime() - dateA.getTime()
-  })
+    const dateA = typeof a.fecha === "string" ? new Date(a.fecha) : a.fecha;
+    const dateB = typeof b.fecha === "string" ? new Date(b.fecha) : b.fecha;
+    return dateB.getTime() - dateA.getTime();
+  });
 }
 
 /**
@@ -286,12 +286,12 @@ export function sortTransactionsByDate(
 export function filterTransactionsByDateRange(
   transacciones: (Transaction & { fecha: Date | string })[],
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 ): typeof transacciones {
   return transacciones.filter((t) => {
-    const fecha = typeof t.fecha === "string" ? new Date(t.fecha) : t.fecha
-    return fecha >= startDate && fecha <= endDate
-  })
+    const fecha = typeof t.fecha === "string" ? new Date(t.fecha) : t.fecha;
+    return fecha >= startDate && fecha <= endDate;
+  });
 }
 
 /**
@@ -312,6 +312,6 @@ export function filterTransactionsByDateRange(
  */
 export function getFinancialSummary(transacciones: Transaction[]): string {
   const { paid, pending, total, percentagePaid } =
-    calculateDebtBreakdown(transacciones)
-  return `Total: $${total.toFixed(2)} | Pagado: $${paid.toFixed(2)} (${percentagePaid.toFixed(1)}%) | Pendiente: $${pending.toFixed(2)}`
+    calculateDebtBreakdown(transacciones);
+  return `Total: $${total.toFixed(2)} | Pagado: $${paid.toFixed(2)} (${percentagePaid.toFixed(1)}%) | Pendiente: $${pending.toFixed(2)}`;
 }

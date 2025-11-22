@@ -1,16 +1,26 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ActaPartidoProps {
   partido: {
-    id: string
-    fecha: string
-    equipo_1: string
-    equipo_2: string
-    resultado: string
-    goles: Array<{ jugador: string; minuto: number; equipo: string }>
-    tarjetas: Array<{ jugador: string; minuto: number; tipo: string; equipo: string }>
-    cambios: Array<{ sale: string; entra: string; minuto: number; equipo: string }>
-  }
+    id: string;
+    fecha: string;
+    equipo_1: string;
+    equipo_2: string;
+    resultado: string;
+    goles: Array<{ jugador: string; minuto: number; equipo: string }>;
+    tarjetas: Array<{
+      jugador: string;
+      minuto: number;
+      tipo: string;
+      equipo: string;
+    }>;
+    cambios: Array<{
+      sale: string;
+      entra: string;
+      minuto: number;
+      equipo: string;
+    }>;
+  };
 }
 
 export function ActaPartido({ partido }: ActaPartidoProps) {
@@ -23,9 +33,17 @@ export function ActaPartido({ partido }: ActaPartidoProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            <p><span className="font-medium">Fecha:</span> {partido.fecha}</p>
-            <p><span className="font-medium">Equipos:</span> {partido.equipo_1} vs {partido.equipo_2}</p>
-            <p><span className="font-medium">Resultado:</span> {partido.resultado}</p>
+            <p>
+              <span className="font-medium">Fecha:</span> {partido.fecha}
+            </p>
+            <p>
+              <span className="font-medium">Equipos:</span> {partido.equipo_1}{" "}
+              vs {partido.equipo_2}
+            </p>
+            <p>
+              <span className="font-medium">Resultado:</span>{" "}
+              {partido.resultado}
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -42,7 +60,9 @@ export function ActaPartido({ partido }: ActaPartidoProps) {
             <ul className="space-y-2">
               {partido.goles.map((gol, index) => (
                 <li key={index} className="flex justify-between">
-                  <span>{gol.jugador} ({gol.equipo})</span>
+                  <span>
+                    {gol.jugador} ({gol.equipo})
+                  </span>
                   <span className="text-gray-600">Min. {gol.minuto}</span>
                 </li>
               ))}
@@ -64,7 +84,13 @@ export function ActaPartido({ partido }: ActaPartidoProps) {
               {partido.tarjetas.map((tarjeta, index) => (
                 <li key={index} className="flex justify-between">
                   <span>
-                    <span className={tarjeta.tipo === "roja" ? "text-red-600" : "text-yellow-600"}>
+                    <span
+                      className={
+                        tarjeta.tipo === "roja"
+                          ? "text-red-600"
+                          : "text-yellow-600"
+                      }
+                    >
                       ■
                     </span>{" "}
                     {tarjeta.jugador} ({tarjeta.equipo})
@@ -100,5 +126,5 @@ export function ActaPartido({ partido }: ActaPartidoProps) {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

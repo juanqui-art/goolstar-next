@@ -1,5 +1,8 @@
-"use client"
+"use client";
 
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -7,22 +10,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+} from "@/components/ui/table";
 
 interface Equipo {
-  id: string
-  nombre: string
-  color_principal: string
-  categoria: string
-  torneo: string
-  nivel: string
+  id: string;
+  nombre: string;
+  color_principal: string;
+  categoria: string;
+  torneo: string;
+  nivel: string;
 }
 
 interface EquipoListProps {
-  equipos: Equipo[]
+  equipos: Equipo[];
 }
 
 export function EquipoList({ equipos }: EquipoListProps) {
@@ -31,7 +31,7 @@ export function EquipoList({ equipos }: EquipoListProps) {
       <p className="text-center text-gray-500 py-8">
         No hay equipos registrados aún.
       </p>
-    )
+    );
   }
 
   return (
@@ -56,7 +56,9 @@ export function EquipoList({ equipos }: EquipoListProps) {
                   className="w-6 h-6 rounded border"
                   style={{ backgroundColor: equipo.color_principal }}
                 />
-                <span className="text-sm text-gray-600">{equipo.color_principal}</span>
+                <span className="text-sm text-gray-600">
+                  {equipo.color_principal}
+                </span>
               </div>
             </TableCell>
             <TableCell>{equipo.categoria}</TableCell>
@@ -82,5 +84,5 @@ export function EquipoList({ equipos }: EquipoListProps) {
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

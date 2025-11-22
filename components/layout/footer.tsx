@@ -1,5 +1,5 @@
 export function Footer() {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="border-t bg-white">
@@ -9,5 +9,5 @@ export function Footer() {
         </p>
       </div>
     </footer>
-  )
+  );
 }

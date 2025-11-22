@@ -27,17 +27,17 @@
 export function calculateSuspensionMatches(
   yellowCards: number,
   redCards: number,
-  limiteAmarillas: number = 3
+  limiteAmarillas: number = 3,
 ): number {
-  let matches = 0
+  let matches = 0;
 
   // Each red card = at least 1 match (can be more for violent conduct)
-  matches += redCards
+  matches += redCards;
 
   // Every N yellow cards = 1 match suspension
-  matches += Math.floor(yellowCards / limiteAmarillas)
+  matches += Math.floor(yellowCards / limiteAmarillas);
 
-  return matches
+  return matches;
 }
 
 /**
@@ -53,7 +53,7 @@ export function calculateSuspensionMatches(
  * ```
  */
 export function isPlayerSuspended(suspensionMatches: number): boolean {
-  return suspensionMatches > 0
+  return suspensionMatches > 0;
 }
 
 /**
@@ -75,17 +75,17 @@ export function isPlayerSuspended(suspensionMatches: number): boolean {
 export function getSuspensionReason(
   yellowCards: number,
   redCards: number,
-  limiteAmarillas: number = 3
+  limiteAmarillas: number = 3,
 ): string | null {
   if (redCards > 0) {
-    return `${redCards} tarjeta${redCards > 1 ? "s" : ""} roja${redCards > 1 ? "s" : ""}`
+    return `${redCards} tarjeta${redCards > 1 ? "s" : ""} roja${redCards > 1 ? "s" : ""}`;
   }
 
   if (yellowCards >= limiteAmarillas) {
-    return `Acumulación de ${yellowCards} tarjetas amarillas`
+    return `Acumulación de ${yellowCards} tarjetas amarillas`;
   }
 
-  return null
+  return null;
 }
 
 /**
@@ -103,9 +103,9 @@ export function getSuspensionReason(
  */
 export function getEligibilityMatchNumber(
   currentMatch: number,
-  suspensionMatches: number
+  suspensionMatches: number,
 ): number {
-  return currentMatch + suspensionMatches
+  return currentMatch + suspensionMatches;
 }
 
 /**
@@ -124,10 +124,11 @@ export function getEligibilityMatchNumber(
  */
 export function getCardWarning(
   yellowCards: number,
-  limiteAmarillas: number = 3
+  limiteAmarillas: number = 3,
 ): number {
-  const cardsUntilSuspension = limiteAmarillas - (yellowCards % limiteAmarillas)
-  return cardsUntilSuspension === limiteAmarillas ? 0 : cardsUntilSuspension
+  const cardsUntilSuspension =
+    limiteAmarillas - (yellowCards % limiteAmarillas);
+  return cardsUntilSuspension === limiteAmarillas ? 0 : cardsUntilSuspension;
 }
 
 /**
@@ -146,9 +147,9 @@ export function getCardWarning(
  */
 export function isInDangerZone(
   yellowCards: number,
-  limiteAmarillas: number = 3
+  limiteAmarillas: number = 3,
 ): boolean {
-  return getCardWarning(yellowCards, limiteAmarillas) === 1
+  return getCardWarning(yellowCards, limiteAmarillas) === 1;
 }
 
 /**
@@ -179,21 +180,21 @@ export function getSuspensionSummary(
   yellowCards: number,
   redCards: number,
   suspensionMatches: number,
-  limiteAmarillas: number = 3
+  limiteAmarillas: number = 3,
 ): string {
   if (suspensionMatches > 0) {
-    const reason = getSuspensionReason(yellowCards, redCards, limiteAmarillas)
-    return `Suspendido ${suspensionMatches} partido${suspensionMatches > 1 ? "s" : ""} (${reason})`
+    const reason = getSuspensionReason(yellowCards, redCards, limiteAmarillas);
+    return `Suspendido ${suspensionMatches} partido${suspensionMatches > 1 ? "s" : ""} (${reason})`;
   }
 
-  const warning = getCardWarning(yellowCards, limiteAmarillas)
+  const warning = getCardWarning(yellowCards, limiteAmarillas);
   if (warning === 1) {
-    return `⚠️ Peligro: 1 amarilla más y queda suspendido`
+    return `⚠️ Peligro: 1 amarilla más y queda suspendido`;
   }
 
   if (warning === 2) {
-    return `Advertencia: 2 amarillas más y queda suspendido`
+    return `Advertencia: 2 amarillas más y queda suspendido`;
   }
 
-  return "Sin suspensiones"
+  return "Sin suspensiones";
 }

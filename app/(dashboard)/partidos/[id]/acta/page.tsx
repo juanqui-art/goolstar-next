@@ -1,9 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ActaPartido } from "@/components/partidos/acta-partido"
+import { ActaPartido } from "@/components/partidos/acta-partido";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function ActaPartidoPage({ params }: { params: { id: string } }) {
+export default function ActaPartidoPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   // TODO: Replace with getPartidoActa(params.id) Server Action
-  const partido = null
+  const partido = null;
 
   return (
     <div className="space-y-6">
@@ -25,5 +29,5 @@ export default function ActaPartidoPage({ params }: { params: { id: string } }) 
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

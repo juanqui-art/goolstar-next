@@ -1,19 +1,32 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import Link from "next/link"
-import { Pencil, Eye, Calendar, Clock } from "lucide-react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function PartidosPage() {
   // TODO: Replace with getPartidos() Server Action
-  const partidos = []
+  const partidos = [];
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Partidos</h1>
-          <p className="text-gray-600">Gestiona todos los partidos del torneo</p>
+          <p className="text-gray-600">
+            Gestiona todos los partidos del torneo
+          </p>
         </div>
         <Link href="/partidos/nuevo">
           <Button>Crear Partido</Button>
@@ -24,13 +37,16 @@ export default function PartidosPage() {
         <CardHeader>
           <CardTitle>Lista de Partidos</CardTitle>
           <CardDescription>
-            {partidos.length} partido{partidos.length !== 1 ? 's' : ''} registrado{partidos.length !== 1 ? 's' : ''}
+            {partidos.length} partido{partidos.length !== 1 ? "s" : ""}{" "}
+            registrado{partidos.length !== 1 ? "s" : ""}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {partidos.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-500 mb-4">No hay partidos registrados aún.</p>
+              <p className="text-gray-500 mb-4">
+                No hay partidos registrados aún.
+              </p>
               <Link href="/partidos/nuevo">
                 <Button variant="outline">Programar primer partido</Button>
               </Link>
@@ -118,5 +134,5 @@ export default function PartidosPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

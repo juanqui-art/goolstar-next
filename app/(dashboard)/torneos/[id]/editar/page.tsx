@@ -1,9 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { TorneoForm } from "@/components/torneos/torneo-form"
+import { TorneoForm } from "@/components/torneos/torneo-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function EditarTorneoPage({ params }: { params: { id: string } }) {
+export default function EditarTorneoPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   // TODO: Replace with getTorneo(params.id) Server Action
-  const torneo = null
+  const torneo = null;
 
   return (
     <div className="space-y-6">
@@ -25,5 +29,5 @@ export default function EditarTorneoPage({ params }: { params: { id: string } })
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

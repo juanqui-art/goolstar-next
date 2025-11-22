@@ -1,5 +1,5 @@
-import { Card } from "@/components/ui/card"
-import { RegisterForm } from "@/components/auth/register-form"
+import { RegisterForm } from "@/components/auth/register-form";
+import { Card } from "@/components/ui/card";
 
 export default function RegisterPage() {
   return (
@@ -19,5 +19,5 @@ export default function RegisterPage() {
         </div>
       </Card>
     </div>
-  )
+  );
 }

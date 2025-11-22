@@ -1,14 +1,18 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { HistorialPagos } from "@/components/financiero/historial-pagos"
+import { HistorialPagos } from "@/components/financiero/historial-pagos";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function EquipoFinancieroPage({ params }: { params: { id: string } }) {
+export default function EquipoFinancieroPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   // TODO: Replace with getEquipoFinanciero(params.id) Server Action
-  const transactions = []
+  const transactions = [];
   const balance = {
     total: 0,
     pagado: 0,
     pendiente: 0,
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -32,7 +36,9 @@ export default function EquipoFinancieroPage({ params }: { params: { id: string 
             <CardTitle className="text-sm font-medium">Pagado</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">${balance.pagado}</div>
+            <div className="text-2xl font-bold text-green-600">
+              ${balance.pagado}
+            </div>
           </CardContent>
         </Card>
 
@@ -41,7 +47,9 @@ export default function EquipoFinancieroPage({ params }: { params: { id: string 
             <CardTitle className="text-sm font-medium">Pendiente</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">${balance.pendiente}</div>
+            <div className="text-2xl font-bold text-red-600">
+              ${balance.pendiente}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -55,5 +63,5 @@ export default function EquipoFinancieroPage({ params }: { params: { id: string 
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

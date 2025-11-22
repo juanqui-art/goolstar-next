@@ -1,10 +1,14 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function TorneoDetailPage({ params }: { params: { id: string } }) {
+export default function TorneoDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   // TODO: Replace with getTorneo(params.id) Server Action
-  const torneo = null
+  const torneo = null;
 
   if (!torneo) {
     return (
@@ -12,7 +16,7 @@ export default function TorneoDetailPage({ params }: { params: { id: string } })
         <p className="text-gray-500">Cargando torneo...</p>
         {/* TODO: Add loading state or not found message */}
       </div>
-    )
+    );
   }
 
   return (
@@ -37,9 +41,11 @@ export default function TorneoDetailPage({ params }: { params: { id: string } })
           <CardTitle>Información General</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-500">TODO: Display tournament details, teams, matches</p>
+          <p className="text-gray-500">
+            TODO: Display tournament details, teams, matches
+          </p>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

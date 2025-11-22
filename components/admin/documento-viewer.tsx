@@ -1,12 +1,12 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface DocumentoViewerProps {
-  documentoUrl: string
-  jugadorNombre: string
-  onApprove?: () => void
-  onReject?: () => void
+  documentoUrl: string;
+  jugadorNombre: string;
+  onApprove?: () => void;
+  onReject?: () => void;
 }
 
 export function DocumentoViewer({
@@ -46,5 +46,5 @@ export function DocumentoViewer({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "zod";
 
 /**
  * Schema for creating and updating matches
@@ -16,27 +16,25 @@ export const partidoSchema = z
     fecha: z.coerce.date().optional(),
     cancha: z.string().max(100).optional(),
   })
-  .refine(
-    (data) => data.equipo_1_id !== data.equipo_2_id,
-    {
-      message: "Teams must be different",
-      path: ["equipo_2_id"],
-    }
-  )
+  .refine((data) => data.equipo_1_id !== data.equipo_2_id, {
+    message: "Teams must be different",
+    path: ["equipo_2_id"],
+  })
   .refine(
     (data) => {
-      const hasJornada = data.jornada_id !== undefined
-      const hasFase = data.fase_eliminatoria_id !== undefined
+      const hasJornada = data.jornada_id !== undefined;
+      const hasFase = data.fase_eliminatoria_id !== undefined;
       // Allow neither (TBD matches) but not both
-      return !(hasJornada && hasFase)
+      return !(hasJornada && hasFase);
     },
     {
-      message: "Match must reference either group phase OR knockout phase, not both",
+      message:
+        "Match must reference either group phase OR knockout phase, not both",
       path: ["fase_eliminatoria_id"],
-    }
-  )
+    },
+  );
 
-export type Partido = z.infer<typeof partidoSchema>
+export type Partido = z.infer<typeof partidoSchema>;
 
 /**
  * Schema for recording match results
@@ -49,6 +47,6 @@ export const partidoResultadoSchema = z.object({
   sancion: z.enum(["equipo_1", "equipo_2"]).optional(),
   penales_equipo_1: z.number().optional(),
   penales_equipo_2: z.number().optional(),
-})
+});
 
-export type PartidoResultado = z.infer<typeof partidoResultadoSchema>
+export type PartidoResultado = z.infer<typeof partidoResultadoSchema>;

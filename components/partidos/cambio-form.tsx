@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface CambioFormProps {
-  partidoId: string
-  equipoId: string
-  onSubmit?: () => void
+  partidoId: string;
+  equipoId: string;
+  onSubmit?: () => void;
 }
 
 export function CambioForm({ partidoId, equipoId, onSubmit }: CambioFormProps) {
-  const [jugadorSaleId, setJugadorSaleId] = useState("")
-  const [jugadorEntraId, setJugadorEntraId] = useState("")
-  const [minuto, setMinuto] = useState<number>(0)
-  const [submitting, setSubmitting] = useState(false)
+  const [jugadorSaleId, setJugadorSaleId] = useState("");
+  const [jugadorEntraId, setJugadorEntraId] = useState("");
+  const [minuto, setMinuto] = useState<number>(0);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
 
     // TODO: Connect to Server Action registrarCambio()
     console.log("Registering cambio:", {
@@ -29,13 +29,13 @@ export function CambioForm({ partidoId, equipoId, onSubmit }: CambioFormProps) {
       jugadorSaleId,
       jugadorEntraId,
       minuto,
-    })
+    });
 
     setTimeout(() => {
-      setSubmitting(false)
-      if (onSubmit) onSubmit()
-    }, 1000)
-  }
+      setSubmitting(false);
+      if (onSubmit) onSubmit();
+    }, 1000);
+  };
 
   return (
     <Card>
@@ -84,5 +84,5 @@ export function CambioForm({ partidoId, equipoId, onSubmit }: CambioFormProps) {
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }

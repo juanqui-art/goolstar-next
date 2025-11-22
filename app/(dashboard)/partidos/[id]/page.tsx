@@ -1,10 +1,14 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function PartidoDetailPage({ params }: { params: { id: string } }) {
+export default function PartidoDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   // TODO: Replace with getPartido(params.id) Server Action
-  const partido = null
+  const partido = null;
 
   if (!partido) {
     return (
@@ -12,7 +16,7 @@ export default function PartidoDetailPage({ params }: { params: { id: string } }
         <p className="text-gray-500">Cargando partido...</p>
         {/* TODO: Add loading state or not found message */}
       </div>
-    )
+    );
   }
 
   return (
@@ -34,9 +38,11 @@ export default function PartidoDetailPage({ params }: { params: { id: string } }
           <CardTitle>Información del Partido</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-500">TODO: Display match details, score, goals, cards, changes</p>
+          <p className="text-gray-500">
+            TODO: Display match details, score, goals, cards, changes
+          </p>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

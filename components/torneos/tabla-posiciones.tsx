@@ -5,23 +5,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
 interface TeamStanding {
-  posicion: number
-  equipo: string
-  PJ: number // Partidos jugados
-  PG: number // Partidos ganados
-  PE: number // Partidos empatados
-  PP: number // Partidos perdidos
-  GF: number // Goles a favor
-  GC: number // Goles en contra
-  DG: number // Diferencia de goles
-  puntos: number
+  posicion: number;
+  equipo: string;
+  PJ: number; // Partidos jugados
+  PG: number; // Partidos ganados
+  PE: number; // Partidos empatados
+  PP: number; // Partidos perdidos
+  GF: number; // Goles a favor
+  GC: number; // Goles en contra
+  DG: number; // Diferencia de goles
+  puntos: number;
 }
 
 interface TablaPosicionesProps {
-  standings: TeamStanding[]
+  standings: TeamStanding[];
 }
 
 export function TablaPosiciones({ standings }: TablaPosicionesProps) {
@@ -30,7 +30,7 @@ export function TablaPosiciones({ standings }: TablaPosicionesProps) {
       <p className="text-center text-gray-500 py-8">
         No hay datos de tabla de posiciones aún.
       </p>
-    )
+    );
   }
 
   return (
@@ -62,11 +62,13 @@ export function TablaPosiciones({ standings }: TablaPosicionesProps) {
               <TableCell className="text-center">{team.GF}</TableCell>
               <TableCell className="text-center">{team.GC}</TableCell>
               <TableCell className="text-center">{team.DG}</TableCell>
-              <TableCell className="text-center font-bold">{team.puntos}</TableCell>
+              <TableCell className="text-center font-bold">
+                {team.puntos}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }

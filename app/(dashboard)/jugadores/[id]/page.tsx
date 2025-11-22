@@ -1,10 +1,14 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function JugadorDetailPage({ params }: { params: { id: string } }) {
+export default function JugadorDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   // TODO: Replace with getJugador(params.id) Server Action
-  const jugador = null
+  const jugador = null;
 
   if (!jugador) {
     return (
@@ -12,7 +16,7 @@ export default function JugadorDetailPage({ params }: { params: { id: string } }
         <p className="text-gray-500">Cargando jugador...</p>
         {/* TODO: Add loading state or not found message */}
       </div>
-    )
+    );
   }
 
   return (
@@ -34,9 +38,11 @@ export default function JugadorDetailPage({ params }: { params: { id: string } }
           <CardTitle>Información General</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-500">TODO: Display player details, stats, cards, suspensions</p>
+          <p className="text-gray-500">
+            TODO: Display player details, stats, cards, suspensions
+          </p>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

@@ -1,5 +1,8 @@
-"use client"
+"use client";
 
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -7,22 +10,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+} from "@/components/ui/table";
 
 interface Jugador {
-  id: string
-  nombre_completo: string
-  numero_dorsal: number
-  equipo: string
-  posicion?: string
-  suspendido: boolean
+  id: string;
+  nombre_completo: string;
+  numero_dorsal: number;
+  equipo: string;
+  posicion?: string;
+  suspendido: boolean;
 }
 
 interface JugadorListProps {
-  jugadores: Jugador[]
+  jugadores: Jugador[];
 }
 
 export function JugadorList({ jugadores }: JugadorListProps) {
@@ -31,7 +31,7 @@ export function JugadorList({ jugadores }: JugadorListProps) {
       <p className="text-center text-gray-500 py-8">
         No hay jugadores registrados aún.
       </p>
-    )
+    );
   }
 
   return (
@@ -52,7 +52,9 @@ export function JugadorList({ jugadores }: JugadorListProps) {
             <TableCell>
               <Badge variant="outline">#{jugador.numero_dorsal}</Badge>
             </TableCell>
-            <TableCell className="font-medium">{jugador.nombre_completo}</TableCell>
+            <TableCell className="font-medium">
+              {jugador.nombre_completo}
+            </TableCell>
             <TableCell>{jugador.equipo}</TableCell>
             <TableCell>{jugador.posicion || "N/A"}</TableCell>
             <TableCell>
@@ -80,5 +82,5 @@ export function JugadorList({ jugadores }: JugadorListProps) {
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

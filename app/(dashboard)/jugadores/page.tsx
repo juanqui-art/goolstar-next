@@ -1,19 +1,32 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import Link from "next/link"
-import { Pencil, Eye, AlertCircle, CheckCircle } from "lucide-react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function JugadoresPage() {
   // TODO: Replace with getJugadores() Server Action
-  const jugadores = []
+  const jugadores = [];
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Jugadores</h1>
-          <p className="text-gray-600">Gestiona todos los jugadores registrados</p>
+          <p className="text-gray-600">
+            Gestiona todos los jugadores registrados
+          </p>
         </div>
         <Link href="/jugadores/nuevo">
           <Button>Crear Jugador</Button>
@@ -24,13 +37,16 @@ export default function JugadoresPage() {
         <CardHeader>
           <CardTitle>Lista de Jugadores</CardTitle>
           <CardDescription>
-            {jugadores.length} jugador{jugadores.length !== 1 ? 'es' : ''} registrado{jugadores.length !== 1 ? 's' : ''}
+            {jugadores.length} jugador{jugadores.length !== 1 ? "es" : ""}{" "}
+            registrado{jugadores.length !== 1 ? "s" : ""}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {jugadores.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-500 mb-4">No hay jugadores registrados aún.</p>
+              <p className="text-gray-500 mb-4">
+                No hay jugadores registrados aún.
+              </p>
               <Link href="/jugadores/nuevo">
                 <Button variant="outline">Registrar primer jugador</Button>
               </Link>
@@ -99,5 +115,5 @@ export default function JugadoresPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

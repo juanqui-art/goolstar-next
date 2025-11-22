@@ -1,9 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { JugadorForm } from "@/components/jugadores/jugador-form"
+import { JugadorForm } from "@/components/jugadores/jugador-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function EditarJugadorPage({ params }: { params: { id: string } }) {
+export default function EditarJugadorPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   // TODO: Replace with getJugador(params.id) Server Action
-  const jugador = null
+  const jugador = null;
 
   return (
     <div className="space-y-6">
@@ -25,5 +29,5 @@ export default function EditarJugadorPage({ params }: { params: { id: string } }
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

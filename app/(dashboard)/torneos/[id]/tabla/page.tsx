@@ -1,9 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { TablaPosiciones } from "@/components/torneos/tabla-posiciones"
+import { TablaPosiciones } from "@/components/torneos/tabla-posiciones";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function TablaPosicionesPage({ params }: { params: { id: string } }) {
+export default function TablaPosicionesPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   // TODO: Replace with getStandings(params.id) Server Action
-  const standings = []
+  const standings = [];
 
   return (
     <div className="space-y-6">
@@ -21,5 +25,5 @@ export default function TablaPosicionesPage({ params }: { params: { id: string }
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
