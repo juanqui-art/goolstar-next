@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { TorneoForm } from "@/components/torneos/torneo-form"
+import { TorneoForm } from "@/components/torneos/torneo-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function NuevoTorneoPage() {
   return (
@@ -18,5 +18,5 @@ export default function NuevoTorneoPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

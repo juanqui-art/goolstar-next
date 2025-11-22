@@ -1,7 +1,13 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { FileText, Users, AlertCircle } from "lucide-react"
-import Link from "next/link"
+import { AlertCircle, FileText, Users } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function AdminPage() {
   // TODO: Replace with getAdminStats() Server Action
@@ -9,7 +15,7 @@ export default function AdminPage() {
     documentosPendientes: 0,
     usuariosActivos: 0,
     alertasSistema: 0,
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -21,18 +27,26 @@ export default function AdminPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Documentos Pendientes</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Documentos Pendientes
+            </CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.documentosPendientes}</div>
-            <p className="text-xs text-muted-foreground">Requieren verificación</p>
+            <div className="text-2xl font-bold">
+              {stats.documentosPendientes}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Requieren verificación
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Usuarios Activos</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Usuarios Activos
+            </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -43,7 +57,9 @@ export default function AdminPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Alertas Sistema</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Alertas Sistema
+            </CardTitle>
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -57,7 +73,9 @@ export default function AdminPage() {
         <Card>
           <CardHeader>
             <CardTitle>Verificación de Documentos</CardTitle>
-            <CardDescription>Documentos pendientes de aprobación</CardDescription>
+            <CardDescription>
+              Documentos pendientes de aprobación
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Link href="/admin/documentos">
@@ -79,5 +97,5 @@ export default function AdminPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

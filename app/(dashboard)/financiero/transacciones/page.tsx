@@ -1,10 +1,16 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { HistorialPagos } from "@/components/financiero/historial-pagos"
+import { HistorialPagos } from "@/components/financiero/historial-pagos";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function TransaccionesPage() {
   // TODO: Replace with getTransacciones() Server Action
-  const transacciones = []
+  const transacciones = [];
 
   return (
     <div className="space-y-6">
@@ -20,7 +26,9 @@ export default function TransaccionesPage() {
         <CardHeader>
           <CardTitle>Todas las Transacciones</CardTitle>
           <CardDescription>
-            {transacciones.length} transacción{transacciones.length !== 1 ? 'es' : ''} registrada{transacciones.length !== 1 ? 's' : ''}
+            {transacciones.length} transacción
+            {transacciones.length !== 1 ? "es" : ""} registrada
+            {transacciones.length !== 1 ? "s" : ""}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -28,5 +36,5 @@ export default function TransaccionesPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

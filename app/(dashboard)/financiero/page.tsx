@@ -1,6 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { DollarSign, TrendingUp, AlertCircle } from "lucide-react"
+import { AlertCircle, DollarSign, TrendingUp } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function FinancieroPage() {
   // TODO: Replace with getFinancieroStats() Server Action
@@ -9,7 +14,7 @@ export default function FinancieroPage() {
     totalPendiente: 0,
     equiposConDeuda: 0,
     porcentajePagado: 0,
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -23,7 +28,9 @@ export default function FinancieroPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Ingresos</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Ingresos
+            </CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -38,19 +45,25 @@ export default function FinancieroPage() {
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">${stats.totalPendiente}</div>
+            <div className="text-2xl font-bold text-red-600">
+              ${stats.totalPendiente}
+            </div>
             <p className="text-xs text-muted-foreground">Por cobrar</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Equipos con Deuda</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Equipos con Deuda
+            </CardTitle>
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.equiposConDeuda}</div>
-            <p className="text-xs text-muted-foreground">Requieren seguimiento</p>
+            <p className="text-xs text-muted-foreground">
+              Requieren seguimiento
+            </p>
           </CardContent>
         </Card>
 
@@ -72,9 +85,11 @@ export default function FinancieroPage() {
           <CardDescription>Estado de pagos de cada equipo</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-500">TODO: Display team payment summary table</p>
+          <p className="text-gray-500">
+            TODO: Display team payment summary table
+          </p>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
