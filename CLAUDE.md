@@ -13,19 +13,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## ⚠️ Known Issues & Solutions
 
-### Build Error: Context Prerendering Issue (RESOLVED)
+### Build Error: Context Prerendering Issue (RESOLVED ✅)
 **Problem:** `TypeError: Cannot read properties of null (reading 'useContext')`
 
-**Solution:** Implement Cache Components (Recommended)
-- **Status:** Documented with 3 implementation options
-- **Recommended:** Cache Components with `use cache` directive (Option 3)
-- **Estimated effort:** 4-6 hours for full implementation
+**Solution Implemented:** React downgrade + Cache Components with `'use cache: private'`
+- **Status:** ✅ Implemented (2025-11-22)
+- **Strategy:** Cache Components with `'use cache: private'` for authenticated data
+- **React Version:** Downgraded to 19.1.0 (fixes Next.js 16.0.x compatibility issue)
 
 **Related Documentation:**
-- See `CACHE_COMPONENTS_ANALYSIS.md` for detailed analysis
-- See `IMPLEMENTATION_STEPS.md` for step-by-step guide
-- See `SOLUTION_SUMMARY.md` for quick comparison of options
-- See `CACHE_COMPONENTS_IMPLEMENTATION_GUIDE.md` for practical examples
+- See `docs/architecture/caching-strategy.md` for complete caching strategy
+- See `docs/troubleshooting/build-error-solutions-2025.md` for detailed error analysis
+- See `docs/troubleshooting/cache-components-analysis.md` for implementation options
 
 ## Development Commands
 
