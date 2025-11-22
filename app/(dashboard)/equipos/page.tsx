@@ -14,10 +14,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getTodosLosEquipos } from "@/lib/data";
 
-export default function EquiposPage() {
-  // TODO: Replace with getEquipos() Server Action
-  const equipos = [];
+export default async function EquiposPage() {
+  // Cached data - revalidates hourly
+  const equipos = await getTodosLosEquipos();
 
   return (
     <div className="space-y-6">
