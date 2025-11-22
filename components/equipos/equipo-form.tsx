@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { createEquipo, updateEquipo } from "@/actions/equipos";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,10 +24,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Equipo, equipoSchema } from "@/lib/validations/equipo";
-import { createEquipo, updateEquipo } from "@/actions/equipos";
 
 interface EquipoFormProps {
-  initialData?: Partial<Equipo>;
+  initialData?: Partial<Equipo> & { id?: string };
   onSubmit?: (data: Equipo) => void | Promise<void>;
   categorias?: Array<{ id: string; nombre: string }>;
   torneos?: Array<{ id: string; nombre: string }>;
@@ -42,35 +42,36 @@ export function EquipoForm({
 }: EquipoFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<Equipo>({
+  const form = useForm({
     resolver: zodResolver(equipoSchema),
-    defaultValues: initialData || {
+    defaultValues: (initialData || {
       nombre: "",
       categoria_id: "",
       torneo_id: "",
       color_principal: "#000000",
-      nivel: "3",
-    },
+      nivel: "3" as const,
+    }) as any,
   });
 
-  const handleSubmit = async (data: Equipo) => {
+  const handleSubmit = async (data: unknown) => {
+    const validatedData = equipoSchema.parse(data) as Equipo;
     try {
       setIsSubmitting(true);
 
       if (initialData?.id) {
         // Update existing equipo
-        await updateEquipo(initialData.id, data);
+        await updateEquipo(initialData.id, validatedData);
         toast.success("Equipo actualizado correctamente");
       } else {
         // Create new equipo
-        await createEquipo(data);
+        await createEquipo(validatedData);
         toast.success("Equipo creado correctamente");
         form.reset();
       }
 
       // Call optional callback if provided
       if (onSubmit) {
-        await onSubmit(data);
+        await onSubmit(validatedData);
       }
     } catch (error) {
       console.error("Error submitting form:", error);

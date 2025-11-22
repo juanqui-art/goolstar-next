@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { createJugador, updateJugador } from "@/actions/jugadores";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,10 +24,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Jugador, jugadorSchema } from "@/lib/validations/jugador";
-import { createJugador, updateJugador } from "@/actions/jugadores";
 
 interface JugadorFormProps {
-  initialData?: Partial<Jugador>;
+  initialData?: Partial<Jugador> & { id?: string };
   onSubmit?: (data: Jugador) => void | Promise<void>;
   equipos?: Array<{ id: string; nombre: string }>;
 }
@@ -39,33 +39,34 @@ export function JugadorForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<Jugador>({
-    resolver: zodResolver(jugadorSchema),
-    defaultValues: initialData || {
+    resolver: zodResolver(jugadorSchema) as any,
+    defaultValues: (initialData || {
       equipo_id: "",
       primer_nombre: "",
       primer_apellido: "",
-      nivel: "3",
-    },
+      nivel: "3" as const,
+    }) as Jugador,
   });
 
-  const handleSubmit = async (data: Jugador) => {
+  const handleSubmit = async (data: unknown) => {
+    const validatedData = jugadorSchema.parse(data) as Jugador;
     try {
       setIsSubmitting(true);
 
       if (initialData?.id) {
         // Update existing jugador
-        await updateJugador(initialData.id, data);
+        await updateJugador(initialData.id, validatedData);
         toast.success("Jugador actualizado correctamente");
       } else {
         // Create new jugador
-        await createJugador(data);
+        await createJugador(validatedData);
         toast.success("Jugador creado correctamente");
         form.reset();
       }
 
       // Call optional callback if provided
       if (onSubmit) {
-        await onSubmit(data);
+        await onSubmit(validatedData);
       }
     } catch (error) {
       console.error("Error submitting form:", error);

@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { createTorneo, updateTorneo } from "@/actions/torneos";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -24,10 +25,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Torneo, torneoSchema } from "@/lib/validations/torneo";
-import { createTorneo, updateTorneo } from "@/actions/torneos";
 
 interface TorneoFormProps {
-  initialData?: Partial<Torneo>;
+  initialData?: Partial<Torneo> & { id?: string };
   onSubmit?: (data: Torneo) => void | Promise<void>;
   categorias?: Array<{ id: string; nombre: string }>;
 }
@@ -40,14 +40,14 @@ export function TorneoForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<Torneo>({
-    resolver: zodResolver(torneoSchema),
-    defaultValues: initialData || {
+    resolver: zodResolver(torneoSchema) as any,
+    defaultValues: (initialData || {
       nombre: "",
       categoria_id: "",
       fecha_inicio: new Date(),
       tiene_fase_grupos: true,
       tiene_eliminacion_directa: true,
-    },
+    }) as Torneo,
   });
 
   const handleSubmit = async (data: Torneo) => {

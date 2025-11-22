@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { registrarTransaccion } from "@/actions/financiero";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -27,10 +28,9 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   type CreateTransaccion,
   createTransaccionSchema,
-  tiposTransaccion,
   metodosPago,
+  tiposTransaccion,
 } from "@/lib/validations/financiero";
-import { registrarTransaccion } from "@/actions/financiero";
 
 interface TransaccionFormProps {
   initialData?: Partial<CreateTransaccion>;
@@ -48,29 +48,30 @@ export function TransaccionForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<CreateTransaccion>({
-    resolver: zodResolver(createTransaccionSchema),
-    defaultValues: initialData || {
+    resolver: zodResolver(createTransaccionSchema) as any,
+    defaultValues: (initialData || {
       equipo_id: "",
       torneo_id: "",
       tipo: "abono_inscripcion",
       monto: 0,
       es_ingreso: true,
       pagado: false,
-    },
+    }) as CreateTransaccion,
   });
 
-  const handleSubmit = async (data: CreateTransaccion) => {
+  const handleSubmit = async (data: unknown) => {
+    const validatedData = createTransaccionSchema.parse(data) as CreateTransaccion;
     try {
       setIsSubmitting(true);
 
       // Create new transaction
-      await registrarTransaccion(data);
+      await registrarTransaccion(validatedData);
       toast.success("Transacción registrada correctamente");
       form.reset();
 
       // Call optional callback if provided
       if (onSubmit) {
-        await onSubmit(data);
+        await onSubmit(validatedData);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -94,7 +95,10 @@ export function TransaccionForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Equipo</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona un equipo" />
@@ -125,7 +129,10 @@ export function TransaccionForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Torneo</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona un torneo" />
@@ -177,9 +184,7 @@ export function TransaccionForm({
                   <SelectItem value="devolucion">Devolución</SelectItem>
                 </SelectContent>
               </Select>
-              <FormDescription>
-                Tipo de operación financiera
-              </FormDescription>
+              <FormDescription>Tipo de operación financiera</FormDescription>
               <FormMessage />
             </FormItem>
           )}

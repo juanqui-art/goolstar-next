@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Create response object for cookie updates
   let response = NextResponse.next({
     request,
@@ -9,24 +9,26 @@ export async function middleware(request: NextRequest) {
 
   // Create Supabase client with cookies
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SECRET_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+    process.env.SUPABASE_SECRET_KEY || "",
     {
       cookies: {
         getAll() {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            request.cookies.set(name, value),
-          );
+          // Use for...of instead of forEach to avoid returning values
+          for (const { name, value } of cookiesToSet) {
+            request.cookies.set(name, value);
+          }
           // Create new response with updated cookies
           response = NextResponse.next({
             request,
           });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options),
-          );
+          // Use for...of instead of forEach to avoid returning values
+          for (const { name, value, options } of cookiesToSet) {
+            response.cookies.set(name, value, options);
+          }
         },
       },
     },
@@ -50,7 +52,7 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-// Configure which routes trigger the middleware
+// Configure which routes trigger the proxy
 export const config = {
   matcher: ["/(auth)/:path*", "/(dashboard)/:path*"],
 };

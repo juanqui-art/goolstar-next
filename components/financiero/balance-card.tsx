@@ -5,7 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 
 interface BalanceCardProps {
   equipoNombre: string;
@@ -53,7 +52,12 @@ export function BalanceCard({
             <span className="text-gray-600">Progreso de Pago</span>
             <span className="font-medium">{porcentajePagado.toFixed(1)}%</span>
           </div>
-          <Progress value={porcentajePagado} />
+          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-green-600 transition-all"
+              style={{ width: `${porcentajePagado}%` }}
+            />
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -1,32 +1,28 @@
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import type { DashboardAlert } from "@/actions/dashboard"
-import {
-  AlertCircle,
-  AlertTriangle,
-  Info,
-} from "lucide-react"
+import { AlertCircle, AlertTriangle, Info } from "lucide-react";
+import type { DashboardAlert } from "@/actions/dashboard";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface DashboardAlertsProps {
-  alerts: DashboardAlert[]
+  alerts: DashboardAlert[];
 }
 
 export function DashboardAlerts({ alerts }: DashboardAlertsProps) {
   if (alerts.length === 0) {
-    return null
+    return null;
   }
 
   const getIcon = (type: DashboardAlert["type"]) => {
     switch (type) {
       case "warning":
-        return <AlertTriangle className="h-4 w-4" />
+        return <AlertTriangle className="h-4 w-4" />;
       case "destructive":
-        return <AlertCircle className="h-4 w-4" />
+        return <AlertCircle className="h-4 w-4" />;
       case "info":
-        return <Info className="h-4 w-4" />
+        return <Info className="h-4 w-4" />;
       default:
-        return <Info className="h-4 w-4" />
+        return <Info className="h-4 w-4" />;
     }
-  }
+  };
 
   return (
     <div className="space-y-3">
@@ -39,5 +35,5 @@ export function DashboardAlerts({ alerts }: DashboardAlertsProps) {
         </Alert>
       ))}
     </div>
-  )
+  );
 }

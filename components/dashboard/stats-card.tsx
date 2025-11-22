@@ -1,16 +1,29 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface StatsCardProps {
-  title: string
-  description?: string
-  value: number | string
-  trend?: "up" | "down" | "neutral"
+  title: string;
+  description?: string;
+  value: number | string;
+  trend?: "up" | "down" | "neutral";
   badge?: {
-    text: string
-    variant?: "default" | "secondary" | "destructive" | "outline" | "success" | "warning" | "info"
-  }
-  icon?: React.ReactNode
+    text: string;
+    variant?:
+      | "default"
+      | "secondary"
+      | "destructive"
+      | "outline"
+      | "success"
+      | "warning"
+      | "info";
+  };
+  icon?: React.ReactNode;
 }
 
 export function StatsCard({
@@ -54,5 +67,5 @@ export function StatsCard({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

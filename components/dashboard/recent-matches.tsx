@@ -1,22 +1,28 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { formatDate, formatTime } from "@/lib/utils/format"
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { formatDate, formatTime } from "@/lib/utils/format";
 
 interface Match {
-  id: string
-  fecha: string
-  cancha: string | null
-  resultado_local?: number | null
-  resultado_visitante?: number | null
-  completado: boolean
-  equipo_local: { nombre: string } | null
-  equipo_visitante: { nombre: string } | null
+  id: string;
+  fecha: string | null;
+  cancha: string | null;
+  goles_equipo_1?: number | null;
+  goles_equipo_2?: number | null;
+  completado: boolean;
+  equipo_local: { nombre: string }[] | null;
+  equipo_visitante: { nombre: string }[] | null;
 }
 
 interface RecentMatchesProps {
-  matches: Match[]
-  title?: string
-  description?: string
+  matches: Match[];
+  title?: string;
+  description?: string;
 }
 
 export function RecentMatches({
@@ -37,7 +43,7 @@ export function RecentMatches({
           </p>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -56,34 +62,40 @@ export function RecentMatches({
               <div className="space-y-1 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-sm">
-                    {match.equipo_local?.nombre || "TBD"}
+                    {match.equipo_local?.[0]?.nombre || "TBD"}
                   </span>
                   {match.completado && (
                     <Badge variant="outline" className="text-xs">
-                      {match.resultado_local ?? 0}
+                      {match.goles_equipo_1 ?? 0}
                     </Badge>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-sm">
-                    {match.equipo_visitante?.nombre || "TBD"}
+                    {match.equipo_visitante?.[0]?.nombre || "TBD"}
                   </span>
                   {match.completado && (
                     <Badge variant="outline" className="text-xs">
-                      {match.resultado_visitante ?? 0}
+                      {match.goles_equipo_2 ?? 0}
                     </Badge>
                   )}
                 </div>
               </div>
               <div className="text-right text-xs text-muted-foreground space-y-1">
-                <div>{formatDate(new Date(match.fecha))}</div>
-                <div>{formatTime(new Date(match.fecha))}</div>
-                {match.cancha && <div className="text-xs">Cancha {match.cancha}</div>}
+                {match.fecha && (
+                  <>
+                    <div>{formatDate(new Date(match.fecha))}</div>
+                    <div>{formatTime(new Date(match.fecha))}</div>
+                  </>
+                )}
+                {match.cancha && (
+                  <div className="text-xs">Cancha {match.cancha}</div>
+                )}
               </div>
             </div>
           ))}
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { createPartido, updatePartido } from "@/actions/partidos";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,10 +24,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Partido, partidoSchema } from "@/lib/validations/partido";
-import { createPartido, updatePartido } from "@/actions/partidos";
 
 interface PartidoFormProps {
-  initialData?: Partial<Partido>;
+  initialData?: Partial<Partido> & { id?: string };
   onSubmit?: (data: Partido) => void | Promise<void>;
   torneos?: Array<{ id: string; nombre: string }>;
   equipos?: Array<{ id: string; nombre: string }>;
@@ -47,14 +47,14 @@ export function PartidoForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<Partido>({
-    resolver: zodResolver(partidoSchema),
-    defaultValues: initialData || {
+    resolver: zodResolver(partidoSchema) as any,
+    defaultValues: (initialData || {
       torneo_id: "",
       equipo_1_id: "",
       equipo_2_id: "",
       fecha: new Date(),
       cancha: "",
-    },
+    }) as Partido,
   });
 
   const handleSubmit = async (data: Partido) => {
