@@ -77,10 +77,9 @@ export async function generateFixture(options: {
         : null;
 
       return {
-        nombre: `Jornada ${jornadaNumber}`,
+        torneo_id: torneoId,
         numero: jornadaNumber,
-        fecha: fecha ? fecha.toISOString().split('T')[0] : null,
-        activa: jornadaNumber === 1, // First jornada is active
+        fecha_prevista: fecha ? fecha.toISOString().split('T')[0] : null,
       };
     });
 
@@ -279,7 +278,7 @@ export async function updateJornadaDates(
     for (const update of updates) {
       const { error } = await supabase
         .from("jornadas")
-        .update({ fecha: update.fecha.toISOString().split('T')[0] })
+        .update({ fecha_prevista: update.fecha.toISOString().split('T')[0] })
         .eq("id", update.jornadaId);
 
       if (error) {

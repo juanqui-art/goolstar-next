@@ -14,10 +14,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getTorneos } from "@/lib/data";
 
-export default function TorneosPage() {
-  // TODO: Replace with getTorneos() Server Action
-  const torneos = [];
+export default async function TorneosPage() {
+  // Cached data - revalidates hourly
+  const torneos = await getTorneos();
 
   return (
     <div className="space-y-6">
