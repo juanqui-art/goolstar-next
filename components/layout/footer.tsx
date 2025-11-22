@@ -1,4 +1,6 @@
-export function Footer() {
+'use cache'
+
+export async function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (

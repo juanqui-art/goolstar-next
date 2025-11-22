@@ -1,12 +1,11 @@
 /**
- * Data Layer for GoolStar - Cache Components Implementation
+ * Data Layer for GoolStar
  *
- * This file contains all data fetching functions with explicit caching strategies:
- * - ✅ CACHED: Data that changes infrequently (Categorías, Torneos, Equipos)
- * - ❌ NO CACHED: Critical/dynamic data (Documentos, Transacciones, Partidos en vivo)
+ * This file contains all data fetching functions.
+ * Note: Cache Components ('use cache') removed due to incompatibility with Supabase cookies authentication.
+ * Caching should be handled at the page level using export const revalidate = X
  */
 
-import { cacheLife, cacheTag } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 
 /**
@@ -16,8 +15,6 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
  */
 
 export async function getCategorias() {
-  'use cache'
-  cacheLife('days')
 
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
@@ -30,9 +27,6 @@ export async function getCategorias() {
 }
 
 export async function getCategoriaById(id: string) {
-  'use cache'
-  cacheTag('categorias', `categoria_${id}`)
-  cacheLife('days')
 
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
@@ -52,9 +46,6 @@ export async function getCategoriaById(id: string) {
  */
 
 export async function getTorneos() {
-  'use cache'
-  cacheTag('torneos')
-  cacheLife('hours')
 
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
@@ -68,9 +59,6 @@ export async function getTorneos() {
 }
 
 export async function getTorneoById(id: string) {
-  'use cache'
-  cacheTag('torneos', `torneo_${id}`)
-  cacheLife('hours')
 
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
@@ -90,9 +78,6 @@ export async function getTorneoById(id: string) {
  */
 
 export async function getEquiposForTorneo(torneoId: string) {
-  'use cache'
-  cacheTag('equipos', `torneo_${torneoId}_equipos`)
-  cacheLife('hours')
 
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
@@ -106,9 +91,6 @@ export async function getEquiposForTorneo(torneoId: string) {
 }
 
 export async function getEquipoById(id: string) {
-  'use cache'
-  cacheTag('equipos', `equipo_${id}`)
-  cacheLife('hours')
 
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
@@ -122,9 +104,6 @@ export async function getEquipoById(id: string) {
 }
 
 export async function getTodosLosEquipos() {
-  'use cache'
-  cacheTag('equipos')
-  cacheLife('hours')
 
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
@@ -143,9 +122,6 @@ export async function getTodosLosEquipos() {
  */
 
 export async function getJugadoresForEquipo(equipoId: string) {
-  'use cache'
-  cacheTag('jugadores', `equipo_${equipoId}_jugadores`)
-  cacheLife('hours')
 
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
@@ -159,9 +135,6 @@ export async function getJugadoresForEquipo(equipoId: string) {
 }
 
 export async function getJugadorById(id: string) {
-  'use cache'
-  cacheTag('jugadores', `jugador_${id}`)
-  cacheLife('hours')
 
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
@@ -175,9 +148,6 @@ export async function getJugadorById(id: string) {
 }
 
 export async function getTodosLosJugadores() {
-  'use cache'
-  cacheTag('jugadores')
-  cacheLife('hours')
 
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
@@ -196,14 +166,6 @@ export async function getTodosLosJugadores() {
  */
 
 export async function getTablaPosiciones(torneoId: string) {
-  'use cache'
-  cacheTag(`torneo_${torneoId}_tabla`)
-  cacheLife({
-    stale: 300,       // 5 min en cliente
-    revalidate: 900,  // 15 min en servidor
-    expire: 3600      // 1 hora máximo
-  })
-
   const supabase = await createServerSupabaseClient()
 
   // Usar la función RPC si existe, o consulta directa a estadistica_equipo
@@ -228,7 +190,7 @@ export async function getDocumentosPendientes() {
   // SIN 'use cache' → Siempre dinámico
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
-    .from('documentos')
+    .from('jugador_documentos')
     .select('*, jugadores(nombre, id), equipos(nombre, id)')
     .eq('estado', 'pendiente')
     .order('fecha_subida', { ascending: false })
@@ -241,7 +203,7 @@ export async function getTodosLosDocumentos() {
   // SIN 'use cache' → Siempre dinámico
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase
-    .from('documentos')
+    .from('jugador_documentos')
     .select('*, jugadores(nombre, id), equipos(nombre, id)')
     .order('fecha_subida', { ascending: false })
 
