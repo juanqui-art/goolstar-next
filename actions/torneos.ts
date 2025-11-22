@@ -1,48 +1,376 @@
 "use server";
 
-// TODO: Implement after Senior creates database Server Actions
-// These are placeholder stubs to be connected to Supabase later
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { torneoSchema, type Torneo } from "@/lib/validations/torneo";
+import { revalidatePath } from "next/cache";
+import type { Database } from "@/types/database";
 
-export async function createTorneo(_data: unknown): Promise<{ id: string }> {
-  // 1. Validate with torneoSchema
-  // 2. Call Supabase: INSERT into torneos
-  // 3. Return: { id: newTorneo.id }
-  throw new Error("Not implemented yet");
+type TorneoRow = Database["public"]["Tables"]["torneos"]["Row"];
+type TorneoInsert = Database["public"]["Tables"]["torneos"]["Insert"];
+type TorneoUpdate = Database["public"]["Tables"]["torneos"]["Update"];
+
+/**
+ * Torneo with related data
+ */
+export interface TorneoWithRelations extends TorneoRow {
+  categorias?: {
+    id: string;
+    nombre: string;
+    precio_inscripcion: number;
+  } | null;
+  _count?: {
+    equipos: number;
+    partidos: number;
+  };
 }
 
-export async function getTorneos() {
-  // 1. Call Supabase: SELECT from torneos
-  // 2. Return: array of torneos
-  throw new Error("Not implemented yet");
+/**
+ * Create a new tournament
+ */
+export async function createTorneo(data: unknown): Promise<{ id: string }> {
+  try {
+    // 1. Validate with torneoSchema
+    const validated = torneoSchema.parse(data);
+
+    // 2. Get Supabase client
+    const supabase = await createServerSupabaseClient();
+
+    // 3. Insert into torneos
+    const torneoData: TorneoInsert = {
+      nombre: validated.nombre,
+      categoria_id: validated.categoria_id,
+      fecha_inicio: validated.fecha_inicio.toISOString(),
+      fecha_fin: validated.fecha_fin
+        ? validated.fecha_fin.toISOString()
+        : null,
+      tiene_fase_grupos: validated.tiene_fase_grupos,
+      tiene_eliminacion_directa: validated.tiene_eliminacion_directa,
+      activo: true,
+    };
+
+    const { data: newTorneo, error } = await supabase
+      .from("torneos")
+      .insert(torneoData)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error creating torneo:", error);
+      throw new Error(`Failed to create tournament: ${error.message}`);
+    }
+
+    // 4. Revalidate paths
+    revalidatePath("/torneos");
+    revalidatePath("/");
+
+    return { id: newTorneo.id };
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Failed to create tournament");
+  }
 }
 
-export async function getTorneo(_id: string) {
-  // 1. Call Supabase: SELECT where id = id
-  // 2. Return: single torneo with related data
-  throw new Error("Not implemented yet");
+/**
+ * Get all tournaments with optional filters
+ */
+export async function getTorneos(options?: {
+  activo?: boolean;
+  includeRelations?: boolean;
+}): Promise<TorneoWithRelations[]> {
+  try {
+    const supabase = await createServerSupabaseClient();
+
+    let query = supabase
+      .from("torneos")
+      .select(
+        options?.includeRelations
+          ? `
+          *,
+          categorias (
+            id,
+            nombre,
+            precio_inscripcion
+          )
+        `
+          : "*"
+      )
+      .order("created_at", { ascending: false });
+
+    // Apply filters
+    if (options?.activo !== undefined) {
+      query = query.eq("activo", options.activo);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("Error fetching torneos:", error);
+      throw new Error(`Failed to fetch tournaments: ${error.message}`);
+    }
+
+    return data || [];
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Failed to fetch tournaments");
+  }
 }
 
-export async function updateTorneo(_id: string, _data: unknown) {
-  // 1. Validate with torneoSchema
-  // 2. Call Supabase: UPDATE where id = id
-  // 3. Return: updated torneo
-  throw new Error("Not implemented yet");
+/**
+ * Get a single tournament by ID with all related data
+ */
+export async function getTorneo(id: string): Promise<TorneoWithRelations> {
+  try {
+    const supabase = await createServerSupabaseClient();
+
+    // Get torneo with category information
+    const { data: torneo, error } = await supabase
+      .from("torneos")
+      .select(
+        `
+        *,
+        categorias (
+          id,
+          nombre,
+          precio_inscripcion,
+          limite_amarillas,
+          multa_roja
+        )
+      `
+      )
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching torneo:", error);
+      throw new Error(`Tournament not found: ${error.message}`);
+    }
+
+    // Get counts for related entities
+    const [{ count: equiposCount }, { count: partidosCount }] =
+      await Promise.all([
+        supabase
+          .from("equipos")
+          .select("*", { count: "exact", head: true })
+          .eq("torneo_id", id),
+        supabase
+          .from("partidos")
+          .select("*", { count: "exact", head: true })
+          .eq("torneo_id", id),
+      ]);
+
+    return {
+      ...torneo,
+      _count: {
+        equipos: equiposCount || 0,
+        partidos: partidosCount || 0,
+      },
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Failed to fetch tournament");
+  }
 }
 
-export async function deleteTorneo(_id: string) {
-  // 1. Call Supabase: DELETE where id = id
-  // 2. Return: success status
-  throw new Error("Not implemented yet");
+/**
+ * Update a tournament
+ */
+export async function updateTorneo(
+  id: string,
+  data: unknown
+): Promise<TorneoRow> {
+  try {
+    // 1. Validate with torneoSchema
+    const validated = torneoSchema.parse(data);
+
+    // 2. Get Supabase client
+    const supabase = await createServerSupabaseClient();
+
+    // 3. Update torneo
+    const updateData: TorneoUpdate = {
+      nombre: validated.nombre,
+      categoria_id: validated.categoria_id,
+      fecha_inicio: validated.fecha_inicio.toISOString(),
+      fecha_fin: validated.fecha_fin
+        ? validated.fecha_fin.toISOString()
+        : null,
+      tiene_fase_grupos: validated.tiene_fase_grupos,
+      tiene_eliminacion_directa: validated.tiene_eliminacion_directa,
+      updated_at: new Date().toISOString(),
+    };
+
+    const { data: updatedTorneo, error } = await supabase
+      .from("torneos")
+      .update(updateData)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error updating torneo:", error);
+      throw new Error(`Failed to update tournament: ${error.message}`);
+    }
+
+    // 4. Revalidate paths
+    revalidatePath("/torneos");
+    revalidatePath(`/torneos/${id}`);
+    revalidatePath("/");
+
+    return updatedTorneo;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Failed to update tournament");
+  }
 }
 
-export async function getStandings(_torneoId: string) {
-  // 1. Call Supabase function: get_standings(torneo_id)
-  // 2. Return: array of team standings sorted
-  throw new Error("Not implemented yet");
+/**
+ * Delete a tournament (soft delete by setting activo = false)
+ */
+export async function deleteTorneo(id: string): Promise<{ success: boolean }> {
+  try {
+    const supabase = await createServerSupabaseClient();
+
+    // Soft delete: set activo to false instead of deleting
+    const { error } = await supabase
+      .from("torneos")
+      .update({ activo: false, updated_at: new Date().toISOString() })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error deleting torneo:", error);
+      throw new Error(`Failed to delete tournament: ${error.message}`);
+    }
+
+    // Revalidate paths
+    revalidatePath("/torneos");
+    revalidatePath("/");
+
+    return { success: true };
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Failed to delete tournament");
+  }
 }
 
-export async function getTorneoStats(_torneoId: string) {
-  // 1. Call Supabase to aggregate stats
-  // 2. Return: tournament statistics
-  throw new Error("Not implemented yet");
+/**
+ * Get standings (tabla de posiciones) for a tournament
+ * Uses the database function get_tabla_posiciones
+ */
+export async function getStandings(torneoId: string, grupo?: string) {
+  try {
+    const supabase = await createServerSupabaseClient();
+
+    // Use database function for standings calculation
+    // The function is defined in migration 008_functions.sql
+    const { data, error } = await supabase.rpc("get_tabla_posiciones", {
+      torneo_uuid: torneoId,
+      grupo_param: grupo || null,
+    });
+
+    if (error) {
+      console.error("Error fetching standings:", error);
+      throw new Error(`Failed to fetch standings: ${error.message}`);
+    }
+
+    return data || [];
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Failed to fetch standings");
+  }
+}
+
+/**
+ * Get tournament statistics
+ */
+export async function getTorneoStats(torneoId: string) {
+  try {
+    const supabase = await createServerSupabaseClient();
+
+    // Get various statistics for the tournament
+    const [
+      { count: totalEquipos },
+      { count: totalPartidos },
+      { count: partidosCompletados },
+      { data: topScorers },
+    ] = await Promise.all([
+      // Total teams
+      supabase
+        .from("equipos")
+        .select("*", { count: "exact", head: true })
+        .eq("torneo_id", torneoId),
+
+      // Total matches
+      supabase
+        .from("partidos")
+        .select("*", { count: "exact", head: true })
+        .eq("torneo_id", torneoId),
+
+      // Completed matches
+      supabase
+        .from("partidos")
+        .select("*", { count: "exact", head: true })
+        .eq("torneo_id", torneoId)
+        .eq("completado", true),
+
+      // Top scorers - get players with most goals
+      supabase
+        .from("goles")
+        .select(
+          `
+          jugador_id,
+          jugadores (
+            primer_nombre,
+            segundo_nombre,
+            primer_apellido,
+            segundo_apellido,
+            equipos (
+              nombre
+            )
+          )
+        `
+        )
+        .eq("torneo_id", torneoId)
+        .limit(10),
+    ]);
+
+    // Count goals per player
+    const scorerCounts = (topScorers || []).reduce(
+      (acc, gol) => {
+        const jugadorId = gol.jugador_id;
+        acc[jugadorId] = (acc[jugadorId] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    return {
+      totalEquipos: totalEquipos || 0,
+      totalPartidos: totalPartidos || 0,
+      partidosCompletados: partidosCompletados || 0,
+      partidosPendientes: (totalPartidos || 0) - (partidosCompletados || 0),
+      topScorers: Object.entries(scorerCounts)
+        .map(([jugadorId, goles]) => ({
+          jugadorId,
+          goles,
+        }))
+        .sort((a, b) => b.goles - a.goles)
+        .slice(0, 10),
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Failed to fetch tournament statistics");
+  }
 }
