@@ -60,7 +60,19 @@ Complete documentation for the GoolStar tournament management system (Next.js + 
 
 ### Development Documentation
 
-- **[development/setup.md](development/setup.md)** - Setup and getting started
+- **[development/authentication.md](development/authentication.md)** - Authentication implementation
+  - Login and registration pages
+  - Form validation with Zod
+  - Supabase Auth integration guide
+  - Testing and next steps
+
+- **[development/conventions.md](development/conventions.md)** - Code conventions and standards
+  - TypeScript patterns
+  - Component structure
+  - Naming conventions
+  - Import organization
+
+- **[development/setup.md](development/setup.md)** - Setup and getting started (to be created)
   - Initial project setup
   - Environment configuration
   - Supabase configuration
