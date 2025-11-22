@@ -1,8 +1,8 @@
 "use server";
 
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { torneoSchema, type Torneo } from "@/lib/validations/torneo";
 import { revalidatePath } from "next/cache";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { torneoSchema } from "@/lib/validations/torneo";
 import type { Database } from "@/types/database";
 
 type TorneoRow = Database["public"]["Tables"]["torneos"]["Row"];
@@ -40,9 +40,7 @@ export async function createTorneo(data: unknown): Promise<{ id: string }> {
       nombre: validated.nombre,
       categoria_id: validated.categoria_id,
       fecha_inicio: validated.fecha_inicio.toISOString(),
-      fecha_fin: validated.fecha_fin
-        ? validated.fecha_fin.toISOString()
-        : null,
+      fecha_fin: validated.fecha_fin ? validated.fecha_fin.toISOString() : null,
       tiene_fase_grupos: validated.tiene_fase_grupos,
       tiene_eliminacion_directa: validated.tiene_eliminacion_directa,
       activo: true,
@@ -84,18 +82,7 @@ export async function getTorneos(options?: {
 
     let query = supabase
       .from("torneos")
-      .select(
-        options?.includeRelations
-          ? `
-          *,
-          categorias (
-            id,
-            nombre,
-            precio_inscripcion
-          )
-        `
-          : "*"
-      )
+      .select("*")
       .order("created_at", { ascending: false });
 
     // Apply filters
@@ -129,18 +116,7 @@ export async function getTorneo(id: string): Promise<TorneoWithRelations> {
     // Get torneo with category information
     const { data: torneo, error } = await supabase
       .from("torneos")
-      .select(
-        `
-        *,
-        categorias (
-          id,
-          nombre,
-          precio_inscripcion,
-          limite_amarillas,
-          multa_roja
-        )
-      `
-      )
+      .select("*")
       .eq("id", id)
       .single();
 
@@ -182,7 +158,7 @@ export async function getTorneo(id: string): Promise<TorneoWithRelations> {
  */
 export async function updateTorneo(
   id: string,
-  data: unknown
+  data: unknown,
 ): Promise<TorneoRow> {
   try {
     // 1. Validate with torneoSchema
@@ -196,9 +172,7 @@ export async function updateTorneo(
       nombre: validated.nombre,
       categoria_id: validated.categoria_id,
       fecha_inicio: validated.fecha_inicio.toISOString(),
-      fecha_fin: validated.fecha_fin
-        ? validated.fecha_fin.toISOString()
-        : null,
+      fecha_fin: validated.fecha_fin ? validated.fecha_fin.toISOString() : null,
       tiene_fase_grupos: validated.tiene_fase_grupos,
       tiene_eliminacion_directa: validated.tiene_eliminacion_directa,
       updated_at: new Date().toISOString(),
@@ -272,8 +246,8 @@ export async function getStandings(torneoId: string, grupo?: string) {
     // Use database function for standings calculation
     // The function is defined in migration 008_functions.sql
     const { data, error } = await supabase.rpc("get_tabla_posiciones", {
-      torneo_uuid: torneoId,
-      grupo_param: grupo || null,
+      p_torneo_id: torneoId,
+      p_grupo: grupo || null,
     });
 
     if (error) {
@@ -338,7 +312,7 @@ export async function getTorneoStats(torneoId: string) {
               nombre
             )
           )
-        `
+        `,
         )
         .eq("torneo_id", torneoId)
         .limit(10),
@@ -348,10 +322,12 @@ export async function getTorneoStats(torneoId: string) {
     const scorerCounts = (topScorers || []).reduce(
       (acc, gol) => {
         const jugadorId = gol.jugador_id;
-        acc[jugadorId] = (acc[jugadorId] || 0) + 1;
+        if (jugadorId) {
+          acc[jugadorId] = (acc[jugadorId] || 0) + 1;
+        }
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     return {

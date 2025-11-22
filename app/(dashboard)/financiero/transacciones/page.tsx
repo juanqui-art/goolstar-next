@@ -8,9 +8,19 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+interface Transaccion {
+  id: string;
+  fecha: string;
+  concepto: string;
+  monto: number;
+  es_ingreso: boolean;
+  pagado: boolean;
+  observaciones?: string;
+}
+
 export default function TransaccionesPage() {
   // TODO: Replace with getTransacciones() Server Action
-  const transacciones = [];
+  const transacciones: Transaccion[] = [];
 
   return (
     <div className="space-y-6">

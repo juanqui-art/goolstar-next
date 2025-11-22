@@ -16,7 +16,7 @@ export const jugadorSchema = z.object({
     .max(99)
     .optional(),
   posicion: z.string().max(30).optional(),
-  nivel: z.enum(["1", "2", "3", "4", "5"]).default("3"),
+  nivel: z.enum(["1", "2", "3", "4", "5"]).optional().default("3"),
 });
 
 export type Jugador = z.infer<typeof jugadorSchema>;

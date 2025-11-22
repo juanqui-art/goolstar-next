@@ -36,9 +36,7 @@ export type MetodoPago = (typeof metodosPago)[number];
 export const transaccionSchema = z.object({
   equipo_id: z.string().uuid("Invalid team ID"),
   torneo_id: z.string().uuid("Invalid tournament ID"),
-  tipo: z.enum(tiposTransaccion, {
-    errorMap: () => ({ message: "Invalid transaction type" }),
-  }),
+  tipo: z.enum(tiposTransaccion).catch("abono_inscripcion"),
   monto: z.number().positive("Amount must be positive"),
   es_ingreso: z.boolean().default(true),
   descripcion: z.string().optional(),
@@ -46,11 +44,7 @@ export const transaccionSchema = z.object({
   partido_id: z.string().uuid("Invalid match ID").optional(),
   tarjeta_id: z.string().uuid("Invalid card ID").optional(),
   jugador_id: z.string().uuid("Invalid player ID").optional(),
-  metodo_pago: z
-    .enum(metodosPago, {
-      errorMap: () => ({ message: "Invalid payment method" }),
-    })
-    .optional(),
+  metodo_pago: z.enum(metodosPago).optional(),
   referencia_externa: z.string().max(100).optional(),
   pagado: z.boolean().default(false),
   fecha_pago: z.coerce.date().optional(),
@@ -84,10 +78,6 @@ export type CreateTransaccion = z.infer<typeof createTransaccionSchema>;
 export const marcarPagadoSchema = z.object({
   transaccion_id: z.string().uuid("Invalid transaction ID"),
   fecha_pago: z.coerce.date().optional(),
-  metodo_pago: z
-    .enum(metodosPago, {
-      errorMap: () => ({ message: "Invalid payment method" }),
-    })
-    .optional(),
+  metodo_pago: z.enum(metodosPago).optional(),
   referencia_externa: z.string().max(100).optional(),
 });

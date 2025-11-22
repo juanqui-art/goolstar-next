@@ -8,9 +8,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+interface Usuario {
+  id: string;
+  email: string;
+  rol: "admin" | "director_equipo" | "jugador";
+  nombre?: string;
+  activo: boolean;
+  fecha_registro: string;
+}
+
+export const dynamic = "force-dynamic";
+
 export default function UsuariosPage() {
   // TODO: Replace with getUsuarios() Server Action
-  const usuarios = [];
+  const usuarios: Usuario[] = [];
 
   return (
     <div className="space-y-6">

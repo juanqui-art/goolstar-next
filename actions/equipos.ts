@@ -1,8 +1,8 @@
 "use server";
 
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { equipoSchema, type Equipo } from "@/lib/validations/equipo";
 import { revalidatePath } from "next/cache";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { equipoSchema } from "@/lib/validations/equipo";
 import type { Database } from "@/types/database";
 
 type EquipoRow = Database["public"]["Tables"]["equipos"]["Row"];
@@ -95,11 +95,7 @@ export async function getEquipos(options?: {
 
     let query = supabase
       .from("equipos")
-      .select(
-        options?.includeRelations
-          ? "*"
-          : "*"
-      )
+      .select("*")
       .order("created_at", { ascending: false });
 
     // Apply filters
@@ -181,7 +177,7 @@ export async function getEquipo(id: string): Promise<EquipoWithRelations> {
  */
 export async function updateEquipo(
   id: string,
-  data: unknown
+  data: unknown,
 ): Promise<EquipoRow> {
   try {
     // 1. Validate with equipoSchema

@@ -1,8 +1,8 @@
 "use server";
 
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { jugadorSchema, type Jugador } from "@/lib/validations/jugador";
 import { revalidatePath } from "next/cache";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { jugadorSchema } from "@/lib/validations/jugador";
 import type { Database } from "@/types/database";
 
 type JugadorRow = Database["public"]["Tables"]["jugadores"]["Row"];
@@ -127,22 +127,10 @@ export async function getJugador(id: string): Promise<JugadorWithRelations> {
     const supabase = await createServerSupabaseClient();
 
     // Get jugador with related information
+    // Note: Only 1 level of nesting supported by Supabase
     const { data: jugador, error } = await supabase
       .from("jugadores")
-      .select(
-        `
-        *,
-        equipos (
-          id,
-          nombre,
-          torneo_id,
-          torneos (
-            id,
-            nombre
-          )
-        )
-      `
-      )
+      .select("*")
       .eq("id", id)
       .single();
 
@@ -193,7 +181,7 @@ export async function getJugador(id: string): Promise<JugadorWithRelations> {
  */
 export async function updateJugador(
   id: string,
-  data: unknown
+  data: unknown,
 ): Promise<JugadorRow> {
   try {
     // 1. Validate with jugadorSchema
@@ -299,7 +287,10 @@ export async function getJugadorStats(jugadorId: string) {
       jugador,
     ] = await Promise.all([
       // Total goals
-      supabase.from("goles").select("*").eq("jugador_id", jugadorId),
+      supabase
+        .from("goles")
+        .select("*")
+        .eq("jugador_id", jugadorId),
 
       // Yellow cards
       supabase
@@ -351,7 +342,7 @@ export async function uploadDocumento(
     tipo: string;
     url: string;
     nombre: string;
-  }
+  },
 ): Promise<{ id: string }> {
   try {
     const supabase = await createServerSupabaseClient();
@@ -369,7 +360,11 @@ export async function uploadDocumento(
           | "pasaporte"
           | "otro",
         url: documentoData.url,
-        estado: "pendiente" as "pendiente" | "verificado" | "rechazado" | "resubir",
+        estado: "pendiente" as
+          | "pendiente"
+          | "verificado"
+          | "rechazado"
+          | "resubir",
       })
       .select()
       .single();
@@ -403,7 +398,7 @@ export async function getJugadorDocumentos(jugadorId: string) {
       .from("jugador_documentos")
       .select("*")
       .eq("jugador_id", jugadorId)
-      .order("created_at", { ascending: false});
+      .order("created_at", { ascending: false });
 
     if (error) {
       console.error("Error fetching documents:", error);

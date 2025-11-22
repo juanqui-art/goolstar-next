@@ -1,14 +1,20 @@
-import { Trophy, Users, UserCircle, Calendar, CalendarClock } from "lucide-react";
-import { StatsCard } from "@/components/dashboard/stats-card";
-import { DashboardAlerts } from "@/components/dashboard/dashboard-alerts";
-import { RecentMatches } from "@/components/dashboard/recent-matches";
-import { UpcomingMatches } from "@/components/dashboard/upcoming-matches";
 import {
-  getDashboardStats,
+  Calendar,
+  CalendarClock,
+  Trophy,
+  UserCircle,
+  Users,
+} from "lucide-react";
+import {
   getDashboardAlerts,
+  getDashboardStats,
   getRecentMatches,
   getUpcomingMatches,
 } from "@/actions/dashboard";
+import { DashboardAlerts } from "@/components/dashboard/dashboard-alerts";
+import { RecentMatches } from "@/components/dashboard/recent-matches";
+import { StatsCard } from "@/components/dashboard/stats-card";
+import { UpcomingMatches } from "@/components/dashboard/upcoming-matches";
 
 export default async function DashboardPage() {
   // Fetch all dashboard data in parallel

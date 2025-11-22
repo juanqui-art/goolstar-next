@@ -7,9 +7,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+interface Documento {
+  id: string;
+  jugador: string;
+  equipo: string;
+  tipo: string;
+  fecha_subida: string;
+  estado: "pendiente" | "aprobado" | "rechazado";
+}
+
+export const dynamic = "force-dynamic";
+
 export default function DocumentosPage() {
   // TODO: Replace with getDocumentosPendientes() Server Action
-  const documentos = [];
+  const documentos: Documento[] = [];
 
   return (
     <div className="space-y-6">

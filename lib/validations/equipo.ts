@@ -17,7 +17,7 @@ export const equipoSchema = z.object({
     .regex(/^#[0-9A-Fa-f]{6}$/i, "Invalid hex color")
     .optional(),
   escudo_url: z.string().url("Invalid URL").optional(),
-  nivel: z.enum(["1", "2", "3", "4", "5"]).default("3"),
+  nivel: z.enum(["1", "2", "3", "4", "5"]).optional().default("3"),
 });
 
 export type Equipo = z.infer<typeof equipoSchema>;

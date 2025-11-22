@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { EquipoWithRelations } from "@/actions/equipos";
 
 export default function EquipoDetailPage({
   params,
@@ -8,7 +9,7 @@ export default function EquipoDetailPage({
   params: { id: string };
 }) {
   // TODO: Replace with getEquipo(params.id) Server Action
-  const equipo = null;
+  const equipo: EquipoWithRelations | null = null;
 
   if (!equipo) {
     return (
@@ -19,11 +20,13 @@ export default function EquipoDetailPage({
     );
   }
 
+  const equipoData = equipo as EquipoWithRelations;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">{equipo.nombre}</h1>
+          <h1 className="text-3xl font-bold">{equipoData.nombre}</h1>
           <p className="text-gray-600">Detalles del equipo</p>
         </div>
         <div className="flex gap-2">

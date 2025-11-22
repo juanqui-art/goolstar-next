@@ -1,13 +1,23 @@
 import { HistorialPagos } from "@/components/financiero/historial-pagos";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+interface Transaction {
+  id: string;
+  fecha: string;
+  concepto: string;
+  monto: number;
+  es_ingreso: boolean;
+  pagado: boolean;
+  observaciones?: string;
+}
+
 export default function EquipoFinancieroPage({
   params,
 }: {
   params: { id: string };
 }) {
   // TODO: Replace with getEquipoFinanciero(params.id) Server Action
-  const transactions = [];
+  const transactions: Transaction[] = [];
   const balance = {
     total: 0,
     pagado: 0,

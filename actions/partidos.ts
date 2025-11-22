@@ -1,8 +1,11 @@
 "use server";
 
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { partidoSchema, partidoResultadoSchema, type Partido, type PartidoResultado } from "@/lib/validations/partido";
 import { revalidatePath } from "next/cache";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import {
+  partidoResultadoSchema,
+  partidoSchema,
+} from "@/lib/validations/partido";
 import type { Database } from "@/types/database";
 
 type PartidoRow = Database["public"]["Tables"]["partidos"]["Row"];
@@ -105,7 +108,9 @@ export async function getPartidos(options?: {
       query = query.eq("torneo_id", options.torneoId);
     }
     if (options?.equipoId) {
-      query = query.or(`equipo_1_id.eq.${options.equipoId},equipo_2_id.eq.${options.equipoId}`);
+      query = query.or(
+        `equipo_1_id.eq.${options.equipoId},equipo_2_id.eq.${options.equipoId}`,
+      );
     }
     if (options?.jornadaId) {
       query = query.eq("jornada_id", options.jornadaId);
@@ -137,7 +142,7 @@ export async function getPartido(id: string): Promise<PartidoWithRelations> {
   try {
     const supabase = await createServerSupabaseClient();
 
-    // Get partido with related information
+    // Get partido with related information using alias for multiple FKs to same table
     const { data: partido, error } = await supabase
       .from("partidos")
       .select("*")
@@ -190,7 +195,7 @@ export async function getPartido(id: string): Promise<PartidoWithRelations> {
  */
 export async function updatePartido(
   id: string,
-  data: unknown
+  data: unknown,
 ): Promise<PartidoRow> {
   try {
     // 1. Validate with partidoSchema
@@ -283,7 +288,7 @@ export async function registrarGol(
   partidoId: string,
   jugadorId: string,
   equipoId: string,
-  minuto: number
+  minuto: number,
 ): Promise<{ id: string }> {
   try {
     const supabase = await createServerSupabaseClient();
@@ -363,8 +368,8 @@ export async function registrarTarjeta(data: {
     }
 
     // Revalidate paths
-    revalidatePath(`/partidos/${partidoId}`);
-    revalidatePath(`/jugadores/${jugadorId}`);
+    revalidatePath(`/partidos/${data.partido_id}`);
+    revalidatePath(`/jugadores/${data.jugador_id}`);
 
     return { id: tarjeta.id };
   } catch (error) {
@@ -383,7 +388,7 @@ export async function registrarCambio(
   jugadorSaleId: string,
   jugadorEntraId: string,
   equipoId: string,
-  minuto: number
+  minuto: number,
 ): Promise<{ id: string }> {
   try {
     const supabase = await createServerSupabaseClient();
@@ -423,7 +428,7 @@ export async function registrarCambio(
  */
 export async function finalizarPartido(
   partidoId: string,
-  resultado: unknown
+  resultado: unknown,
 ): Promise<{ success: boolean }> {
   try {
     // Validate result
@@ -438,7 +443,8 @@ export async function finalizarPartido(
         goles_equipo_1: validatedResultado.goles_equipo_1,
         goles_equipo_2: validatedResultado.goles_equipo_2,
         resultado_retiro: validatedResultado.resultado_retiro || null,
-        resultado_inasistencia: validatedResultado.resultado_inasistencia || null,
+        resultado_inasistencia:
+          validatedResultado.resultado_inasistencia || null,
         sancion: validatedResultado.sancion || null,
         penales_equipo_1: validatedResultado.penales_equipo_1 || null,
         penales_equipo_2: validatedResultado.penales_equipo_2 || null,
@@ -485,26 +491,11 @@ export async function getPartidoActa(partidoId: string) {
       supabase
         .from("partidos")
         .select(
-          `
-          *,
-          equipo_local:equipo_1_id (
-            id,
-            nombre
-          ),
-          equipo_visitante:equipo_2_id (
-            id,
-            nombre
-          ),
-          arbitros (
-            id,
-            nombre,
-            apellido
-          ),
-          torneos (
-            id,
-            nombre
-          )
-        `
+          `*,
+           equipo_local:equipo_1_id (id, nombre),
+           equipo_visitante:equipo_2_id (id, nombre),
+           arbitros (id, nombre, apellido),
+           torneos (id, nombre)`,
         )
         .eq("id", partidoId)
         .single(),
@@ -518,7 +509,7 @@ export async function getPartidoActa(partidoId: string) {
             primer_nombre,
             primer_apellido
           )
-        `
+        `,
         )
         .eq("partido_id", partidoId)
         .order("minuto", { ascending: true }),
@@ -532,7 +523,7 @@ export async function getPartidoActa(partidoId: string) {
             primer_nombre,
             primer_apellido
           )
-        `
+        `,
         )
         .eq("partido_id", partidoId)
         .order("minuto", { ascending: true }),
@@ -550,7 +541,7 @@ export async function getPartidoActa(partidoId: string) {
             primer_nombre,
             primer_apellido
           )
-        `
+        `,
         )
         .eq("partido_id", partidoId)
         .order("minuto", { ascending: true }),
