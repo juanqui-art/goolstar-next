@@ -1,166 +1,156 @@
-# GoolStar Quick Start (5 Minutes)
+# Quick Start - Execute Database Migrations
 
-Get the GoolStar MVP up and running locally in 5 minutes.
+**Goal**: Get the database live in 5-10 minutes
+**Difficulty**: Easy
+**Requirements**: Browser access to Supabase Cloud
 
-## Prerequisites
+---
 
-- **Node.js/Bun**: `bun --version` (v1.0+)
-- **Docker**: `docker --version` (for Supabase local database)
-- **Supabase CLI**: `supabase --version` (install via `npm install -g supabase`)
+## The Process (5 Steps)
 
-## Step 1: Clone & Install (1 min)
+### 1️⃣ Open Supabase Dashboard
 
-```bash
-cd goolstar_next
-bun install
+- URL: https://app.supabase.com
+- Project: `goolstar-next`
+- (You should already be logged in)
+
+### 2️⃣ Navigate to SQL Editor
+
+- Left sidebar → **SQL Editor**
+- You should see a blank SQL editor
+
+### 3️⃣ Execute Migrations in Order
+
+For each migration file **001 through 010** (in strict order):
+
+#### For Migration 001:
+```
+File: supabase/migrations/20250122000001_initial_extensions.sql
+
+1. Open the file in your project
+2. Copy ALL SQL content
+3. Paste into SQL Editor
+4. Click "Run" (blue button, top right)
+5. Wait for: "Success" message
+6. ✅ Done with 001
 ```
 
-## Step 2: Start Supabase Local (2 min)
-
-```bash
-# Start local Supabase (requires Docker)
-supabase start
-
-# Output will show URLs like:
-# API URL: http://localhost:54321
-# Anon Key: eyJ0eXAiOiJKV1QiLCJhbGc...
+#### For Migration 002:
+```
+Repeat same steps with: supabase/migrations/20250122000002_categorias_torneos.sql
 ```
 
-**Keep the terminal open or note the URLs.**
+#### Repeat for 003-010
 
-## Step 3: Configure Environment (1 min)
+Each migration takes about 1 minute.
 
-```bash
-# Copy example to local
-cp .env.example .env.local
+**Total time**: ~10 minutes for all 10
 
-# Edit .env.local and replace with values from: supabase status
-# Example:
-# NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
-# NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ0eXAiOiJKV1QiLCJhbGc...
+---
+
+## Visual Guide
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ Supabase Dashboard                                      │
+│ https://app.supabase.com                                │
+│                                                         │
+│ Left Sidebar:                                           │
+│ ✓ Home                                                  │
+│ ✓ SQL Editor  ← CLICK HERE                              │
+│ • Database                                              │
+│ • Auth                                                  │
+│ • Storage                                               │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+                         ↓
+┌─────────────────────────────────────────────────────────┐
+│ SQL Editor                                              │
+│                                                         │
+│ ┌───────────────────────────────────────────────────┐   │
+│ │ Paste migration SQL here                          │   │
+│ │                                                   │   │
+│ │ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";      │   │
+│ │ CREATE EXTENSION IF NOT EXISTS "pgcrypto";        │   │
+│ │ CREATE TYPE nivel_enum AS ENUM ('1',...);        │   │
+│ │ ...                                               │   │
+│ │                                                   │   │
+│ └───────────────────────────────────────────────────┘   │
+│                                                         │
+│ [Run] ← Click here after pasting                        │
+│                                                         │
+│ Status: "Success" ← Should say this                     │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
 ```
 
-## Step 4: Generate Database Types (1 min)
+---
+
+## After Migrations Complete
+
+### ✅ Step 2: Enable Email Auth (3 minutes)
+
+In Supabase Dashboard:
+1. **Authentication** (left sidebar)
+2. **Providers** (tab)
+3. Find "Email"
+4. Click toggle to enable
+5. Set Redirect URL: `http://localhost:3000/auth/callback`
+6. Save
+
+### ✅ Step 3: Test Locally (5 minutes)
 
 ```bash
-# Generate TypeScript types from database schema
-supabase gen types typescript --local > types/database.ts
-```
-
-## Step 5: Start Dev Server (1 min)
-
-```bash
+cd /Users/juanquizhpi/Desktop/projects/goolstar_next
 bun run dev
-
-# Dev server running at:
-# ➜  http://localhost:3000
 ```
 
-**Open http://localhost:3000 in browser**
+Open: http://localhost:3000/register
+
+Test registration:
+- Email: test@example.com
+- Password: TestPassword123
+- Click "Create Account"
+
+Expected: Success or confirmation email sent
 
 ---
 
-## ✅ First Time in App
+## Migration File List
 
-1. **Register**: Click "Sign Up"
-   - Email: `test@example.com`
-   - Password: `Test1234!`
-   - Confirm password
+```
+001: 20250122000001_initial_extensions.sql
+002: 20250122000002_categorias_torneos.sql
+003: 20250122000003_equipos_jugadores.sql
+004: 20250122000004_partidos_competicion.sql
+005: 20250122000005_estadisticas.sql
+006: 20250122000006_sistema_financiero.sql
+007: 20250122000007_triggers.sql
+008: 20250122000008_functions.sql
+009: 20250122000009_rls_policies.sql
+010: 20250122000010_indexes.sql
+```
 
-2. **Login**: Use same credentials
-
-3. **Dashboard**: You're in! 🎉
+All in: `/supabase/migrations/`
 
 ---
 
-## 🔧 Common Commands
+## Guides
 
-```bash
-# Development
-bun run dev           # Start dev server
-
-# Code Quality
-bun run lint          # Check code with Biome
-bun run format        # Format code
-
-# Database
-supabase status       # Check running services
-supabase stop         # Stop Supabase local
-supabase db push      # Sync migrations with local DB
-```
+| Guide | Purpose |
+|---|---|
+| `QUICK_START.md` | This file - get started in 5 min |
+| `MIGRATION_QUICK_REFERENCE.md` | What each migration does |
+| `MIGRATION_EXECUTION_GUIDE.md` | Detailed step-by-step |
+| `SETUP_CHECKLIST.md` | Track progress |
+| `INFRASTRUCTURE_OVERVIEW.md` | Full architecture |
 
 ---
 
-## 🗂️ Project Structure
+**Status**: Ready to deploy! Execute these 10 migrations and the database is live.
 
-```
-goolstar_next/
-├── app/              # Next.js pages & layout
-├── components/       # React components
-├── lib/              # Utilities, validations, database
-├── actions/          # Server Actions
-├── supabase/         # Database migrations
-├── ROADMAP.md        # Implementation phases (READ THIS)
-├── CLAUDE.md         # Development guidelines
-└── .env.local        # ← Your local config (CREATE THIS)
-```
+**Time**: 5-10 minutes
 
----
+**Next**: Deploy migrations → Enable email auth → Test locally → Phase 2 development
 
-## 📚 Next Steps
-
-1. **Read the roadmap:** Open [ROADMAP.md](ROADMAP.md)
-2. **Understand structure:** See [docs/architecture/current-structure.md](docs/architecture/current-structure.md)
-3. **Development tips:** Check [CLAUDE.md](CLAUDE.md)
-4. **Start coding:** Follow Phase 0 in ROADMAP.md
-
----
-
-## 🐛 Troubleshooting
-
-### "Port 3000 already in use"
-```bash
-# Kill existing process
-pkill -f "node.*dev" || pkill -f "next dev"
-
-# Or use different port
-PORT=3001 bun run dev
-```
-
-### "Supabase connection failed"
-```bash
-# Check if Supabase is running
-supabase status
-
-# Restart if needed
-supabase stop
-supabase start
-```
-
-### "Types file not found"
-```bash
-# Regenerate types
-supabase gen types typescript --local > types/database.ts
-```
-
-### "Environment variables not loading"
-```bash
-# Verify .env.local exists in project root
-ls -la .env.local
-
-# Check format (no quotes):
-NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
-NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_KEY
-```
-
----
-
-## 📞 Help
-
-- **Next.js Docs**: https://nextjs.org/docs
-- **Supabase Docs**: https://supabase.com/docs
-- **Full Guide**: See [CLAUDE.md](CLAUDE.md)
-
----
-
-**Time to hello world:** ~5 minutes ✨
+You've got this! 🚀
