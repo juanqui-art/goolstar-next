@@ -635,8 +635,8 @@ bun run build
 
 ### ⚠️ Cosas a Evitar
 
-- ❌ No añadas `'use cache'` a funciones que acceden a `cookies()` o `headers()`
-- ❌ No cachees datos financieros o críticos
+- ❌ No accedas a `cookies()` o `headers()` directamente dentro de `'use cache'` (usa `'use cache: private'` o parámetros)
+- ❌ No cachees datos financieros o críticos sin validar revalidación
 - ❌ No olvides `revalidateTag()` después de mutaciones
 - ❌ No uses `suppressHydrationWarning` en root html
 
@@ -670,16 +670,26 @@ const data = await getData()
 
 **Solución:** Tienes `cookies()` o `headers()` dentro de `use cache`
 
+**Nota:** Cookies SÍ se soportan en Cache Components, pero con 2 patrones:
+
 ```typescript
-// ❌ Problema
+// ❌ Problema - Acceso directo a cookies()
 'use cache'
 const cookies = await cookies()
 
-// ✅ Solución
-const cookies = await cookies()
-const value = cookies.get('name')?.value
-<CachedComponent value={value} />
+// ✅ Solución 1: Pasar como parámetros (datos globales)
+const userRole = (await cookies()).get('role')?.value
+<CachedComponent userRole={userRole} />
+
+// ✅ Solución 2: Usar 'use cache: private' (datos personalizados)
+'use cache: private'
+const userId = (await cookies()).get('user-id')?.value
+const userData = await getUser(userId)
 ```
+
+**Para GoolStar:**
+- **Datos globales** (Torneos, Categorías): pasar como parámetros
+- **Datos de usuario** (Mis Equipos, Documentos personales): usar `'use cache: private'`
 
 ### Cache no se invalida
 

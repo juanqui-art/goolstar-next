@@ -172,6 +172,12 @@ R: No, cambios se hacen en desarrollo. Testing antes de deploy.
 R: Torneos, Categorías, Equipos, Tabla de Posiciones (cambian raramente)
 No cachear: Documentos, Transacciones, Datos en vivo
 
+**P: ¿Opción 3 soporta cookies (para autenticación)?**
+R: ✅ SÍ, con 2 patrones:
+- **Datos globales**: Pasar cookies como parámetros → `'use cache'`
+- **Datos de usuario**: Usar `'use cache: private'` para acceso directo a cookies()
+Ver CACHE_COMPONENTS_ANALYSIS.md para ejemplos.
+
 ---
 
 **Documento generado:** 2025-11-22

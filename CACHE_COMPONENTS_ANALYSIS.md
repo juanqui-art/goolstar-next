@@ -351,23 +351,31 @@ export async function crearTorneo(data: TorneoFormData) {
 ```
 
 **Paso 6: Para datos que necesitan request-time (cookies, headers)**
+
+> **IMPORTANTE:** Cookies y headers SÍ se soportan en Cache Components, pero con patrones específicos.
+
+#### ❌ LO QUE NO FUNCIONA:
+```typescript
+// Esto FALLA - No puedes usar cookies() dentro de 'use cache'
+'use cache'
+const cookies = await cookies()  // ❌ Error
+```
+
+#### ✅ OPCIÓN A: Pasar cookies como parámetros (Recomendado para datos compartidos)
 ```typescript
 // app/(dashboard)/admin/usuarios/page.tsx
 import { cookies } from 'next/headers'
-import { Suspense } from 'react'
 
 export default async function UsuariosPage() {
-  return (
-    <Suspense fallback={<div>Cargando usuarios...</div>}>
-      <UsuariosList />
-    </Suspense>
-  )
+  // Leer cookies FUERA del cached component
+  const userRole = (await cookies()).get('user_role')?.value
+
+  return <UsuariosList userRole={userRole} />
 }
 
-async function UsuariosList() {
-  // Esto NO puede ser cached porque accede a cookies
-  const cookieStore = await cookies()
-  const userRole = cookieStore.get('user_role')?.value
+async function UsuariosList({ userRole }: { userRole?: string }) {
+  'use cache'  // ✅ Funciona porque userRole es un parámetro
+  cacheTag('usuarios')
 
   if (userRole !== 'admin') return <div>No autorizado</div>
 
@@ -375,6 +383,54 @@ async function UsuariosList() {
   return <UserList usuarios={usuarios} />
 }
 ```
+
+**Ventajas:**
+- El valor se convierte en parte de la cache key automáticamente
+- Permite Partial Prerendering
+- Compatible con prerendering estático
+
+#### ✅ OPCIÓN B: Usar `"use cache: private"` (Para datos personalizados por usuario)
+```typescript
+// lib/data.ts
+import { cookies } from 'next/headers'
+import { cacheLife, cacheTag } from 'next/cache'
+
+// Datos personalizados por usuario
+export async function getEquiposDelUsuario() {
+  'use cache: private'  // ✅ Permite cookies() directamente
+  cacheTag('equipos-usuario')
+  cacheLife('hours')  // Mínimo 30 segundos para private
+
+  const userId = (await cookies()).get('user-id')?.value
+  return await supabase
+    .from('equipos')
+    .select()
+    .eq('director_id', userId)
+}
+
+// page.tsx
+export default async function EquiposPage() {
+  const equipos = await getEquiposDelUsuario()
+  return <EquiposList equipos={equipos} />
+}
+```
+
+**Ventajas:**
+- Acceso directo a cookies(), headers(), searchParams
+- Caching personalizado por usuario
+- No compartido entre usuarios (privado)
+
+**Diferencias entre `"use cache"` vs `"use cache: private"`:**
+
+| Aspecto | `"use cache"` | `"use cache: private"` |
+|---------|---|---|
+| **Soporta cookies()** | ❌ NO | ✅ SÍ |
+| **Soporta headers()** | ❌ NO | ✅ SÍ |
+| **Soporta searchParams** | ❌ NO | ✅ SÍ |
+| **Prerendered** | ✅ SÍ | ❌ NO |
+| **Compartido entre usuarios** | ✅ SÍ | ❌ NO (privado) |
+| **Duración mínima cache** | Flexible | 30 segundos |
+| **Caso de uso** | Datos globales, compartibles | Datos personalizados por usuario |
 
 ### 📊 Impacto
 - **Build time**: Más rápido (no prerendering completo, solo static shell)

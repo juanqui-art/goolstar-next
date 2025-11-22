@@ -889,30 +889,59 @@ Error: Filling a cache during prerender timed out
 **Causa:**
 Estás accediendo a `cookies()`, `headers()`, o datos dinámicos dentro de `use cache`.
 
-**Solución:**
+**Nota importante sobre cookies en Cache Components:**
+Cookies y headers NO pueden accederse directamente dentro de `'use cache'`, pero SÍ hay soluciones:
+
+#### ✅ SOLUCIÓN 1: Pasar cookies como parámetros (Para datos compartibles)
 ```typescript
 // ❌ PROBLEMA
 async function CachedComponent() {
   'use cache'
-  const cookies = await cookies()  // ❌ Acceso directo
+  const cookies = await cookies()  // ❌ Acceso directo - TIMEOUT
   const role = cookies.get('role')?.value
   return <div>{role}</div>
 }
 
-// ✅ SOLUCIÓN: Pasar como props
+// ✅ SOLUCIÓN 1A: Pasar como props
 async function Page() {
-  const cookies = await cookies()
-  const role = cookies.get('role')?.value
+  const userRole = (await cookies()).get('role')?.value
 
-  return <CachedComponent role={role} />
+  return <CachedComponent userRole={userRole} />
 }
 
-async function CachedComponent({ role }: { role: string }) {
+async function CachedComponent({ userRole }: { userRole?: string }) {
   'use cache'
-  // Ahora role es un argumento, parte del cache key
-  return <div>{role}</div>
+  cacheTag('component')
+  // userRole es un parámetro, se incluye en la cache key
+  return <div>{userRole}</div>
 }
 ```
+
+**Ventaja:** El valor se convierte en parte de la cache key automáticamente. Permite prerendering parcial.
+
+#### ✅ SOLUCIÓN 2: Usar `'use cache: private'` (Para datos personalizados por usuario)
+```typescript
+// ✅ SOLUCIÓN 1B: Usar use cache: private
+async function getPersonalizedData() {
+  'use cache: private'  // ✅ Permite cookies() directamente
+  cacheTag('personal')
+  cacheLife('hours')
+
+  const userId = (await cookies()).get('user-id')?.value
+  return await getDataForUser(userId)
+}
+
+export default async function Page() {
+  const data = await getPersonalizedData()
+  return <div>{data}</div>
+}
+```
+
+**Ventaja:** Acceso directo a cookies(), headers(), searchParams. Caching personalizado por usuario.
+
+**Cuándo usar cada una:**
+- **Solución 1 (parámetros)**: Datos que aplican a múltiples usuarios (global)
+- **Solución 2 (private)**: Datos personalizados por usuario (equipo, preferencias)
 
 ### Cache Not Invalidating
 
