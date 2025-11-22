@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -23,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Torneo, torneoSchema } from "@/lib/validations/torneo";
+import { createTorneo, updateTorneo } from "@/actions/torneos";
 
 interface TorneoFormProps {
   initialData?: Partial<Torneo>;
@@ -51,13 +53,29 @@ export function TorneoForm({
   const handleSubmit = async (data: Torneo) => {
     try {
       setIsSubmitting(true);
-      // TODO: Connect to Server Action createTorneo() or updateTorneo()
-      console.log("Form data:", data);
+
+      if (initialData?.id) {
+        // Update existing torneo
+        await updateTorneo(initialData.id, data);
+        toast.success("Torneo actualizado correctamente");
+      } else {
+        // Create new torneo
+        const result = await createTorneo(data);
+        toast.success("Torneo creado correctamente");
+        form.reset();
+      }
+
+      // Call optional callback if provided
       if (onSubmit) {
         await onSubmit(data);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Error al guardar el torneo. Por favor intenta de nuevo.",
+      );
     } finally {
       setIsSubmitting(false);
     }

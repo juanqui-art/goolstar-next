@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -24,45 +25,60 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  type Transaccion,
-  transaccionSchema,
+  type CreateTransaccion,
+  createTransaccionSchema,
+  tiposTransaccion,
+  metodosPago,
 } from "@/lib/validations/financiero";
+import { registrarTransaccion } from "@/actions/financiero";
 
 interface TransaccionFormProps {
-  initialData?: Partial<Transaccion>;
-  onSubmit?: (data: Transaccion) => void | Promise<void>;
+  initialData?: Partial<CreateTransaccion>;
+  onSubmit?: (data: CreateTransaccion) => void | Promise<void>;
   equipos?: Array<{ id: string; nombre: string }>;
+  torneos?: Array<{ id: string; nombre: string }>;
 }
 
 export function TransaccionForm({
   initialData,
   onSubmit,
   equipos = [],
+  torneos = [],
 }: TransaccionFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<Transaccion>({
-    resolver: zodResolver(transaccionSchema),
+  const form = useForm<CreateTransaccion>({
+    resolver: zodResolver(createTransaccionSchema),
     defaultValues: initialData || {
       equipo_id: "",
-      concepto: "",
+      torneo_id: "",
+      tipo: "abono_inscripcion",
       monto: 0,
-      es_ingreso: false,
+      es_ingreso: true,
       pagado: false,
-      fecha_transaccion: new Date(),
     },
   });
 
-  const handleSubmit = async (data: Transaccion) => {
+  const handleSubmit = async (data: CreateTransaccion) => {
     try {
       setIsSubmitting(true);
-      // TODO: Connect to Server Action createTransaccion()
-      console.log("Form data:", data);
+
+      // Create new transaction
+      await registrarTransaccion(data);
+      toast.success("Transacción registrada correctamente");
+      form.reset();
+
+      // Call optional callback if provided
       if (onSubmit) {
         await onSubmit(data);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Error al registrar la transacción. Por favor intenta de nuevo.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -71,34 +87,98 @@ export function TransaccionForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="equipo_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Equipo</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona un equipo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {equipos.length === 0 ? (
+                      <SelectItem value="none" disabled>
+                        No hay equipos disponibles
+                      </SelectItem>
+                    ) : (
+                      equipos.map((equipo) => (
+                        <SelectItem key={equipo.id} value={equipo.id}>
+                          {equipo.nombre}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="torneo_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Torneo</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona un torneo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {torneos.length === 0 ? (
+                      <SelectItem value="none" disabled>
+                        No hay torneos disponibles
+                      </SelectItem>
+                    ) : (
+                      torneos.map((torneo) => (
+                        <SelectItem key={torneo.id} value={torneo.id}>
+                          {torneo.nombre}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <FormField
           control={form.control}
-          name="equipo_id"
+          name="tipo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Equipo</FormLabel>
+              <FormLabel>Tipo de Transacción</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecciona un equipo" />
+                    <SelectValue placeholder="Selecciona el tipo" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {equipos.length === 0 ? (
-                    <SelectItem value="none" disabled>
-                      No hay equipos disponibles
-                    </SelectItem>
-                  ) : (
-                    equipos.map((equipo) => (
-                      <SelectItem key={equipo.id} value={equipo.id}>
-                        {equipo.nombre}
-                      </SelectItem>
-                    ))
-                  )}
+                  <SelectItem value="abono_inscripcion">
+                    Abono Inscripción
+                  </SelectItem>
+                  <SelectItem value="pago_arbitro">Pago Árbitro</SelectItem>
+                  <SelectItem value="pago_balon">Pago Balón</SelectItem>
+                  <SelectItem value="multa_amarilla">
+                    Multa Tarjeta Amarilla
+                  </SelectItem>
+                  <SelectItem value="multa_roja">Multa Tarjeta Roja</SelectItem>
+                  <SelectItem value="ajuste_manual">Ajuste Manual</SelectItem>
+                  <SelectItem value="devolucion">Devolución</SelectItem>
                 </SelectContent>
               </Select>
               <FormDescription>
-                Equipo asociado a esta transacción
+                Tipo de operación financiera
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -107,71 +187,25 @@ export function TransaccionForm({
 
         <FormField
           control={form.control}
-          name="concepto"
+          name="monto"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Concepto</FormLabel>
+              <FormLabel>Monto (USD)</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Ej: Inscripción torneo, Pago multa"
-                  {...field}
+                  type="number"
+                  step="0.01"
+                  min={0}
+                  placeholder="0.00"
+                  value={field.value}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
                 />
               </FormControl>
-              <FormDescription>Descripción de la transacción</FormDescription>
+              <FormDescription>Cantidad en dólares</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="monto"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Monto (USD)</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    min={0}
-                    placeholder="0.00"
-                    value={field.value}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                  />
-                </FormControl>
-                <FormDescription>Cantidad en dólares</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="fecha_transaccion"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Fecha (Opcional)</FormLabel>
-                <FormControl>
-                  <Input
-                    type="date"
-                    value={
-                      field.value instanceof Date
-                        ? field.value.toISOString().split("T")[0]
-                        : ""
-                    }
-                    onChange={(e) =>
-                      field.onChange(
-                        e.target.value ? new Date(e.target.value) : undefined,
-                      )
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
 
         <div className="space-y-4">
           <FormField
@@ -210,7 +244,7 @@ export function TransaccionForm({
                 <div className="space-y-1 leading-none">
                   <FormLabel>Pagado</FormLabel>
                   <FormDescription>
-                    Marcar si la transacción ya fue pagada
+                    Marcar si la transacción ya fue completada
                   </FormDescription>
                 </div>
               </FormItem>
@@ -239,6 +273,8 @@ export function TransaccionForm({
                     <SelectItem value="transferencia">Transferencia</SelectItem>
                     <SelectItem value="deposito">Depósito</SelectItem>
                     <SelectItem value="tarjeta">Tarjeta</SelectItem>
+                    <SelectItem value="cheque">Cheque</SelectItem>
+                    <SelectItem value="otro">Otro</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -248,16 +284,25 @@ export function TransaccionForm({
 
           <FormField
             control={form.control}
-            name="referencia"
+            name="fecha_pago"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Referencia (Opcional)</FormLabel>
+                <FormLabel>Fecha de Pago (Opcional)</FormLabel>
                 <FormControl>
-                  <Input placeholder="Nº de comprobante" {...field} />
+                  <Input
+                    type="date"
+                    value={
+                      field.value instanceof Date
+                        ? field.value.toISOString().split("T")[0]
+                        : ""
+                    }
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value ? new Date(e.target.value) : undefined,
+                      )
+                    }
+                  />
                 </FormControl>
-                <FormDescription>
-                  Número de comprobante o referencia
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -266,19 +311,54 @@ export function TransaccionForm({
 
         <FormField
           control={form.control}
-          name="notas"
+          name="referencia_externa"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Notas (Opcional)</FormLabel>
+              <FormLabel>Referencia Externa (Opcional)</FormLabel>
+              <FormControl>
+                <Input placeholder="Nº de comprobante" {...field} />
+              </FormControl>
+              <FormDescription>
+                Número de comprobante bancario o referencia
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="descripcion"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Descripción (Opcional)</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Observaciones adicionales..."
-                  rows={3}
+                  placeholder="Detalles de la transacción..."
+                  rows={2}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="razon"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Razón (Opcional)</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Motivo o justificación"
+                  maxLength={255}
                   {...field}
                 />
               </FormControl>
               <FormDescription>
-                Información adicional sobre la transacción
+                Motivo o razón de la transacción
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -287,12 +367,7 @@ export function TransaccionForm({
 
         <div className="flex gap-2">
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting
-              ? "Guardando..."
-              : initialData
-                ? "Actualizar"
-                : "Registrar"}{" "}
-            Transacción
+            {isSubmitting ? "Registrando..." : "Registrar Transacción"}
           </Button>
           <Button type="button" variant="outline" disabled={isSubmitting}>
             Cancelar

@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { registrarTarjeta } from "@/actions/partidos";
 
 interface TarjetaFormProps {
   partidoId: string;
@@ -27,21 +29,43 @@ export function TarjetaForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
 
-    // TODO: Connect to Server Action registrarTarjeta()
-    console.log("Registering tarjeta:", {
-      partidoId,
-      equipoId,
-      jugadorId,
-      minuto,
-      tipoTarjeta,
-    });
+    if (!jugadorId) {
+      toast.error("Por favor selecciona un jugador");
+      return;
+    }
 
-    setTimeout(() => {
-      setSubmitting(false);
+    try {
+      setSubmitting(true);
+
+      await registrarTarjeta({
+        partido_id: partidoId,
+        equipo_id: equipoId,
+        jugador_id: jugadorId,
+        minuto,
+        tipo: tipoTarjeta === "amarilla" ? "AMARILLA" : "ROJA",
+      });
+
+      toast.success(
+        `Tarjeta ${tipoTarjeta} registrada correctamente`,
+      );
+
+      // Reset form
+      setJugadorId("");
+      setMinuto(0);
+      setTipoTarjeta("amarilla");
+
       if (onSubmit) onSubmit();
-    }, 1000);
+    } catch (error) {
+      console.error("Error registering tarjeta:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Error al registrar la tarjeta. Por favor intenta de nuevo.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

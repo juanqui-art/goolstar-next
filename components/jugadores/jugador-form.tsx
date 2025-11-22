@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Jugador, jugadorSchema } from "@/lib/validations/jugador";
+import { createJugador, updateJugador } from "@/actions/jugadores";
 
 interface JugadorFormProps {
   initialData?: Partial<Jugador>;
@@ -49,13 +51,29 @@ export function JugadorForm({
   const handleSubmit = async (data: Jugador) => {
     try {
       setIsSubmitting(true);
-      // TODO: Connect to Server Action createJugador() or updateJugador()
-      console.log("Form data:", data);
+
+      if (initialData?.id) {
+        // Update existing jugador
+        await updateJugador(initialData.id, data);
+        toast.success("Jugador actualizado correctamente");
+      } else {
+        // Create new jugador
+        await createJugador(data);
+        toast.success("Jugador creado correctamente");
+        form.reset();
+      }
+
+      // Call optional callback if provided
       if (onSubmit) {
         await onSubmit(data);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Error al guardar el jugador. Por favor intenta de nuevo.",
+      );
     } finally {
       setIsSubmitting(false);
     }

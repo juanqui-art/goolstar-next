@@ -103,9 +103,9 @@ export async function getDashboardAlerts(): Promise<DashboardAlert[]> {
 
   // Check for pending documents (estado_verificacion = 'pendiente')
   const { count: documentosPendientes } = await supabase
-    .from("documentos")
+    .from("jugador_documentos")
     .select("*", { count: "exact", head: true })
-    .eq("estado_verificacion", "pendiente")
+    .eq("estado", "pendiente")
 
   if (documentosPendientes && documentosPendientes > 0) {
     alerts.push({
