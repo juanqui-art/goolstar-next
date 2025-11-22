@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { registrarCambio } from "@/actions/partidos";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -10,9 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { registrarCambio } from "@/actions/partidos";
 
 interface Jugador {
   id: string;
@@ -55,7 +55,13 @@ export function CambioFormQuick({
     try {
       setSubmitting(true);
 
-      await registrarCambio(partidoId, jugadorSaleId, jugadorEntraId, equipoId, minuto);
+      await registrarCambio(
+        partidoId,
+        jugadorSaleId,
+        jugadorEntraId,
+        equipoId,
+        minuto,
+      );
 
       toast.success("Cambio registrado correctamente");
 
@@ -72,7 +78,7 @@ export function CambioFormQuick({
       toast.error(
         error instanceof Error
           ? error.message
-          : "Error al registrar el cambio. Por favor intenta de nuevo."
+          : "Error al registrar el cambio. Por favor intenta de nuevo.",
       );
     } finally {
       setSubmitting(false);
@@ -94,8 +100,8 @@ export function CambioFormQuick({
               </SelectItem>
             ) : (
               jugadores
-                .filter(j => j.id !== jugadorEntraId) // Exclude selected "entra" player
-                .map(jugador => (
+                .filter((j) => j.id !== jugadorEntraId) // Exclude selected "entra" player
+                .map((jugador) => (
                   <SelectItem key={jugador.id} value={jugador.id}>
                     {jugador.dorsal ? `#${jugador.dorsal} - ` : ""}
                     {jugador.primer_nombre} {jugador.primer_apellido}
@@ -119,8 +125,8 @@ export function CambioFormQuick({
               </SelectItem>
             ) : (
               jugadores
-                .filter(j => j.id !== jugadorSaleId) // Exclude selected "sale" player
-                .map(jugador => (
+                .filter((j) => j.id !== jugadorSaleId) // Exclude selected "sale" player
+                .map((jugador) => (
                   <SelectItem key={jugador.id} value={jugador.id}>
                     {jugador.dorsal ? `#${jugador.dorsal} - ` : ""}
                     {jugador.primer_nombre} {jugador.primer_apellido}
@@ -139,7 +145,7 @@ export function CambioFormQuick({
           min={1}
           max={120}
           value={minuto}
-          onChange={e => setMinuto(Number(e.target.value))}
+          onChange={(e) => setMinuto(Number(e.target.value))}
           placeholder="ej: 45"
         />
       </div>

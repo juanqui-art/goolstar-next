@@ -1,18 +1,18 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import {
+  calculateDebtBreakdown,
+  calculateTotalDebt,
+  type Transaction,
+} from "@/lib/utils/debt";
 import {
   createTransaccionSchema,
   marcarPagadoSchema,
   type Transaccion,
 } from "@/lib/validations/financiero";
-import { revalidatePath } from "next/cache";
 import type { Database } from "@/types/database";
-import {
-  calculateTotalDebt,
-  calculateDebtBreakdown,
-  type Transaction,
-} from "@/lib/utils/debt";
 
 type TransaccionRow = Database["public"]["Tables"]["transacciones_pago"]["Row"];
 type TransaccionInsert =
@@ -95,9 +95,7 @@ export async function getFinancieroStats(): Promise<FinancieroStats> {
     );
 
     // Get unique teams with debt
-    const equiposConDeudaSet = new Set(
-      pendientes.map((t) => t.equipo_id),
-    );
+    const equiposConDeudaSet = new Set(pendientes.map((t) => t.equipo_id));
 
     return {
       totalIngresos,
@@ -229,7 +227,9 @@ export async function registrarTransaccion(
 /**
  * Mark a transaction as paid
  */
-export async function marcarPagado(data: unknown): Promise<{ success: boolean }> {
+export async function marcarPagado(
+  data: unknown,
+): Promise<{ success: boolean }> {
   try {
     // 1. Validate input
     const validated = marcarPagadoSchema.parse(data);

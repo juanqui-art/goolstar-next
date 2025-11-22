@@ -1,22 +1,28 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { formatDate, formatTime } from "@/lib/utils/format"
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { formatDate, formatTime } from "@/lib/utils/format";
 
 interface Match {
-  id: string
-  fecha: string
-  cancha: string | null
-  resultado_local?: number | null
-  resultado_visitante?: number | null
-  completado: boolean
-  equipo_local: { nombre: string } | null
-  equipo_visitante: { nombre: string } | null
+  id: string;
+  fecha: string;
+  cancha: string | null;
+  resultado_local?: number | null;
+  resultado_visitante?: number | null;
+  completado: boolean;
+  equipo_local: { nombre: string } | null;
+  equipo_visitante: { nombre: string } | null;
 }
 
 interface RecentMatchesProps {
-  matches: Match[]
-  title?: string
-  description?: string
+  matches: Match[];
+  title?: string;
+  description?: string;
 }
 
 export function RecentMatches({
@@ -37,7 +43,7 @@ export function RecentMatches({
           </p>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -78,12 +84,14 @@ export function RecentMatches({
               <div className="text-right text-xs text-muted-foreground space-y-1">
                 <div>{formatDate(new Date(match.fecha))}</div>
                 <div>{formatTime(new Date(match.fecha))}</div>
-                {match.cancha && <div className="text-xs">Cancha {match.cancha}</div>}
+                {match.cancha && (
+                  <div className="text-xs">Cancha {match.cancha}</div>
+                )}
               </div>
             </div>
           ))}
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

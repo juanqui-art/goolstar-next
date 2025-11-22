@@ -1,8 +1,13 @@
 "use server";
 
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { partidoSchema, partidoResultadoSchema, type Partido, type PartidoResultado } from "@/lib/validations/partido";
 import { revalidatePath } from "next/cache";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import {
+  type Partido,
+  type PartidoResultado,
+  partidoResultadoSchema,
+  partidoSchema,
+} from "@/lib/validations/partido";
 import type { Database } from "@/types/database";
 
 type PartidoRow = Database["public"]["Tables"]["partidos"]["Row"];
@@ -105,7 +110,9 @@ export async function getPartidos(options?: {
       query = query.eq("torneo_id", options.torneoId);
     }
     if (options?.equipoId) {
-      query = query.or(`equipo_1_id.eq.${options.equipoId},equipo_2_id.eq.${options.equipoId}`);
+      query = query.or(
+        `equipo_1_id.eq.${options.equipoId},equipo_2_id.eq.${options.equipoId}`,
+      );
     }
     if (options?.jornadaId) {
       query = query.eq("jornada_id", options.jornadaId);
@@ -190,7 +197,7 @@ export async function getPartido(id: string): Promise<PartidoWithRelations> {
  */
 export async function updatePartido(
   id: string,
-  data: unknown
+  data: unknown,
 ): Promise<PartidoRow> {
   try {
     // 1. Validate with partidoSchema
@@ -283,7 +290,7 @@ export async function registrarGol(
   partidoId: string,
   jugadorId: string,
   equipoId: string,
-  minuto: number
+  minuto: number,
 ): Promise<{ id: string }> {
   try {
     const supabase = await createServerSupabaseClient();
@@ -383,7 +390,7 @@ export async function registrarCambio(
   jugadorSaleId: string,
   jugadorEntraId: string,
   equipoId: string,
-  minuto: number
+  minuto: number,
 ): Promise<{ id: string }> {
   try {
     const supabase = await createServerSupabaseClient();
@@ -423,7 +430,7 @@ export async function registrarCambio(
  */
 export async function finalizarPartido(
   partidoId: string,
-  resultado: unknown
+  resultado: unknown,
 ): Promise<{ success: boolean }> {
   try {
     // Validate result
@@ -438,7 +445,8 @@ export async function finalizarPartido(
         goles_equipo_1: validatedResultado.goles_equipo_1,
         goles_equipo_2: validatedResultado.goles_equipo_2,
         resultado_retiro: validatedResultado.resultado_retiro || null,
-        resultado_inasistencia: validatedResultado.resultado_inasistencia || null,
+        resultado_inasistencia:
+          validatedResultado.resultado_inasistencia || null,
         sancion: validatedResultado.sancion || null,
         penales_equipo_1: validatedResultado.penales_equipo_1 || null,
         penales_equipo_2: validatedResultado.penales_equipo_2 || null,
@@ -504,7 +512,7 @@ export async function getPartidoActa(partidoId: string) {
             id,
             nombre
           )
-        `
+        `,
         )
         .eq("id", partidoId)
         .single(),
@@ -518,7 +526,7 @@ export async function getPartidoActa(partidoId: string) {
             primer_nombre,
             primer_apellido
           )
-        `
+        `,
         )
         .eq("partido_id", partidoId)
         .order("minuto", { ascending: true }),
@@ -532,7 +540,7 @@ export async function getPartidoActa(partidoId: string) {
             primer_nombre,
             primer_apellido
           )
-        `
+        `,
         )
         .eq("partido_id", partidoId)
         .order("minuto", { ascending: true }),
@@ -550,7 +558,7 @@ export async function getPartidoActa(partidoId: string) {
             primer_nombre,
             primer_apellido
           )
-        `
+        `,
         )
         .eq("partido_id", partidoId)
         .order("minuto", { ascending: true }),

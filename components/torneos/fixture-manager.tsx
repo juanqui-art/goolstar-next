@@ -1,8 +1,16 @@
 "use client";
 
+import { CalendarIcon, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { CalendarIcon, Trash2, Plus, RefreshCw } from "lucide-react";
+import { deleteFixture, generateFixture } from "@/actions/fixture";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,14 +31,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { generateFixture, deleteFixture } from "@/actions/fixture";
 import { formatDate, formatTime } from "@/lib/utils/format";
 
 interface FixtureManagerProps {
@@ -57,7 +57,11 @@ interface FixtureManagerProps {
   hasFixture: boolean;
 }
 
-export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManagerProps) {
+export function FixtureManager({
+  torneoId,
+  fixture,
+  hasFixture,
+}: FixtureManagerProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showGenerateDialog, setShowGenerateDialog] = useState(false);
@@ -132,7 +136,10 @@ export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManager
         <CardContent>
           <div className="flex gap-2">
             {!hasFixture ? (
-              <Dialog open={showGenerateDialog} onOpenChange={setShowGenerateDialog}>
+              <Dialog
+                open={showGenerateDialog}
+                onOpenChange={setShowGenerateDialog}
+              >
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="mr-2 h-4 w-4" />
@@ -152,7 +159,8 @@ export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManager
                       <div className="space-y-0.5">
                         <Label htmlFor="double-round">Ida y Vuelta</Label>
                         <p className="text-sm text-muted-foreground">
-                          Cada equipo juega dos veces contra todos (local y visitante)
+                          Cada equipo juega dos veces contra todos (local y
+                          visitante)
                         </p>
                       </div>
                       <Switch
@@ -163,12 +171,14 @@ export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManager
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="start-date">Fecha de Inicio (Opcional)</Label>
+                      <Label htmlFor="start-date">
+                        Fecha de Inicio (Opcional)
+                      </Label>
                       <Input
                         id="start-date"
                         type="date"
                         value={startDate}
-                        onChange={e => setStartDate(e.target.value)}
+                        onChange={(e) => setStartDate(e.target.value)}
                       />
                       <p className="text-sm text-muted-foreground">
                         Fecha de la primera jornada
@@ -183,7 +193,9 @@ export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManager
                         min="1"
                         max="30"
                         value={daysInterval}
-                        onChange={e => setDaysInterval(Number(e.target.value))}
+                        onChange={(e) =>
+                          setDaysInterval(Number(e.target.value))
+                        }
                       />
                       <p className="text-sm text-muted-foreground">
                         Días de separación entre cada jornada (recomendado: 7)
@@ -199,7 +211,10 @@ export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManager
                     >
                       Cancelar
                     </Button>
-                    <Button onClick={handleGenerateFixture} disabled={isGenerating}>
+                    <Button
+                      onClick={handleGenerateFixture}
+                      disabled={isGenerating}
+                    >
                       {isGenerating ? (
                         <>
                           <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
@@ -218,7 +233,10 @@ export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManager
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   Editar Fechas
                 </Button>
-                <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+                <Dialog
+                  open={showDeleteDialog}
+                  onOpenChange={setShowDeleteDialog}
+                >
                   <DialogTrigger asChild>
                     <Button variant="destructive">
                       <Trash2 className="mr-2 h-4 w-4" />
@@ -229,8 +247,8 @@ export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManager
                     <DialogHeader>
                       <DialogTitle>¿Eliminar Fixture?</DialogTitle>
                       <DialogDescription>
-                        Esta acción eliminará todas las jornadas y partidos del torneo.
-                        Los resultados ya registrados se perderán.
+                        Esta acción eliminará todas las jornadas y partidos del
+                        torneo. Los resultados ya registrados se perderán.
                         <br />
                         <br />
                         ¿Estás seguro de que deseas continuar?
@@ -291,7 +309,9 @@ export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManager
                       {jornada.activa && (
                         <Badge variant="default">Activa</Badge>
                       )}
-                      <Badge variant="outline">{partidos.length} partidos</Badge>
+                      <Badge variant="outline">
+                        {partidos.length} partidos
+                      </Badge>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
@@ -301,7 +321,7 @@ export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManager
                           No hay partidos programados para esta jornada
                         </p>
                       ) : (
-                        partidos.map(partido => (
+                        partidos.map((partido) => (
                           <Card key={partido.id}>
                             <CardContent className="pt-6">
                               <div className="grid grid-cols-12 gap-4 items-center">
@@ -319,7 +339,9 @@ export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManager
                                       <span className="text-2xl font-bold">
                                         {partido.goles_equipo_1 ?? 0}
                                       </span>
-                                      <span className="text-muted-foreground">-</span>
+                                      <span className="text-muted-foreground">
+                                        -
+                                      </span>
                                       <span className="text-2xl font-bold">
                                         {partido.goles_equipo_2 ?? 0}
                                       </span>
@@ -328,16 +350,24 @@ export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManager
                                     <div className="text-sm text-muted-foreground">
                                       {partido.fecha ? (
                                         <>
-                                          <p>{formatDate(new Date(partido.fecha))}</p>
+                                          <p>
+                                            {formatDate(
+                                              new Date(partido.fecha),
+                                            )}
+                                          </p>
                                           <p className="font-medium">
-                                            {formatTime(new Date(partido.fecha))}
+                                            {formatTime(
+                                              new Date(partido.fecha),
+                                            )}
                                           </p>
                                         </>
                                       ) : (
                                         <p>Por programar</p>
                                       )}
                                       {partido.cancha && (
-                                        <p className="text-xs mt-1">{partido.cancha}</p>
+                                        <p className="text-xs mt-1">
+                                          {partido.cancha}
+                                        </p>
                                       )}
                                     </div>
                                   )}
@@ -374,7 +404,9 @@ export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManager
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <CalendarIcon className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No hay fixture generado</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              No hay fixture generado
+            </h3>
             <p className="text-sm text-muted-foreground text-center max-w-sm mb-4">
               Genera automáticamente el fixture para todos los equipos usando el
               algoritmo round-robin. Cada equipo jugará contra todos los demás.

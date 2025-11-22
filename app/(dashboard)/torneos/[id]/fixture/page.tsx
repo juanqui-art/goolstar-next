@@ -1,9 +1,15 @@
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { Suspense } from "react";
 import { FixtureManager } from "@/components/torneos/fixture-manager";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 interface FixturePageProps {
   params: Promise<{
@@ -69,13 +75,15 @@ async function getFixtureData(torneoId: string) {
     .eq("torneo_id", torneoId);
 
   // Group matches by jornada
-  const fixture = jornadas?.map(jornada => {
-    const matches = partidos?.filter(p => p.jornada_id === jornada.id) || [];
-    return {
-      jornada,
-      partidos: matches,
-    };
-  }) || [];
+  const fixture =
+    jornadas?.map((jornada) => {
+      const matches =
+        partidos?.filter((p) => p.jornada_id === jornada.id) || [];
+      return {
+        jornada,
+        partidos: matches,
+      };
+    }) || [];
 
   return { fixture, hasFixture: (partidos?.length || 0) > 0 };
 }
@@ -118,7 +126,9 @@ export default async function FixturePage({ params }: FixturePageProps) {
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Fase Actual</CardDescription>
-            <CardTitle className="text-xl capitalize">{torneo.fase_actual}</CardTitle>
+            <CardTitle className="text-xl capitalize">
+              {torneo.fase_actual}
+            </CardTitle>
           </CardHeader>
         </Card>
       </div>
@@ -134,7 +144,13 @@ export default async function FixturePage({ params }: FixturePageProps) {
 async function FixtureContent({ torneoId }: { torneoId: string }) {
   const { fixture, hasFixture } = await getFixtureData(torneoId);
 
-  return <FixtureManager torneoId={torneoId} fixture={fixture} hasFixture={hasFixture} />;
+  return (
+    <FixtureManager
+      torneoId={torneoId}
+      fixture={fixture}
+      hasFixture={hasFixture}
+    />
+  );
 }
 
 function FixtureSkeleton() {
@@ -145,7 +161,7 @@ function FixtureSkeleton() {
         <Skeleton className="h-4 w-96" />
       </CardHeader>
       <CardContent className="space-y-4">
-        {[1, 2, 3].map(i => (
+        {[1, 2, 3].map((i) => (
           <div key={i} className="space-y-2">
             <Skeleton className="h-6 w-32" />
             <div className="space-y-2">

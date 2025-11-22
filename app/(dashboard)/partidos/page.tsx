@@ -1,10 +1,10 @@
-import { Suspense } from "react";
-import Link from "next/link";
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
+import { Suspense } from "react";
 import { getPartidos } from "@/actions/partidos";
 import { PartidosTabs } from "@/components/partidos/partidos-tabs";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default async function PartidosPage() {
   return (

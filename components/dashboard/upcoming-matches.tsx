@@ -1,19 +1,25 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { formatDate, formatTime } from "@/lib/utils/format"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { formatDate, formatTime } from "@/lib/utils/format";
 
 interface Match {
-  id: string
-  fecha: string
-  cancha: string | null
-  completado: boolean
-  equipo_local: { nombre: string } | null
-  equipo_visitante: { nombre: string } | null
+  id: string;
+  fecha: string;
+  cancha: string | null;
+  completado: boolean;
+  equipo_local: { nombre: string } | null;
+  equipo_visitante: { nombre: string } | null;
 }
 
 interface UpcomingMatchesProps {
-  matches: Match[]
-  title?: string
-  description?: string
+  matches: Match[];
+  title?: string;
+  description?: string;
 }
 
 export function UpcomingMatches({
@@ -34,7 +40,7 @@ export function UpcomingMatches({
           </p>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -63,12 +69,14 @@ export function UpcomingMatches({
               </div>
               <div className="text-right text-xs text-muted-foreground space-y-1">
                 <div>{formatDate(new Date(match.fecha))}</div>
-                <div className="font-medium">{formatTime(new Date(match.fecha))}</div>
+                <div className="font-medium">
+                  {formatTime(new Date(match.fecha))}
+                </div>
               </div>
             </div>
           ))}
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

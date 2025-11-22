@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { createPartido, updatePartido } from "@/actions/partidos";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,7 +24,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Partido, partidoSchema } from "@/lib/validations/partido";
-import { createPartido, updatePartido } from "@/actions/partidos";
 
 interface PartidoFormProps {
   initialData?: Partial<Partido>;

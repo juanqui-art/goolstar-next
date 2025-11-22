@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { registrarCambio } from "@/actions/partidos";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { registrarCambio } from "@/actions/partidos";
 
 interface CambioFormProps {
   partidoId: string;

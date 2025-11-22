@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { Calendar, List } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PartidosList } from "./partidos-list-view";
-import { CalendarioPartidos } from "./calendario-partidos";
+import { useState } from "react";
 import type { PartidoWithRelations } from "@/actions/partidos";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CalendarioPartidos } from "./calendario-partidos";
+import { PartidosList } from "./partidos-list-view";
 
 interface PartidosTabsProps {
   partidos: PartidoWithRelations[];

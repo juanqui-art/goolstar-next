@@ -1,8 +1,8 @@
 "use server";
 
-import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { torneoSchema, type Torneo } from "@/lib/validations/torneo";
 import { revalidatePath } from "next/cache";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { type Torneo, torneoSchema } from "@/lib/validations/torneo";
 import type { Database } from "@/types/database";
 
 type TorneoRow = Database["public"]["Tables"]["torneos"]["Row"];
@@ -40,9 +40,7 @@ export async function createTorneo(data: unknown): Promise<{ id: string }> {
       nombre: validated.nombre,
       categoria_id: validated.categoria_id,
       fecha_inicio: validated.fecha_inicio.toISOString(),
-      fecha_fin: validated.fecha_fin
-        ? validated.fecha_fin.toISOString()
-        : null,
+      fecha_fin: validated.fecha_fin ? validated.fecha_fin.toISOString() : null,
       tiene_fase_grupos: validated.tiene_fase_grupos,
       tiene_eliminacion_directa: validated.tiene_eliminacion_directa,
       activo: true,
@@ -94,7 +92,7 @@ export async function getTorneos(options?: {
             precio_inscripcion
           )
         `
-          : "*"
+          : "*",
       )
       .order("created_at", { ascending: false });
 
@@ -139,7 +137,7 @@ export async function getTorneo(id: string): Promise<TorneoWithRelations> {
           limite_amarillas,
           multa_roja
         )
-      `
+      `,
       )
       .eq("id", id)
       .single();
@@ -182,7 +180,7 @@ export async function getTorneo(id: string): Promise<TorneoWithRelations> {
  */
 export async function updateTorneo(
   id: string,
-  data: unknown
+  data: unknown,
 ): Promise<TorneoRow> {
   try {
     // 1. Validate with torneoSchema
@@ -196,9 +194,7 @@ export async function updateTorneo(
       nombre: validated.nombre,
       categoria_id: validated.categoria_id,
       fecha_inicio: validated.fecha_inicio.toISOString(),
-      fecha_fin: validated.fecha_fin
-        ? validated.fecha_fin.toISOString()
-        : null,
+      fecha_fin: validated.fecha_fin ? validated.fecha_fin.toISOString() : null,
       tiene_fase_grupos: validated.tiene_fase_grupos,
       tiene_eliminacion_directa: validated.tiene_eliminacion_directa,
       updated_at: new Date().toISOString(),
@@ -338,7 +334,7 @@ export async function getTorneoStats(torneoId: string) {
               nombre
             )
           )
-        `
+        `,
         )
         .eq("torneo_id", torneoId)
         .limit(10),
@@ -351,7 +347,7 @@ export async function getTorneoStats(torneoId: string) {
         acc[jugadorId] = (acc[jugadorId] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     return {

@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { registrarTarjeta } from "@/actions/partidos";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { registrarTarjeta } from "@/actions/partidos";
 
 interface TarjetaFormProps {
   partidoId: string;
@@ -46,9 +46,7 @@ export function TarjetaForm({
         tipo: tipoTarjeta === "amarilla" ? "AMARILLA" : "ROJA",
       });
 
-      toast.success(
-        `Tarjeta ${tipoTarjeta} registrada correctamente`,
-      );
+      toast.success(`Tarjeta ${tipoTarjeta} registrada correctamente`);
 
       // Reset form
       setJugadorId("");

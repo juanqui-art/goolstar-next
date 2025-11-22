@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { createTorneo, updateTorneo } from "@/actions/torneos";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -24,7 +25,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Torneo, torneoSchema } from "@/lib/validations/torneo";
-import { createTorneo, updateTorneo } from "@/actions/torneos";
 
 interface TorneoFormProps {
   initialData?: Partial<Torneo>;

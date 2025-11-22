@@ -1,7 +1,15 @@
 "use client";
 
+import {
+  Calendar as CalendarIcon,
+  Clock,
+  Eye,
+  MapPin,
+  Pencil,
+} from "lucide-react";
 import Link from "next/link";
-import { Eye, Pencil, Calendar as CalendarIcon, Clock, MapPin } from "lucide-react";
+import type { PartidoWithRelations } from "@/actions/partidos";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,9 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { formatDate, formatTime } from "@/lib/utils/format";
-import type { PartidoWithRelations } from "@/actions/partidos";
 
 interface PartidosListProps {
   partidos: PartidoWithRelations[];
@@ -47,7 +53,9 @@ export function PartidosList({ partidos }: PartidosListProps) {
         {partidos.length === 0 ? (
           <div className="text-center py-12">
             <CalendarIcon className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No hay partidos programados</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              No hay partidos programados
+            </h3>
             <p className="text-muted-foreground mb-4">
               Comienza creando el fixture para tu torneo
             </p>
@@ -68,7 +76,7 @@ export function PartidosList({ partidos }: PartidosListProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedPartidos.map(partido => (
+              {sortedPartidos.map((partido) => (
                 <TableRow key={partido.id}>
                   <TableCell>
                     {partido.fecha ? (
@@ -83,7 +91,9 @@ export function PartidosList({ partidos }: PartidosListProps) {
                         </div>
                       </div>
                     ) : (
-                      <span className="text-sm text-muted-foreground">Por programar</span>
+                      <span className="text-sm text-muted-foreground">
+                        Por programar
+                      </span>
                     )}
                   </TableCell>
                   <TableCell>
@@ -99,7 +109,8 @@ export function PartidosList({ partidos }: PartidosListProps) {
                   <TableCell className="text-center">
                     {partido.completado ? (
                       <div className="font-mono font-bold text-lg">
-                        {partido.goles_equipo_1 ?? 0} - {partido.goles_equipo_2 ?? 0}
+                        {partido.goles_equipo_1 ?? 0} -{" "}
+                        {partido.goles_equipo_2 ?? 0}
                       </div>
                     ) : (
                       <span className="text-muted-foreground">vs</span>

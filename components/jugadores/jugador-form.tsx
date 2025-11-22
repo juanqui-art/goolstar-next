@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { createJugador, updateJugador } from "@/actions/jugadores";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,7 +24,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Jugador, jugadorSchema } from "@/lib/validations/jugador";
-import { createJugador, updateJugador } from "@/actions/jugadores";
 
 interface JugadorFormProps {
   initialData?: Partial<Jugador>;

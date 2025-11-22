@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { createEquipo, updateEquipo } from "@/actions/equipos";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,7 +24,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Equipo, equipoSchema } from "@/lib/validations/equipo";
-import { createEquipo, updateEquipo } from "@/actions/equipos";
 
 interface EquipoFormProps {
   initialData?: Partial<Equipo>;
