@@ -12,7 +12,7 @@
 |-------|-------|----------|--------|
 | **Phase 0** | Setup Base | 1-2 days | ✅ COMPLETE |
 | **Phase 1** | Infrastructure (DB, Auth, Types) | 1-2 days | ✅ COMPLETE |
-| **Phase 2** | Dashboard & Entity Pages | 4-5 days | 🔄 IN PROGRESS (80%) |
+| **Phase 2** | Dashboard & Entity Pages | 4-5 days | 🔄 IN PROGRESS (90%) |
 | **Phase 3** | Gestión Partidos | 3-4 days | ⏳ Pending |
 | **Phase 4** | Estadísticas | 2-3 days | ⏳ Pending |
 | **Phase 5** | Sistema Financiero | 2-3 days | ⏳ Pending |
@@ -202,7 +202,7 @@ app/(dashboard)/jugadores/
 
 ---
 
-## 📄 Phase 2: Dashboard & Entity Pages - 🔄 IN PROGRESS (80%)
+## 📄 Phase 2: Dashboard & Entity Pages - 🔄 IN PROGRESS (90%)
 
 ### Objective
 Create complete project structure with pages, components, and utilities for all entities.
@@ -211,17 +211,17 @@ Create complete project structure with pages, components, and utilities for all 
 - [x] **Task 1:** Project structure (67 files created: pages, components, actions, utilities, hooks) ✅
 - [x] **Task 2:** Dashboard list pages (6 pages with proper layouts) ✅
 - [x] **Task 3:** Utility functions (23+ functions with JSDoc) ✅
-- [ ] **Task 4:** Component skeletons (9+ form/list components) ⏳ NEXT
-- [ ] **Task 5:** Dashboard home improvements (stats cards, alerts) ⏳ PENDING
+- [x] **Task 4:** Component skeletons (9+ form/list components with full validation) ✅
+- [ ] **Task 5:** Dashboard home improvements (stats cards, alerts) ⏳ NEXT
 
 ### Current Progress
 - ✅ 26 dashboard pages created
-- ✅ 39 components created
+- ✅ 39 components created (9 with full form validation)
 - ✅ 7 server action files with stubs
 - ✅ 5 utility files with full implementation
 - ✅ 4 custom hooks created
-- ✅ Tasks 1, 2, 3 complete (80% of Phase 2)
-- ⏳ Tasks 4, 5 remaining (20% of Phase 2)
+- ✅ Tasks 1, 2, 3, 4 complete (90% of Phase 2)
+- ⏳ Task 5 remaining (10% of Phase 2)
 
 **See:** [docs/phases/junior-tasks-phase2.md](docs/phases/junior-tasks-phase2.md) for detailed task breakdown.
 
@@ -561,15 +561,15 @@ Test MVP completeness and deploy to production.
 ## 📅 Timeline Summary
 
 ```
-Week 1: Phase 0 + Phase 1 + Phase 2 (Setup + Infrastructure + Pages) ✅ 60% DONE
+Week 1: Phase 0 + Phase 1 + Phase 2 (Setup + Infrastructure + Pages) ✅ 65% DONE
 Week 2: Phase 2 completion + Phase 3 (Dashboard + Match Management)
 Week 3: Phase 4 + Phase 5 (Stats + Financial)
 Week 4: Phase 6 (Admin Panel)
 Week 5: Phase 7 (Testing + Deploy)
 
 Total: ~25 business days = 5 weeks
-Current Progress: Phase 0 & 1 complete (100%), Phase 2 in progress (80%)
-Overall MVP Progress: ~33% complete
+Current Progress: Phase 0 & 1 complete (100%), Phase 2 in progress (90%)
+Overall MVP Progress: ~36% complete
 ```
 
 ---
@@ -600,12 +600,12 @@ MVP is complete when:
 - ✅ Validation schemas for all entities
 - ✅ Route protection middleware
 
-**In Progress:** 🔄 Phase 2 - Dashboard & Entity Pages (80% complete)
+**In Progress:** 🔄 Phase 2 - Dashboard & Entity Pages (90% complete)
 - ✅ Task 1: Project structure (67 files created)
 - ✅ Task 2: Dashboard list pages (complete)
 - ✅ Task 3: Utility functions (23+ functions complete)
-- ⏳ Task 4: Component skeletons (pending - NEXT)
-- ⏳ Task 5: Dashboard home improvements (pending)
+- ✅ Task 4: Component skeletons (complete - 9 components with validation)
+- ⏳ Task 5: Dashboard home improvements (pending - NEXT)
 
 **Next Steps:**
 1. Complete Phase 2 Task 4 (Component skeletons - forms with validation)
@@ -625,5 +625,5 @@ MVP is complete when:
 
 ---
 
-**Last Updated:** 2025-11-22 (Documentation reorganized, progress updated to 80% Phase 2)
+**Last Updated:** 2025-11-22 (Phase 2 Task 4 complete, progress updated to 90%)
 **Owner:** GoolStar Development Team
