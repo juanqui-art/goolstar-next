@@ -202,17 +202,17 @@ app/(dashboard)/jugadores/
 
 ---
 
-## 📄 Phase 2: Dashboard & Entity Pages - 🔄 IN PROGRESS (20%)
+## 📄 Phase 2: Dashboard & Entity Pages - 🔄 IN PROGRESS (80%)
 
 ### Objective
 Create complete project structure with pages, components, and utilities for all entities.
 
 ### Deliverables
 - [x] **Task 1:** Project structure (81 files created: pages, components, actions, utilities, hooks) ✅
-- [ ] **Task 2:** Dashboard list pages (6 pages with proper layouts) 🔄 IN PROGRESS
+- [x] **Task 2:** Dashboard list pages (6 pages with proper layouts) ✅
 - [x] **Task 3:** Utility functions (23+ functions with JSDoc) ✅
-- [ ] **Task 4:** Component skeletons (9+ form/list components)
-- [ ] **Task 5:** Dashboard home improvements (stats cards, alerts)
+- [ ] **Task 4:** Component skeletons (9+ form/list components) ⏳ NEXT
+- [x] **Task 5:** Dashboard home improvements (stats cards, alerts) ✅
 
 ### Current Progress
 - ✅ 26 dashboard pages created
