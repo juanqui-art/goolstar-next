@@ -1,6 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Link from "next/link"
+import { Pencil, Eye, AlertCircle, CheckCircle } from "lucide-react"
 
 export default function JugadoresPage() {
   // TODO: Replace with getJugadores() Server Action
@@ -27,11 +29,72 @@ export default function JugadoresPage() {
         </CardHeader>
         <CardContent>
           {jugadores.length === 0 ? (
-            <p className="text-gray-500">No hay jugadores registrados aún.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              {/* TODO: Add table with columns: Nombre, Dorsal, Equipo, Posición, Estado, Acciones */}
+            <div className="text-center py-8">
+              <p className="text-gray-500 mb-4">No hay jugadores registrados aún.</p>
+              <Link href="/jugadores/nuevo">
+                <Button variant="outline">Registrar primer jugador</Button>
+              </Link>
             </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nombre Completo</TableHead>
+                  <TableHead>Cédula</TableHead>
+                  <TableHead>Dorsal</TableHead>
+                  <TableHead>Equipo</TableHead>
+                  <TableHead>Posición</TableHead>
+                  <TableHead>Estado</TableHead>
+                  <TableHead className="text-right">Acciones</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {/* TODO: Map jugadores data here */}
+                {/* Example row structure:
+                <TableRow>
+                  <TableCell className="font-medium">
+                    {formatPlayerName(
+                      jugador.primer_nombre,
+                      jugador.segundo_nombre,
+                      jugador.primer_apellido,
+                      jugador.segundo_apellido
+                    )}
+                  </TableCell>
+                  <TableCell>{jugador.cedula}</TableCell>
+                  <TableCell>
+                    <span className="font-mono font-bold">#{jugador.numero_camiseta}</span>
+                  </TableCell>
+                  <TableCell>{jugador.equipo.nombre}</TableCell>
+                  <TableCell className="capitalize">{jugador.posicion || '-'}</TableCell>
+                  <TableCell>
+                    {jugador.suspendido ? (
+                      <div className="flex items-center gap-1 text-red-600">
+                        <AlertCircle className="h-4 w-4" />
+                        <span className="text-xs">Suspendido</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1 text-green-600">
+                        <CheckCircle className="h-4 w-4" />
+                        <span className="text-xs">Habilitado</span>
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <Link href={`/jugadores/${jugador.id}`}>
+                      <Button variant="ghost" size="sm">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                    <Link href={`/jugadores/${jugador.id}/editar`}>
+                      <Button variant="ghost" size="sm">
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+                */}
+              </TableBody>
+            </Table>
           )}
         </CardContent>
       </Card>
