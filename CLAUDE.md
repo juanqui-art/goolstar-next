@@ -11,6 +11,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Timeline:** 4-5 weeks for MVP
 **See also:** [ROADMAP.md](ROADMAP.md) for detailed implementation phases
 
+## ⚠️ Known Issues & Solutions
+
+### Build Error: Context Prerendering Issue (RESOLVED)
+**Problem:** `TypeError: Cannot read properties of null (reading 'useContext')`
+
+**Solution:** Implement Cache Components (Recommended)
+- **Status:** Documented with 3 implementation options
+- **Recommended:** Cache Components with `use cache` directive (Option 3)
+- **Estimated effort:** 4-6 hours for full implementation
+
+**Related Documentation:**
+- See `CACHE_COMPONENTS_ANALYSIS.md` for detailed analysis
+- See `IMPLEMENTATION_STEPS.md` for step-by-step guide
+- See `SOLUTION_SUMMARY.md` for quick comparison of options
+- See `CACHE_COMPONENTS_IMPLEMENTATION_GUIDE.md` for practical examples
+
 ## Development Commands
 
 ### Common Tasks (Using Bun)
