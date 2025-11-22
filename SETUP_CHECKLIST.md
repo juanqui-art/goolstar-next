@@ -179,30 +179,114 @@ bun run dev
 
 ---
 
-## Phase 5: Phase 2 Development (⏳ BLOCKED UNTIL PHASE 1 COMPLETE)
+## Phase 5: Phase 2 Development - Dashboard & Entity Pages
 
-### Tournament CRUD (Torneos)
+### ✅ Task 1: Project Structure & Placeholders (COMPLETE)
+**Assigned to:** Junior #3 | **Status:** ✅ Complete | **Completed:** 2025-11-22
+
+- [x] **Dashboard Pages** - 26 page files created
+  - [x] `/torneos` - 6 pages (list, nuevo, [id], [id]/editar, [id]/tabla, [id]/estadisticas)
+  - [x] `/equipos` - 5 pages (list, nuevo, [id], [id]/editar, [id]/financiero)
+  - [x] `/jugadores` - 4 pages (list, nuevo, [id], [id]/editar)
+  - [x] `/partidos` - 4 pages (list, nuevo, [id], [id]/acta)
+  - [x] `/financiero` - 2 pages (dashboard, transacciones)
+  - [x] `/admin` - 3 pages (dashboard, documentos, usuarios)
+
+- [x] **Components** - 39 component files created
+  - [x] Torneos components (4 files: form, list, card, tabla-posiciones)
+  - [x] Equipos components (4 files: form, list, card, stats)
+  - [x] Jugadores components (4 files: form, list, card, documento-upload)
+  - [x] Partidos components (7 files: form, list, card, gol-form, tarjeta-form, cambio-form, acta)
+  - [x] Financiero components (4 files: transaccion-form, historial-pagos, balance-card, deuda-detalle)
+  - [x] Admin components (5 files: documento-queue, viewer, verificacion, user-list, user-form)
+  - [x] Auth components (2 files: login-form, register-form)
+  - [x] Layout components (3 files: navbar, sidebar, footer)
+  - [x] UI components (6 files: button, card, dialog, form, input, label)
+
+- [x] **Server Actions** - 7 action files created
+  - [x] `actions/torneos.ts` (7 functions: CRUD + standings + stats)
+  - [x] `actions/equipos.ts` (5 functions: CRUD + getByTorneo)
+  - [x] `actions/jugadores.ts` (5 functions: CRUD + getByEquipo)
+  - [x] `actions/partidos.ts` (9 functions: CRUD + goles + tarjetas + cambios)
+  - [x] `actions/financiero.ts` (4 functions: transactions + debt + balance)
+  - [x] `actions/admin.ts` (5 functions: documents + users)
+  - [x] `actions/auth.ts` (4 functions: login, register, logout, getCurrentUser)
+
+- [x] **Utility Functions** - 5 utility files created
+  - [x] `lib/utils/points.ts` (5 functions: calculatePoints, goalDifference, matchResult, etc.)
+  - [x] `lib/utils/standings.ts` (3 functions: sortStandings, getTeamPosition, etc.)
+  - [x] `lib/utils/suspension.ts` (4 functions: calculateSuspension, isPlayerSuspended, etc.)
+  - [x] `lib/utils/format.ts` (7 functions: formatCurrency, formatDate, formatPlayerName, etc.)
+  - [x] `lib/utils/debt.ts` (4 functions: calculateDebt, debtBreakdown, hasDebt, etc.)
+
+- [x] **Custom Hooks** - 4 hook files created
+  - [x] `lib/hooks/use-torneos.ts` (2 hooks: useTorneos, useTorneo)
+  - [x] `lib/hooks/use-equipos.ts` (2 hooks: useEquipos, useEquipo)
+  - [x] `lib/hooks/use-jugadores.ts` (2 hooks: useJugadores, useJugador)
+  - [x] `lib/hooks/use-partidos.ts` (2 hooks: usePartidos, usePartido)
+
+- [x] **Quality Checks**
+  - [x] All files have TODO comments explaining next steps
+  - [x] All imports use `@/` path aliases
+  - [x] All files properly structured with TypeScript types
+  - [x] Consistent patterns across all files
+  - [x] No syntax errors (runtime errors expected until dependencies installed)
+
+**Total Files Created:** 81 files (26 pages + 39 components + 7 actions + 5 utils + 4 hooks)
+
+### ⏳ Task 2: Dashboard List Pages (PENDING)
+**Assigned to:** Junior #1 or #2 | **Status:** Pending | **Depends on:** Task 1 ✅
+
+- [ ] Implement 6 dashboard list pages
+- [ ] Consistent layout across all pages
+- [ ] Responsive design
+- [ ] Navigation links working
+
+### ⏳ Task 3: Utility Functions (PENDING)
+**Assigned to:** Junior #3 | **Status:** Pending | **Independent**
+
+- [ ] Implement business logic in utility functions
+- [ ] Add unit tests (optional)
+- [ ] Full JSDoc documentation
+
+### ⏳ Task 4: Component Skeletons (PENDING)
+**Assigned to:** Junior #2 | **Status:** Pending | **Depends on:** Task 1 ✅
+
+- [ ] Create 9+ form and list components
+- [ ] Implement react-hook-form + Zod integration
+- [ ] Add proper TypeScript typing
+
+### ⏳ Task 5: Dashboard Home Improvements (PENDING)
+**Assigned to:** Junior #1 | **Status:** Pending | **Independent**
+
+- [ ] Add stats cards to dashboard
+- [ ] Implement visual statistics
+- [ ] Add quick actions section
+
+### Entity CRUD Operations (⏳ AFTER PHASE 2 TASKS 1-5)
+
+**Tournament CRUD (Torneos)**
 - [ ] Create tournament page
 - [ ] Read/List tournaments
 - [ ] Update tournament
 - [ ] Delete tournament
 - [ ] Validation with `torneoSchema`
 
-### Team CRUD (Equipos)
+**Team CRUD (Equipos)**
 - [ ] Create team page
 - [ ] Read/List teams
 - [ ] Update team
 - [ ] Delete team
 - [ ] Validation with `equipoSchema`
 
-### Player CRUD (Jugadores)
+**Player CRUD (Jugadores)**
 - [ ] Create player page
 - [ ] Read/List players
 - [ ] Update player
 - [ ] Delete player
 - [ ] Validation with `jugadorSchema`
 
-### Match Management (Partidos)
+**Match Management (Partidos)**
 - [ ] Create match page
 - [ ] Record match results
 - [ ] Validation with `partidoSchema` (XOR constraint)
