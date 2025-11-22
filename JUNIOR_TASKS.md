@@ -40,8 +40,8 @@ Create reusable UI components and main dashboard layout using shadcn/ui.
 
 **Steps:**
 ```bash
-# Install shadcn/ui
-npx shadcn-ui@latest init
+# Install shadcn/ui (using bunx with Bun)
+bunx shadcn@latest init
 
 # When prompted:
 # - Choose: typescript (yes)
@@ -52,25 +52,25 @@ npx shadcn-ui@latest init
 **Add Components:**
 ```bash
 # Button
-npx shadcn-ui@latest add button
+bunx shadcn@latest add button
 
 # Input
-npx shadcn-ui@latest add input
+bunx shadcn@latest add input
 
 # Form
-npx shadcn-ui@latest add form
+bunx shadcn@latest add form
 
 # Card
-npx shadcn-ui@latest add card
+bunx shadcn@latest add card
 
 # Dialog
-npx shadcn-ui@latest add dialog
+bunx shadcn@latest add dialog
 
 # Table
-npx shadcn-ui@latest add table
+bunx shadcn@latest add table
 
 # Sidebar (optional, complex)
-npx shadcn-ui@latest add sidebar
+bunx shadcn@latest add sidebar
 ```
 
 **Deliverable:**
