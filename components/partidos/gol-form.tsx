@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { registrarGol } from "@/actions/partidos";
 
 interface GolFormProps {
   partidoId: string;
@@ -19,20 +21,39 @@ export function GolForm({ partidoId, equipoId, onSubmit }: GolFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
 
-    // TODO: Connect to Server Action registrarGol()
-    console.log("Registering gol:", {
-      partidoId,
-      equipoId,
-      jugadorId,
-      minuto,
-    });
+    if (!jugadorId) {
+      toast.error("Por favor selecciona un jugador");
+      return;
+    }
 
-    setTimeout(() => {
-      setSubmitting(false);
+    try {
+      setSubmitting(true);
+
+      await registrarGol({
+        partido_id: partidoId,
+        equipo_id: equipoId,
+        jugador_id: jugadorId,
+        minuto,
+      });
+
+      toast.success("Gol registrado correctamente");
+
+      // Reset form
+      setJugadorId("");
+      setMinuto(0);
+
       if (onSubmit) onSubmit();
-    }, 1000);
+    } catch (error) {
+      console.error("Error registering gol:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Error al registrar el gol. Por favor intenta de nuevo.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

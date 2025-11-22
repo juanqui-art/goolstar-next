@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { registrarCambio } from "@/actions/partidos";
 
 interface CambioFormProps {
   partidoId: string;
@@ -20,21 +22,46 @@ export function CambioForm({ partidoId, equipoId, onSubmit }: CambioFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
 
-    // TODO: Connect to Server Action registrarCambio()
-    console.log("Registering cambio:", {
-      partidoId,
-      equipoId,
-      jugadorSaleId,
-      jugadorEntraId,
-      minuto,
-    });
+    if (!jugadorSaleId || !jugadorEntraId) {
+      toast.error("Por favor selecciona ambos jugadores");
+      return;
+    }
 
-    setTimeout(() => {
-      setSubmitting(false);
+    if (jugadorSaleId === jugadorEntraId) {
+      toast.error("Los jugadores deben ser diferentes");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+
+      await registrarCambio({
+        partido_id: partidoId,
+        equipo_id: equipoId,
+        jugador_sale_id: jugadorSaleId,
+        jugador_entra_id: jugadorEntraId,
+        minuto,
+      });
+
+      toast.success("Cambio registrado correctamente");
+
+      // Reset form
+      setJugadorSaleId("");
+      setJugadorEntraId("");
+      setMinuto(0);
+
       if (onSubmit) onSubmit();
-    }, 1000);
+    } catch (error) {
+      console.error("Error registering cambio:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Error al registrar el cambio. Por favor intenta de nuevo.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

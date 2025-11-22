@@ -97,26 +97,7 @@ export async function getPartidos(options?: {
 
     let query = supabase
       .from("partidos")
-      .select(
-        options?.includeRelations
-          ? `
-          *,
-          equipo_local:equipo_1_id (
-            id,
-            nombre
-          ),
-          equipo_visitante:equipo_2_id (
-            id,
-            nombre
-          ),
-          arbitros (
-            id,
-            nombre,
-            apellido
-          )
-        `
-          : "*"
-      )
+      .select("*")
       .order("fecha", { ascending: false });
 
     // Apply filters
@@ -159,28 +140,7 @@ export async function getPartido(id: string): Promise<PartidoWithRelations> {
     // Get partido with related information
     const { data: partido, error } = await supabase
       .from("partidos")
-      .select(
-        `
-        *,
-        equipo_local:equipo_1_id (
-          id,
-          nombre
-        ),
-        equipo_visitante:equipo_2_id (
-          id,
-          nombre
-        ),
-        arbitros (
-          id,
-          nombre,
-          apellido
-        ),
-        torneos (
-          id,
-          nombre
-        )
-      `
-      )
+      .select("*")
       .eq("id", id)
       .single();
 
@@ -374,35 +334,25 @@ export async function registrarGol(
 /**
  * Register a card (yellow or red)
  */
-export async function registrarTarjeta(
-  partidoId: string,
-  jugadorId: string,
-  tipoTarjeta: "amarilla" | "roja",
-  minuto: number
-): Promise<{ id: string }> {
+export async function registrarTarjeta(data: {
+  partido_id: string;
+  equipo_id: string;
+  jugador_id: string;
+  tipo: "AMARILLA" | "ROJA";
+  minuto: number;
+}): Promise<{ id: string }> {
   try {
     const supabase = await createServerSupabaseClient();
-
-    // Get partido and torneo_id
-    const { data: partido } = await supabase
-      .from("partidos")
-      .select("torneo_id")
-      .eq("id", partidoId)
-      .single();
-
-    if (!partido) {
-      throw new Error("Match not found");
-    }
 
     // Insert tarjeta
     const { data: tarjeta, error } = await supabase
       .from("tarjetas")
       .insert({
-        partido_id: partidoId,
-        jugador_id: jugadorId,
-        torneo_id: partido.torneo_id,
-        tipo_tarjeta: tipoTarjeta,
-        minuto,
+        partido_id: data.partido_id,
+        jugador_id: data.jugador_id,
+        equipo_id: data.equipo_id,
+        tipo: data.tipo,
+        minuto: data.minuto,
       })
       .select()
       .single();

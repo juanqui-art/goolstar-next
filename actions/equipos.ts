@@ -22,9 +22,9 @@ export interface EquipoWithRelations extends EquipoRow {
     id: string;
     nombre: string;
   } | null;
-  usuarios?: {
+  dirigentes?: {
     id: string;
-    email: string;
+    nombre_completo: string;
   } | null;
   _count?: {
     jugadores: number;
@@ -97,22 +97,7 @@ export async function getEquipos(options?: {
       .from("equipos")
       .select(
         options?.includeRelations
-          ? `
-          *,
-          torneos (
-            id,
-            nombre,
-            activo
-          ),
-          categorias (
-            id,
-            nombre
-          ),
-          usuarios (
-            id,
-            email
-          )
-        `
+          ? "*"
           : "*"
       )
       .order("created_at", { ascending: false });
@@ -154,27 +139,7 @@ export async function getEquipo(id: string): Promise<EquipoWithRelations> {
     // Get equipo with related information
     const { data: equipo, error } = await supabase
       .from("equipos")
-      .select(
-        `
-        *,
-        torneos (
-          id,
-          nombre,
-          activo,
-          fecha_inicio,
-          fecha_fin
-        ),
-        categorias (
-          id,
-          nombre,
-          precio_inscripcion
-        ),
-        usuarios (
-          id,
-          email
-        )
-      `
-      )
+      .select("*")
       .eq("id", id)
       .single();
 

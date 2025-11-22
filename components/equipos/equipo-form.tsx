@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Equipo, equipoSchema } from "@/lib/validations/equipo";
+import { createEquipo, updateEquipo } from "@/actions/equipos";
 
 interface EquipoFormProps {
   initialData?: Partial<Equipo>;
@@ -54,13 +56,29 @@ export function EquipoForm({
   const handleSubmit = async (data: Equipo) => {
     try {
       setIsSubmitting(true);
-      // TODO: Connect to Server Action createEquipo() or updateEquipo()
-      console.log("Form data:", data);
+
+      if (initialData?.id) {
+        // Update existing equipo
+        await updateEquipo(initialData.id, data);
+        toast.success("Equipo actualizado correctamente");
+      } else {
+        // Create new equipo
+        await createEquipo(data);
+        toast.success("Equipo creado correctamente");
+        form.reset();
+      }
+
+      // Call optional callback if provided
       if (onSubmit) {
         await onSubmit(data);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Error al guardar el equipo. Por favor intenta de nuevo.",
+      );
     } finally {
       setIsSubmitting(false);
     }

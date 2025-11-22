@@ -89,18 +89,7 @@ export async function getJugadores(options?: {
 
     let query = supabase
       .from("jugadores")
-      .select(
-        options?.includeRelations
-          ? `
-          *,
-          equipos (
-            id,
-            nombre,
-            torneo_id
-          )
-        `
-          : "*"
-      )
+      .select("*")
       .order("created_at", { ascending: false });
 
     // Apply filters
@@ -369,13 +358,18 @@ export async function uploadDocumento(
 
     // Insert documento record
     const { data: documento, error } = await supabase
-      .from("documentos_jugador")
+      .from("jugador_documentos")
       .insert({
         jugador_id: jugadorId,
-        tipo_documento: documentoData.tipo,
-        url_archivo: documentoData.url,
-        nombre_archivo: documentoData.nombre,
-        estado_verificacion: "pendiente",
+        tipo: documentoData.tipo as
+          | "dni_frontal"
+          | "dni_posterior"
+          | "cedula_frontal"
+          | "cedula_posterior"
+          | "pasaporte"
+          | "otro",
+        url: documentoData.url,
+        estado: "pendiente" as "pendiente" | "verificado" | "rechazado" | "resubir",
       })
       .select()
       .single();
@@ -406,7 +400,7 @@ export async function getJugadorDocumentos(jugadorId: string) {
     const supabase = await createServerSupabaseClient();
 
     const { data: documentos, error } = await supabase
-      .from("documentos_jugador")
+      .from("jugador_documentos")
       .select("*")
       .eq("jugador_id", jugadorId)
       .order("created_at", { ascending: false});

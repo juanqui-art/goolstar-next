@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Partido, partidoSchema } from "@/lib/validations/partido";
+import { createPartido, updatePartido } from "@/actions/partidos";
 
 interface PartidoFormProps {
   initialData?: Partial<Partido>;
@@ -58,13 +60,29 @@ export function PartidoForm({
   const handleSubmit = async (data: Partido) => {
     try {
       setIsSubmitting(true);
-      // TODO: Connect to Server Action createPartido() or updatePartido()
-      console.log("Form data:", data);
+
+      if (initialData?.id) {
+        // Update existing partido
+        await updatePartido(initialData.id, data);
+        toast.success("Partido actualizado correctamente");
+      } else {
+        // Create new partido
+        await createPartido(data);
+        toast.success("Partido creado correctamente");
+        form.reset();
+      }
+
+      // Call optional callback if provided
       if (onSubmit) {
         await onSubmit(data);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Error al guardar el partido. Por favor intenta de nuevo.",
+      );
     } finally {
       setIsSubmitting(false);
     }
