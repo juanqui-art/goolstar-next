@@ -10,68 +10,53 @@
 
 ## 📌 IMPORTANT: Read First
 
-**Prerequisite:** Phase 0/1 must be complete ✅ DONE
-
-**Status:** Phase 2 Task 1 COMPLETE ✅ | 4 Tasks Remaining
+**Prerequisite:** Phase 0/1 must be complete (Infrastructure, Auth, Schemas)
 
 **What's Ready:**
-- ✅ Database schema designed (10 migrations, 21 tables, 139 indexes)
+- ✅ Database schema designed (10 migrations, 21 tables)
 - ✅ TypeScript types generated (1471 lines)
 - ✅ Validation schemas created (auth, torneo, equipo, jugador, partido)
 - ✅ Authentication working (login/register/logout)
 - ✅ Dashboard layout ready (navbar, sidebar, footer)
 - ✅ UI components available (shadcn/ui)
-- ✅ **TASK 1 COMPLETE:** 67 files created (pages, components, actions, utilities, hooks)
 
-**What Juniors Will Build (4 Remaining Tasks):**
-- ⏳ Task 2: Dashboard List Pages (implement real content)
-- ⏳ Task 3: Improve Utility Functions (documentation + tests)
-- ⏳ Task 4: Polish Component Skeletons (form logic + validation)
-- ⏳ Task 5: Dashboard Home Improvements (stats + alerts)
+**What Juniors Will Build:**
+- 📄 Dashboard pages (torneos, equipos, jugadores, partidos, financiero, admin)
+- 🔧 Component skeletons (forms, lists, cards)
+- ⚙️ Utility functions (points, standings, format, debt calculation)
+- 📊 Improved dashboard home with stats
 
 **What Juniors Will NOT Do:**
 - ❌ Database setup (Senior already completed migrations)
-- ❌ Backend Server Actions for CRUD (Senior will do next - Phase 3)
+- ❌ Backend Server Actions for CRUD (Senior will do next)
 - ❌ Authentication (already complete)
 - ❌ Type definitions (already complete)
 
 ---
 
-## 🎯 Overview: Remaining 4 Tasks
+## 🎯 Overview: 5 New Tasks
 
-| # | Task | Priority | Time | Status | Junior Ideal | Notes |
-|---|------|----------|------|--------|--------------|-------|
-| **1** | ~~Project Structure~~ | ✅ DONE | 2-3h | **COMPLETE** | - | 67 files created, commit `81de5d4` |
-| **2** | Dashboard List Pages | ⭐⭐ HIGH | 4-6h | READY NOW | #1 or #2 | Implement real content in list pages |
-| **3** | Polish Utility Functions | ⭐⭐ HIGH | 2-3h | READY NOW | #3 | Add JSDoc docs + unit tests |
-| **4** | Polish Component Skeletons | ⭐⭐ MEDIUM | 4-6h | READY NOW | #2 | Add form logic + validation |
-| **5** | Dashboard Home Improvements | ⭐ LOW | 3-5h | READY NOW | #1 | Add stats cards + alerts |
+| # | Task | Priority | Time | Status | Junior Ideal |
+|---|------|----------|------|--------|--------------|
+| **1** | Project Structure & Placeholders | ⭐⭐⭐ CRITICAL | 2-3h | Blocks 2,4 | Any |
+| **2** | Dashboard List Pages | ⭐⭐ HIGH | 4-6h | Depends on 1 | #1 or #2 |
+| **3** | Utility Functions | ⭐⭐ HIGH | 4-6h | Independent | #3 |
+| **4** | Component Skeletons | ⭐⭐ MEDIUM | 6-8h | Depends on 1 | #2 |
+| **5** | Dashboard Home Improvements | ⭐ LOW | 3-5h | Independent | #1 |
 
-**Total Remaining Effort:** 13-21 hours | **Status:** 1/5 Complete (20%) | **Dependencies:** None (all can run in parallel)
+**Total Effort:** 19-28 hours | **Total Files:** 80+ | **Dependencies:** Only Task 1 blocks 2&4
 
 ---
 
 ## 📂 TASK 1: Project Structure & Placeholders
 
-**Status:** ✅ **COMPLETE** (2025-11-22 16:34)
-**Commit:** `81de5d4` - feat: add Phase 2 project structure with 80+ placeholder files
-**Assigned to:** Claude (Junior automation)
-**Timeline:** 2-3 hours ✅ DONE
-**Priority:** ⭐⭐⭐ CRITICAL (was blocking Task 2 & 4)
+**Assigned to:** Junior #3 (or any available)
+**Timeline:** 2-3 hours
+**Priority:** ⭐⭐⭐ CRITICAL (blocks Task 2 & 4)
 **Difficulty:** ⭐ Easy (mostly file creation)
 
 ### Objective
-✅ Create complete project structure for Phase 2 with placeholder files.
-
-### Deliverable Summary
-- ✅ 30 Dashboard page files (routes for torneos, equipos, jugadores, partidos, financiero, admin)
-- ✅ 28 Component files (forms, lists, cards for all entities)
-- ✅ 6 Server Action stub files with TODO comments
-- ✅ 5 Utility function files (points, standings, suspension, format, debt)
-- ✅ 4 Custom React hooks (use-torneos, use-equipos, use-jugadores, use-partidos)
-- ✅ 67 files total, 4,453 lines of code
-- ✅ All files have TypeScript typing and TODO comments
-- ✅ 0 TypeScript errors
+Create complete project structure for Phase 2 with placeholder files.
 
 ### Dashboard Pages Structure
 
