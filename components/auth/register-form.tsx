@@ -1,5 +1,6 @@
 "use client"
 
+import { useActionState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
@@ -14,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { registerSchema, type Register } from "@/lib/validations/auth"
+import { register as registerAction } from "@/actions/auth"
 
 export function RegisterForm() {
   const form = useForm<Register>({
@@ -25,17 +27,29 @@ export function RegisterForm() {
     },
   })
 
-  // TODO: Connect to Server Action once senior creates it
-  // const [state, formAction, isPending] = useActionState(register, null)
+  const [state, formAction, isPending] = useActionState(
+    async (prevState: any, formData: FormData) => {
+      const email = formData.get("email")
+      const password = formData.get("password")
+      const passwordConfirm = formData.get("passwordConfirm")
+      return registerAction({ email, password, passwordConfirm })
+    },
+    null
+  )
 
-  const onSubmit = async (data: Register) => {
-    // TODO: Call register server action
-    console.log("Register attempt:", data)
-  }
+  // Show error if registration failed
+  const errorMessage = state?.error && typeof state.error === "string" ? state.error : null
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form action={formAction} className="space-y-6">
+        {/* Error message */}
+        {errorMessage && (
+          <div className="rounded-md bg-red-50 p-4">
+            <p className="text-sm text-red-800">{errorMessage}</p>
+          </div>
+        )}
+
         {/* Email field */}
         <FormField
           control={form.control}
@@ -97,9 +111,9 @@ export function RegisterForm() {
         <Button
           type="submit"
           className="w-full"
-          disabled={form.formState.isSubmitting}
+          disabled={isPending || form.formState.isSubmitting}
         >
-          {form.formState.isSubmitting ? "Creating account..." : "Create Account"}
+          {isPending || form.formState.isSubmitting ? "Creating account..." : "Create Account"}
         </Button>
 
         {/* Link to login */}

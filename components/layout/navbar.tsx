@@ -2,13 +2,16 @@
 
 import { User } from "@supabase/supabase-js"
 import { Button } from "@/components/ui/button"
+import { logout } from "@/actions/auth"
 
 interface NavbarProps {
   user?: User
 }
 
 export function Navbar({ user }: NavbarProps) {
-  // TODO: Add logout action when auth is implemented
+  const handleLogout = async () => {
+    await logout()
+  }
 
   return (
     <nav className="border-b bg-white">
@@ -18,8 +21,12 @@ export function Navbar({ user }: NavbarProps) {
 
         {/* Right: User info + logout */}
         <div className="flex items-center gap-4">
-          {user && <span className="text-sm">{user.email}</span>}
-          <Button variant="outline" size="sm">
+          {user && <span className="text-sm text-gray-700">{user.email}</span>}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleLogout}
+          >
             Logout
           </Button>
         </div>
