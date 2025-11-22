@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { createPartido, updatePartido } from "@/actions/partidos";
@@ -52,10 +52,17 @@ export function PartidoForm({
       torneo_id: "",
       equipo_1_id: "",
       equipo_2_id: "",
-      fecha: new Date(),
+      fecha: undefined,
       cancha: "",
     }) as Partido,
   });
+
+  // Set fecha to current date after component mounts (client-side only)
+  useEffect(() => {
+    if (!initialData?.fecha) {
+      form.setValue('fecha', new Date());
+    }
+  }, [initialData, form]);
 
   const handleSubmit = async (data: Partido) => {
     try {

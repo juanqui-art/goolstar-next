@@ -1,6 +1,7 @@
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 import { defaultNavItems, Sidebar } from "@/components/layout/sidebar";
+import { Suspense } from "react";
 
 export default function DashboardLayout({
   children,
@@ -18,7 +19,9 @@ export default function DashboardLayout({
       {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <Sidebar items={defaultNavItems} />
+        <Suspense fallback={<div className="w-64 border-r bg-gray-50" />}>
+          <Sidebar items={defaultNavItems} />
+        </Suspense>
 
         {/* Content area */}
         <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
