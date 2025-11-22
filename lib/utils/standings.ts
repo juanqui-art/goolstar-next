@@ -1,26 +1,58 @@
 /**
  * Standings Calculation and Sorting Utilities
  * Business rules for tournament standings table
+ *
+ * Sorting criteria (in order):
+ * 1. Points (descending)
+ * 2. Goal difference (descending)
+ * 3. Goals for (descending)
+ * 4. Head-to-head (when implemented)
  */
 
+/**
+ * Team standing data structure
+ */
 export interface TeamStanding {
+  /** Unique team identifier (UUID) */
   equipoId: string
+  /** Team name */
   nombre: string
-  PJ: number // Partidos jugados
-  PG: number // Partidos ganados
-  PE: number // Partidos empatados
-  PP: number // Partidos perdidos
-  GF: number // Goles a favor
-  GC: number // Goles en contra
+  /** Partidos jugados (Matches played) */
+  PJ: number
+  /** Partidos ganados (Wins) */
+  PG: number
+  /** Partidos empatados (Draws) */
+  PE: number
+  /** Partidos perdidos (Losses) */
+  PP: number
+  /** Goles a favor (Goals for) */
+  GF: number
+  /** Goles en contra (Goals against) */
+  GC: number
+  /** Total points */
   puntos: number
 }
 
 /**
- * Sort standings by business rules:
- * 1. Points DESC
- * 2. Goal difference DESC
- * 3. Goals for DESC
- * 4. Head-to-head (not implemented here, requires match data)
+ * Sort standings by tournament business rules
+ *
+ * @param standings - Array of team standings to sort
+ * @returns Sorted array (descending order by points, then GD, then GF)
+ *
+ * @example
+ * ```ts
+ * const standings = [
+ *   { equipoId: "1", nombre: "Team A", PJ: 3, PG: 2, PE: 0, PP: 1, GF: 6, GC: 3, puntos: 6 },
+ *   { equipoId: "2", nombre: "Team B", PJ: 3, PG: 2, PE: 0, PP: 1, GF: 5, GC: 4, puntos: 6 },
+ * ]
+ * sortStandings(standings) // Team A first (better GD: +3 vs +1)
+ * ```
+ *
+ * @note Implements tie-breaking rules:
+ * 1. Points (descending)
+ * 2. Goal difference (descending)
+ * 3. Goals for (descending)
+ * 4. Original order maintained if all criteria equal
  */
 export function sortStandings(standings: TeamStanding[]): TeamStanding[] {
   return [...standings].sort((a, b) => {
@@ -41,7 +73,18 @@ export function sortStandings(standings: TeamStanding[]): TeamStanding[] {
 }
 
 /**
- * Get team's position in standings (1-indexed)
+ * Get team's position in standings table (1-indexed)
+ *
+ * @param standings - Array of team standings
+ * @param equipoId - Team ID to find position for
+ * @returns Position (1-based index), or 0 if team not found
+ *
+ * @example
+ * ```ts
+ * const standings = [...] // sorted standings
+ * getTeamPosition(standings, "team-uuid") // => 3 (third place)
+ * getTeamPosition(standings, "non-existent") // => 0 (not found)
+ * ```
  */
 export function getTeamPosition(
   standings: TeamStanding[],
@@ -54,6 +97,16 @@ export function getTeamPosition(
 
 /**
  * Get teams qualified for next phase (top N teams)
+ *
+ * @param standings - Array of team standings
+ * @param numQualified - Number of teams that advance
+ * @returns Array of qualified teams (sorted by position)
+ *
+ * @example
+ * ```ts
+ * const standings = [...] // 8 teams
+ * getQualifiedTeams(standings, 4) // Top 4 teams advance
+ * ```
  */
 export function getQualifiedTeams(
   standings: TeamStanding[],
@@ -65,6 +118,15 @@ export function getQualifiedTeams(
 
 /**
  * Calculate win rate percentage
+ *
+ * @param standing - Team standing data
+ * @returns Win rate as percentage (0-100)
+ *
+ * @example
+ * ```ts
+ * const standing = { PJ: 10, PG: 7, ... }
+ * calculateWinRate(standing) // => 70.0
+ * ```
  */
 export function calculateWinRate(standing: TeamStanding): number {
   if (standing.PJ === 0) return 0
@@ -73,6 +135,15 @@ export function calculateWinRate(standing: TeamStanding): number {
 
 /**
  * Calculate points per match average
+ *
+ * @param standing - Team standing data
+ * @returns Average points per match
+ *
+ * @example
+ * ```ts
+ * const standing = { PJ: 10, puntos: 24, ... }
+ * calculatePointsPerMatch(standing) // => 2.4
+ * ```
  */
 export function calculatePointsPerMatch(standing: TeamStanding): number {
   if (standing.PJ === 0) return 0
@@ -80,7 +151,16 @@ export function calculatePointsPerMatch(standing: TeamStanding): number {
 }
 
 /**
- * Get team standing summary text
+ * Get team standing summary text (compact format)
+ *
+ * @param standing - Team standing data
+ * @returns Formatted summary string
+ *
+ * @example
+ * ```ts
+ * const standing = { PJ: 10, PG: 6, PE: 2, PP: 2, GF: 18, GC: 10, puntos: 20, ... }
+ * getStandingSummary(standing) // => "10 PJ | 6G 2E 2P | 18-10 | 20 pts"
+ * ```
  */
 export function getStandingSummary(standing: TeamStanding): string {
   return `${standing.PJ} PJ | ${standing.PG}G ${standing.PE}E ${standing.PP}P | ${standing.GF}-${standing.GC} | ${standing.puntos} pts`

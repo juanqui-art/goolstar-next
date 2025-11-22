@@ -1,17 +1,41 @@
 /**
  * Debt Calculation Utilities
  * Business rules for financial transactions and team debts
+ *
+ * Financial model:
+ * - Fees (gastos): Tournament inscription, fines, referee payments
+ * - Payments (ingresos): Team payments reducing their debt
+ * - Team debt = Total unpaid fees
  */
 
+/**
+ * Transaction data structure
+ */
 export interface Transaction {
+  /** Amount in USD */
   monto: number
-  es_ingreso: boolean // true = payment (reduces debt), false = fee (increases debt)
-  pagado: boolean // true = completed, false = pending
+  /** true = payment (reduces debt), false = fee (increases debt) */
+  es_ingreso: boolean
+  /** true = completed, false = pending */
+  pagado: boolean
 }
 
 /**
- * Calculate total debt for a team
- * Debt = unpaid fees - unpaid payments
+ * Calculate total outstanding debt for a team
+ *
+ * @param transacciones - Array of team transactions
+ * @returns Total debt amount (positive = owes money, 0 or negative = overpaid)
+ *
+ * @example
+ * ```ts
+ * const transactions = [
+ *   { monto: 100, es_ingreso: false, pagado: false }, // Fee: $100 pending
+ *   { monto: 50, es_ingreso: true, pagado: false },   // Payment: $50 pending
+ * ]
+ * calculateTotalDebt(transactions) // => $50 (owes $50 net)
+ * ```
+ *
+ * @note Only includes unpaid (pagado: false) transactions
  */
 export function calculateTotalDebt(transacciones: Transaction[]): number {
   return transacciones
@@ -23,7 +47,20 @@ export function calculateTotalDebt(transacciones: Transaction[]): number {
 }
 
 /**
- * Calculate paid vs pending breakdown
+ * Calculate paid vs pending breakdown with percentage
+ *
+ * @param transacciones - Array of team transactions
+ * @returns Breakdown object with paid, pending, total amounts and percentage paid
+ *
+ * @example
+ * ```ts
+ * const transactions = [
+ *   { monto: 100, es_ingreso: false, pagado: true },  // Fee: $100 paid
+ *   { monto: 50, es_ingreso: false, pagado: false },  // Fee: $50 pending
+ * ]
+ * calculateDebtBreakdown(transactions)
+ * // => { paid: 100, pending: 50, total: 150, percentagePaid: 66.7 }
+ * ```
  */
 export function calculateDebtBreakdown(transacciones: Transaction[]) {
   const paid = transacciones
@@ -47,6 +84,18 @@ export function calculateDebtBreakdown(transacciones: Transaction[]) {
 
 /**
  * Check if team has outstanding debt
+ *
+ * @param transacciones - Array of team transactions
+ * @returns True if team owes money
+ *
+ * @example
+ * ```ts
+ * const withDebt = [{ monto: 100, es_ingreso: false, pagado: false }]
+ * hasDebt(withDebt) // => true
+ *
+ * const noDebt = [{ monto: 100, es_ingreso: false, pagado: true }]
+ * hasDebt(noDebt) // => false
+ * ```
  */
 export function hasDebt(transacciones: Transaction[]): boolean {
   return calculateTotalDebt(transacciones) > 0
@@ -54,6 +103,19 @@ export function hasDebt(transacciones: Transaction[]): boolean {
 
 /**
  * Calculate total fees (all gastos)
+ *
+ * @param transacciones - Array of team transactions
+ * @returns Sum of all fees regardless of payment status
+ *
+ * @example
+ * ```ts
+ * const transactions = [
+ *   { monto: 100, es_ingreso: false, pagado: true },
+ *   { monto: 50, es_ingreso: false, pagado: false },
+ *   { monto: 30, es_ingreso: true, pagado: true }, // Payment - not counted
+ * ]
+ * calculateTotalFees(transactions) // => $150
+ * ```
  */
 export function calculateTotalFees(transacciones: Transaction[]): number {
   return transacciones
@@ -63,6 +125,19 @@ export function calculateTotalFees(transacciones: Transaction[]): number {
 
 /**
  * Calculate total payments (all ingresos)
+ *
+ * @param transacciones - Array of team transactions
+ * @returns Sum of all payments regardless of payment status
+ *
+ * @example
+ * ```ts
+ * const transactions = [
+ *   { monto: 100, es_ingreso: true, pagado: true },
+ *   { monto: 50, es_ingreso: true, pagado: false },
+ *   { monto: 30, es_ingreso: false, pagado: true }, // Fee - not counted
+ * ]
+ * calculateTotalPayments(transactions) // => $150
+ * ```
  */
 export function calculateTotalPayments(transacciones: Transaction[]): number {
   return transacciones
@@ -71,7 +146,19 @@ export function calculateTotalPayments(transacciones: Transaction[]): number {
 }
 
 /**
- * Get payment status color
+ * Get UI color indicator for payment status
+ *
+ * @param paid - Amount paid
+ * @param total - Total amount owed
+ * @returns Color indicator: "green" (100%+), "yellow" (50-99%), "red" (<50%)
+ *
+ * @example
+ * ```ts
+ * getPaymentStatusColor(100, 100) // => "green" (fully paid)
+ * getPaymentStatusColor(75, 100) // => "yellow" (75% paid)
+ * getPaymentStatusColor(25, 100) // => "red" (25% paid)
+ * getPaymentStatusColor(0, 0) // => "green" (no debt)
+ * ```
  */
 export function getPaymentStatusColor(
   paid: number,
@@ -87,7 +174,24 @@ export function getPaymentStatusColor(
 }
 
 /**
- * Get debt priority level
+ * Get debt priority level for admin alerts
+ *
+ * @param debt - Total outstanding debt amount
+ * @returns Priority level based on amount
+ *
+ * @example
+ * ```ts
+ * getDebtPriority(0) // => "low" (no debt)
+ * getDebtPriority(40) // => "medium" ($1-50)
+ * getDebtPriority(150) // => "high" ($51-200)
+ * getDebtPriority(300) // => "critical" ($200+)
+ * ```
+ *
+ * @note Thresholds in USD:
+ * - low: $0
+ * - medium: $1-50
+ * - high: $51-200
+ * - critical: $200+
  */
 export function getDebtPriority(
   debt: number
@@ -100,6 +204,18 @@ export function getDebtPriority(
 
 /**
  * Calculate payment deadline status
+ *
+ * @param fechaVencimiento - Due date (null if no deadline)
+ * @param pagado - Whether payment is completed
+ * @returns Status: "completed", "pending", or "overdue"
+ *
+ * @example
+ * ```ts
+ * getPaymentStatus(null, false) // => "pending" (no deadline)
+ * getPaymentStatus("2025-01-01", true) // => "completed" (paid)
+ * getPaymentStatus("2025-01-01", false) // => "overdue" (if past 2025-01-01)
+ * getPaymentStatus("2099-12-31", false) // => "pending" (future deadline)
+ * ```
  */
 export function getPaymentStatus(
   fechaVencimiento: Date | string | null,
@@ -120,6 +236,19 @@ export function getPaymentStatus(
 
 /**
  * Sort transactions by date (most recent first)
+ *
+ * @param transacciones - Array of transactions with fecha field
+ * @returns Sorted copy of transactions (descending order)
+ *
+ * @example
+ * ```ts
+ * const transactions = [
+ *   { monto: 100, fecha: "2025-01-01", ... },
+ *   { monto: 50, fecha: "2025-03-15", ... },
+ * ]
+ * sortTransactionsByDate(transactions)
+ * // => [{ fecha: "2025-03-15", ... }, { fecha: "2025-01-01", ... }]
+ * ```
  */
 export function sortTransactionsByDate(
   transacciones: (Transaction & { fecha: Date | string })[]
@@ -132,7 +261,27 @@ export function sortTransactionsByDate(
 }
 
 /**
- * Filter transactions by date range
+ * Filter transactions by date range (inclusive)
+ *
+ * @param transacciones - Array of transactions with fecha field
+ * @param startDate - Start of date range (inclusive)
+ * @param endDate - End of date range (inclusive)
+ * @returns Filtered array of transactions
+ *
+ * @example
+ * ```ts
+ * const transactions = [
+ *   { monto: 100, fecha: "2025-01-15", ... },
+ *   { monto: 50, fecha: "2025-02-20", ... },
+ *   { monto: 75, fecha: "2025-03-10", ... },
+ * ]
+ * filterTransactionsByDateRange(
+ *   transactions,
+ *   new Date("2025-02-01"),
+ *   new Date("2025-02-28")
+ * )
+ * // => [{ fecha: "2025-02-20", ... }]
+ * ```
  */
 export function filterTransactionsByDateRange(
   transacciones: (Transaction & { fecha: Date | string })[],
@@ -146,7 +295,20 @@ export function filterTransactionsByDateRange(
 }
 
 /**
- * Get financial summary text
+ * Get financial summary text (compact format)
+ *
+ * @param transacciones - Array of team transactions
+ * @returns Formatted summary string
+ *
+ * @example
+ * ```ts
+ * const transactions = [
+ *   { monto: 150, es_ingreso: false, pagado: true },
+ *   { monto: 50, es_ingreso: false, pagado: false },
+ * ]
+ * getFinancialSummary(transactions)
+ * // => "Total: $200.00 | Pagado: $150.00 (75.0%) | Pendiente: $50.00"
+ * ```
  */
 export function getFinancialSummary(transacciones: Transaction[]): string {
   const { paid, pending, total, percentagePaid } =
