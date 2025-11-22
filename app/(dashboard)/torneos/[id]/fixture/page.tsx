@@ -54,23 +54,41 @@ async function getFixtureData(torneoId: string) {
   // Get all jornadas
   const { data: jornadas } = await supabase
     .from("jornadas")
-    .select("*")
+    .select("id, numero, fecha_prevista")
+    .eq("torneo_id", torneoId)
     .order("numero");
 
-  // Get all matches for this tournament with team names
+  // Get all matches for this tournament
   const { data: partidos } = await supabase
     .from("partidos")
-    .select(`
-      *,
-      equipo_local:equipo_1_id (id, nombre),
-      equipo_visitante:equipo_2_id (id, nombre),
-      jornada:jornada_id (id, nombre, numero, fecha, activa)
-    `)
+    .select("id, fecha, cancha, completado, goles_equipo_1, goles_equipo_2, jornada_id, equipo_1_id, equipo_2_id")
     .eq("torneo_id", torneoId);
+
+  // Get all teams for this tournament
+  const { data: equipos } = await supabase
+    .from("equipos")
+    .select("id, nombre")
+    .eq("torneo_id", torneoId);
+
+  // Create a map of equipos for quick lookup
+  const equiposMap = new Map((equipos || []).map(e => [e.id, e]));
+
+  // Enrich matches with team names
+  const partidosEnriquecidos = (partidos || []).map(p => ({
+    id: p.id,
+    fecha: p.fecha,
+    cancha: p.cancha,
+    completado: p.completado,
+    goles_equipo_1: p.goles_equipo_1,
+    goles_equipo_2: p.goles_equipo_2,
+    equipo_local: equiposMap.get(p.equipo_1_id) ?? null,
+    equipo_visitante: equiposMap.get(p.equipo_2_id) ?? null,
+    jornada_id: p.jornada_id,
+  }));
 
   // Group matches by jornada
   const fixture = jornadas?.map(jornada => {
-    const matches = partidos?.filter(p => p.jornada_id === jornada.id) || [];
+    const matches = partidosEnriquecidos.filter(p => p.jornada_id === jornada.id);
     return {
       jornada,
       partidos: matches,

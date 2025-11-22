@@ -38,10 +38,8 @@ interface FixtureManagerProps {
   fixture: Array<{
     jornada: {
       id: string;
-      nombre: string;
       numero: number;
-      fecha: string | null;
-      activa: boolean;
+      fecha_prevista: string | null;
     };
     partidos: Array<{
       id: string;
@@ -282,14 +280,11 @@ export function FixtureManager({ torneoId, fixture, hasFixture }: FixtureManager
                 <AccordionItem key={jornada.id} value={jornada.id}>
                   <AccordionTrigger>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold">{jornada.nombre}</span>
-                      {jornada.fecha && (
+                      <span className="font-semibold">Jornada {jornada.numero}</span>
+                      {jornada.fecha_prevista && (
                         <span className="text-sm text-muted-foreground">
-                          {formatDate(new Date(jornada.fecha))}
+                          {formatDate(new Date(jornada.fecha_prevista))}
                         </span>
-                      )}
-                      {jornada.activa && (
-                        <Badge variant="default">Activa</Badge>
                       )}
                       <Badge variant="outline">{partidos.length} partidos</Badge>
                     </div>

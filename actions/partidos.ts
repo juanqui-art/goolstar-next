@@ -16,11 +16,11 @@ type PartidoUpdate = Database["public"]["Tables"]["partidos"]["Update"];
  * Partido with related data
  */
 export interface PartidoWithRelations extends PartidoRow {
-  equipo_local?: {
+  equipo_local: {
     id: string;
     nombre: string;
   } | null;
-  equipo_visitante?: {
+  equipo_visitante: {
     id: string;
     nombre: string;
   } | null;
@@ -126,7 +126,21 @@ export async function getPartidos(options?: {
       throw new Error(`Failed to fetch matches: ${error.message}`);
     }
 
-    return data || [];
+    // Get all teams for enrichment
+    const { data: equipos } = await supabase
+      .from("equipos")
+      .select("id, nombre");
+
+    const equiposMap = new Map((equipos || []).map(e => [e.id, e]));
+
+    // Enrich partidos with team information
+    const enrichedData: PartidoWithRelations[] = (data || []).map(partido => ({
+      ...partido,
+      equipo_local: equiposMap.get(partido.equipo_1_id) ?? null,
+      equipo_visitante: equiposMap.get(partido.equipo_2_id) ?? null,
+    }));
+
+    return enrichedData;
   } catch (error) {
     if (error instanceof Error) {
       throw error;
@@ -159,6 +173,7 @@ export async function getPartido(id: string): Promise<PartidoWithRelations> {
       { count: golesCount },
       { count: tarjetasCount },
       { count: cambiosCount },
+      { data: equipos },
     ] = await Promise.all([
       supabase
         .from("goles")
@@ -172,10 +187,17 @@ export async function getPartido(id: string): Promise<PartidoWithRelations> {
         .from("cambios_jugador")
         .select("*", { count: "exact", head: true })
         .eq("partido_id", id),
+      supabase
+        .from("equipos")
+        .select("id, nombre"),
     ]);
+
+    const equiposMap = new Map((equipos || []).map(e => [e.id, e]));
 
     return {
       ...partido,
+      equipo_local: equiposMap.get(partido.equipo_1_id) ?? null,
+      equipo_visitante: equiposMap.get(partido.equipo_2_id) ?? null,
       _count: {
         goles: golesCount || 0,
         tarjetas: tarjetasCount || 0,
