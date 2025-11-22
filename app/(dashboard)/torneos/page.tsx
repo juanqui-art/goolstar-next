@@ -1,19 +1,32 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import Link from "next/link"
-import { Pencil, Eye } from "lucide-react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function TorneosPage() {
   // TODO: Replace with getTorneos() Server Action
-  const torneos = []
+  const torneos = [];
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Torneos</h1>
-          <p className="text-gray-600">Gestiona y visualiza todos los torneos</p>
+          <p className="text-gray-600">
+            Gestiona y visualiza todos los torneos
+          </p>
         </div>
         <Link href="/torneos/nuevo">
           <Button>Crear Torneo</Button>
@@ -24,13 +37,16 @@ export default function TorneosPage() {
         <CardHeader>
           <CardTitle>Lista de Torneos</CardTitle>
           <CardDescription>
-            {torneos.length} torneo{torneos.length !== 1 ? 's' : ''} registrado{torneos.length !== 1 ? 's' : ''}
+            {torneos.length} torneo{torneos.length !== 1 ? "s" : ""} registrado
+            {torneos.length !== 1 ? "s" : ""}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {torneos.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-500 mb-4">No hay torneos registrados aún.</p>
+              <p className="text-gray-500 mb-4">
+                No hay torneos registrados aún.
+              </p>
               <Link href="/torneos/nuevo">
                 <Button variant="outline">Crear primer torneo</Button>
               </Link>
@@ -80,5 +96,5 @@ export default function TorneosPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useActionState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useActionState } from "react";
+import { useForm } from "react-hook-form";
+import { register as registerAction } from "@/actions/auth";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,9 +13,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { registerSchema, type Register } from "@/lib/validations/auth"
-import { register as registerAction } from "@/actions/auth"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { type Register, registerSchema } from "@/lib/validations/auth";
 
 export function RegisterForm() {
   const form = useForm<Register>({
@@ -25,20 +25,21 @@ export function RegisterForm() {
       password: "",
       passwordConfirm: "",
     },
-  })
+  });
 
   const [state, formAction, isPending] = useActionState(
-    async (prevState: any, formData: FormData) => {
-      const email = formData.get("email")
-      const password = formData.get("password")
-      const passwordConfirm = formData.get("passwordConfirm")
-      return registerAction({ email, password, passwordConfirm })
+    async (_prevState: any, formData: FormData) => {
+      const email = formData.get("email");
+      const password = formData.get("password");
+      const passwordConfirm = formData.get("passwordConfirm");
+      return registerAction({ email, password, passwordConfirm });
     },
-    null
-  )
+    null,
+  );
 
   // Show error if registration failed
-  const errorMessage = state?.error && typeof state.error === "string" ? state.error : null
+  const errorMessage =
+    state?.error && typeof state.error === "string" ? state.error : null;
 
   return (
     <Form {...form}>
@@ -58,11 +59,7 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input
-                  type="email"
-                  placeholder="you@example.com"
-                  {...field}
-                />
+                <Input type="email" placeholder="you@example.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -77,11 +74,7 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  {...field}
-                />
+                <Input type="password" placeholder="••••••••" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -96,11 +89,7 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  {...field}
-                />
+                <Input type="password" placeholder="••••••••" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -113,7 +102,9 @@ export function RegisterForm() {
           className="w-full"
           disabled={isPending || form.formState.isSubmitting}
         >
-          {isPending || form.formState.isSubmitting ? "Creating account..." : "Create Account"}
+          {isPending || form.formState.isSubmitting
+            ? "Creating account..."
+            : "Create Account"}
         </Button>
 
         {/* Link to login */}
@@ -125,5 +116,5 @@ export function RegisterForm() {
         </p>
       </form>
     </Form>
-  )
+  );
 }

@@ -1,44 +1,47 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 interface DocumentoVerificacionProps {
-  documentoId: string
-  onComplete?: () => void
+  documentoId: string;
+  onComplete?: () => void;
 }
 
-export function DocumentoVerificacion({ documentoId, onComplete }: DocumentoVerificacionProps) {
-  const [motivo, setMotivo] = useState("")
-  const [submitting, setSubmitting] = useState(false)
+export function DocumentoVerificacion({
+  documentoId,
+  onComplete,
+}: DocumentoVerificacionProps) {
+  const [motivo, setMotivo] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleApprove = async () => {
-    setSubmitting(true)
+    setSubmitting(true);
     // TODO: Connect to Server Action aprobarDocumento()
-    console.log("Approving document:", documentoId)
+    console.log("Approving document:", documentoId);
     setTimeout(() => {
-      setSubmitting(false)
-      if (onComplete) onComplete()
-    }, 1000)
-  }
+      setSubmitting(false);
+      if (onComplete) onComplete();
+    }, 1000);
+  };
 
   const handleReject = async () => {
     if (!motivo.trim()) {
-      alert("Debes proporcionar un motivo de rechazo")
-      return
+      alert("Debes proporcionar un motivo de rechazo");
+      return;
     }
 
-    setSubmitting(true)
+    setSubmitting(true);
     // TODO: Connect to Server Action rechazarDocumento()
-    console.log("Rejecting document:", documentoId, "Motivo:", motivo)
+    console.log("Rejecting document:", documentoId, "Motivo:", motivo);
     setTimeout(() => {
-      setSubmitting(false)
-      if (onComplete) onComplete()
-    }, 1000)
-  }
+      setSubmitting(false);
+      if (onComplete) onComplete();
+    }, 1000);
+  };
 
   return (
     <Card>
@@ -75,5 +78,5 @@ export function DocumentoVerificacion({ documentoId, onComplete }: DocumentoVeri
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

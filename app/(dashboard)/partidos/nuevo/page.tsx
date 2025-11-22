@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { PartidoForm } from "@/components/partidos/partido-form"
+import { PartidoForm } from "@/components/partidos/partido-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function NuevoPartidoPage() {
   return (
@@ -18,5 +18,5 @@ export default function NuevoPartidoPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "zod";
 
 /**
  * Schema for creating and updating tournaments
@@ -10,6 +10,6 @@ export const torneoSchema = z.object({
   fecha_fin: z.coerce.date().optional(),
   tiene_fase_grupos: z.boolean().default(true),
   tiene_eliminacion_directa: z.boolean().default(true),
-})
+});
 
-export type Torneo = z.infer<typeof torneoSchema>
+export type Torneo = z.infer<typeof torneoSchema>;

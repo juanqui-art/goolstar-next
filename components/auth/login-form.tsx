@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useActionState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useActionState } from "react";
+import { useForm } from "react-hook-form";
+import { login } from "@/actions/auth";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,9 +13,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { loginSchema, type Login } from "@/lib/validations/auth"
-import { login } from "@/actions/auth"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { type Login, loginSchema } from "@/lib/validations/auth";
 
 export function LoginForm() {
   const form = useForm<Login>({
@@ -24,19 +24,20 @@ export function LoginForm() {
       email: "",
       password: "",
     },
-  })
+  });
 
   const [state, formAction, isPending] = useActionState(
-    async (prevState: any, formData: FormData) => {
-      const email = formData.get("email")
-      const password = formData.get("password")
-      return login({ email, password })
+    async (_prevState: any, formData: FormData) => {
+      const email = formData.get("email");
+      const password = formData.get("password");
+      return login({ email, password });
     },
-    null
-  )
+    null,
+  );
 
   // Show error if login failed
-  const errorMessage = state?.error && typeof state.error === "string" ? state.error : null
+  const errorMessage =
+    state?.error && typeof state.error === "string" ? state.error : null;
 
   return (
     <Form {...form}>
@@ -56,11 +57,7 @@ export function LoginForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input
-                  type="email"
-                  placeholder="you@example.com"
-                  {...field}
-                />
+                <Input type="email" placeholder="you@example.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -75,11 +72,7 @@ export function LoginForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  {...field}
-                />
+                <Input type="password" placeholder="••••••••" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -92,7 +85,9 @@ export function LoginForm() {
           className="w-full"
           disabled={isPending || form.formState.isSubmitting}
         >
-          {isPending || form.formState.isSubmitting ? "Signing in..." : "Sign In"}
+          {isPending || form.formState.isSubmitting
+            ? "Signing in..."
+            : "Sign In"}
         </Button>
 
         {/* Link to register */}
@@ -104,5 +99,5 @@ export function LoginForm() {
         </p>
       </form>
     </Form>
-  )
+  );
 }

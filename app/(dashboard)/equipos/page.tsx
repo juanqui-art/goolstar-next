@@ -1,19 +1,32 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import Link from "next/link"
-import { Pencil, Eye, Users } from "lucide-react"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function EquiposPage() {
   // TODO: Replace with getEquipos() Server Action
-  const equipos = []
+  const equipos = [];
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Equipos</h1>
-          <p className="text-gray-600">Gestiona todos los equipos registrados</p>
+          <p className="text-gray-600">
+            Gestiona todos los equipos registrados
+          </p>
         </div>
         <Link href="/equipos/nuevo">
           <Button>Crear Equipo</Button>
@@ -24,13 +37,16 @@ export default function EquiposPage() {
         <CardHeader>
           <CardTitle>Lista de Equipos</CardTitle>
           <CardDescription>
-            {equipos.length} equipo{equipos.length !== 1 ? 's' : ''} registrado{equipos.length !== 1 ? 's' : ''}
+            {equipos.length} equipo{equipos.length !== 1 ? "s" : ""} registrado
+            {equipos.length !== 1 ? "s" : ""}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {equipos.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-500 mb-4">No hay equipos registrados aún.</p>
+              <p className="text-gray-500 mb-4">
+                No hay equipos registrados aún.
+              </p>
               <Link href="/equipos/nuevo">
                 <Button variant="outline">Crear primer equipo</Button>
               </Link>
@@ -91,5 +107,5 @@ export default function EquiposPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

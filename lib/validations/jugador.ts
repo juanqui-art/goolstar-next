@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "zod";
 
 /**
  * Schema for creating and updating players
@@ -17,6 +17,6 @@ export const jugadorSchema = z.object({
     .optional(),
   posicion: z.string().max(30).optional(),
   nivel: z.enum(["1", "2", "3", "4", "5"]).default("3"),
-})
+});
 
-export type Jugador = z.infer<typeof jugadorSchema>
+export type Jugador = z.infer<typeof jugadorSchema>;

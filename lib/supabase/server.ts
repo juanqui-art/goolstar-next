@@ -1,6 +1,6 @@
-import { createServerClient } from "@supabase/ssr"
-import { cookies } from "next/headers"
-import { Database } from "@/types/database"
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import type { Database } from "@/types/database";
 
 /**
  * Create a Supabase client for server-side operations
@@ -9,7 +9,7 @@ import { Database } from "@/types/database"
  * Use in Server Components, Server Actions, and API Routes
  */
 export async function createServerSupabaseClient() {
-  const cookieStore = await cookies()
+  const cookieStore = await cookies();
 
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -17,13 +17,13 @@ export async function createServerSupabaseClient() {
     {
       cookies: {
         getAll() {
-          return cookieStore.getAll()
+          return cookieStore.getAll();
         },
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
+              cookieStore.set(name, value, options),
+            );
           } catch {
             // setAll can fail in Server Components with dynamic rendering
             // This is expected when middleware is refreshing user sessions
@@ -31,6 +31,6 @@ export async function createServerSupabaseClient() {
           }
         },
       },
-    }
-  )
+    },
+  );
 }

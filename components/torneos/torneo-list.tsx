@@ -1,5 +1,7 @@
-"use client"
+"use client";
 
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -7,20 +9,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+} from "@/components/ui/table";
 
 interface Torneo {
-  id: string
-  nombre: string
-  categoria_id: string
-  fecha_inicio: string
-  fecha_fin?: string | null
+  id: string;
+  nombre: string;
+  categoria_id: string;
+  fecha_inicio: string;
+  fecha_fin?: string | null;
 }
 
 interface TorneoListProps {
-  torneos: Torneo[]
+  torneos: Torneo[];
 }
 
 export function TorneoList({ torneos }: TorneoListProps) {
@@ -29,7 +29,7 @@ export function TorneoList({ torneos }: TorneoListProps) {
       <p className="text-center text-gray-500 py-8">
         No hay torneos registrados aún.
       </p>
-    )
+    );
   }
 
   return (
@@ -68,5 +68,5 @@ export function TorneoList({ torneos }: TorneoListProps) {
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

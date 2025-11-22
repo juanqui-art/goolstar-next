@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { EquipoForm } from "@/components/equipos/equipo-form"
+import { EquipoForm } from "@/components/equipos/equipo-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function NuevoEquipoPage() {
   return (
@@ -18,5 +18,5 @@ export default function NuevoEquipoPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

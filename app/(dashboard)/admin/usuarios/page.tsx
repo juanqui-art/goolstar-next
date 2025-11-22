@@ -1,10 +1,16 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { UserList } from "@/components/admin/user-list"
+import { UserList } from "@/components/admin/user-list";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function UsuariosPage() {
   // TODO: Replace with getUsuarios() Server Action
-  const usuarios = []
+  const usuarios = [];
 
   return (
     <div className="space-y-6">
@@ -20,7 +26,8 @@ export default function UsuariosPage() {
         <CardHeader>
           <CardTitle>Lista de Usuarios</CardTitle>
           <CardDescription>
-            {usuarios.length} usuario{usuarios.length !== 1 ? 's' : ''} registrado{usuarios.length !== 1 ? 's' : ''}
+            {usuarios.length} usuario{usuarios.length !== 1 ? "s" : ""}{" "}
+            registrado{usuarios.length !== 1 ? "s" : ""}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -28,5 +35,5 @@ export default function UsuariosPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

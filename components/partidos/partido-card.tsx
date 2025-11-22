@@ -1,16 +1,23 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface PartidoCardProps {
-  id: string
-  fecha: string
-  equipo1: string
-  equipo2: string
-  resultado?: string
-  estado: "programado" | "en_curso" | "finalizado"
-  cancha?: string
+  id: string;
+  fecha: string;
+  equipo1: string;
+  equipo2: string;
+  resultado?: string;
+  estado: "programado" | "en_curso" | "finalizado";
+  cancha?: string;
 }
 
 export function PartidoCard({
@@ -26,7 +33,7 @@ export function PartidoCard({
     programado: "bg-blue-100 text-blue-800",
     en_curso: "bg-green-100 text-green-800",
     finalizado: "bg-gray-100 text-gray-800",
-  }
+  };
 
   return (
     <Card>
@@ -57,12 +64,14 @@ export function PartidoCard({
       </CardContent>
       <CardFooter className="flex gap-2">
         <Link href={`/partidos/${id}`}>
-          <Button variant="outline" size="sm">Ver Detalles</Button>
+          <Button variant="outline" size="sm">
+            Ver Detalles
+          </Button>
         </Link>
         <Link href={`/partidos/${id}/acta`}>
           <Button size="sm">Ver Acta</Button>
         </Link>
       </CardFooter>
     </Card>
-  )
+  );
 }

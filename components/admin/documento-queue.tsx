@@ -1,3 +1,5 @@
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -5,21 +7,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+} from "@/components/ui/table";
 
 interface Documento {
-  id: string
-  jugador: string
-  equipo: string
-  tipo: string
-  fecha_subida: string
-  estado: "pendiente" | "aprobado" | "rechazado"
+  id: string;
+  jugador: string;
+  equipo: string;
+  tipo: string;
+  fecha_subida: string;
+  estado: "pendiente" | "aprobado" | "rechazado";
 }
 
 interface DocumentoQueueProps {
-  documentos: Documento[]
+  documentos: Documento[];
 }
 
 export function DocumentoQueue({ documentos }: DocumentoQueueProps) {
@@ -28,18 +28,18 @@ export function DocumentoQueue({ documentos }: DocumentoQueueProps) {
       <p className="text-center text-gray-500 py-8">
         No hay documentos pendientes de verificación.
       </p>
-    )
+    );
   }
 
   const handleApprove = (id: string) => {
     // TODO: Connect to Server Action aprobarDocumento()
-    console.log("Approving document:", id)
-  }
+    console.log("Approving document:", id);
+  };
 
   const handleReject = (id: string) => {
     // TODO: Connect to Server Action rechazarDocumento()
-    console.log("Rejecting document:", id)
-  }
+    console.log("Rejecting document:", id);
+  };
 
   return (
     <Table>
@@ -97,5 +97,5 @@ export function DocumentoQueue({ documentos }: DocumentoQueueProps) {
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

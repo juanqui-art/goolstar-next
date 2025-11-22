@@ -1,17 +1,24 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface JugadorCardProps {
-  id: string
-  nombreCompleto: string
-  numeroDorsal: number
-  equipo: string
-  posicion?: string
-  suspendido: boolean
-  tarjetasAmarillas: number
-  tarjetasRojas: number
+  id: string;
+  nombreCompleto: string;
+  numeroDorsal: number;
+  equipo: string;
+  posicion?: string;
+  suspendido: boolean;
+  tarjetasAmarillas: number;
+  tarjetasRojas: number;
 }
 
 export function JugadorCard({
@@ -35,9 +42,7 @@ export function JugadorCard({
             </CardTitle>
             <CardDescription>{equipo}</CardDescription>
           </div>
-          {suspendido && (
-            <Badge variant="destructive">Suspendido</Badge>
-          )}
+          {suspendido && <Badge variant="destructive">Suspendido</Badge>}
         </div>
       </CardHeader>
       <CardContent>
@@ -49,12 +54,12 @@ export function JugadorCard({
             <span className="text-gray-600 font-medium">Tarjetas:</span>
             {tarjetasAmarillas > 0 && (
               <Badge variant="outline" className="bg-yellow-100">
-                {tarjetasAmarillas} Amarilla{tarjetasAmarillas > 1 ? 's' : ''}
+                {tarjetasAmarillas} Amarilla{tarjetasAmarillas > 1 ? "s" : ""}
               </Badge>
             )}
             {tarjetasRojas > 0 && (
               <Badge variant="outline" className="bg-red-100">
-                {tarjetasRojas} Roja{tarjetasRojas > 1 ? 's' : ''}
+                {tarjetasRojas} Roja{tarjetasRojas > 1 ? "s" : ""}
               </Badge>
             )}
           </div>
@@ -62,9 +67,11 @@ export function JugadorCard({
       </CardContent>
       <CardFooter>
         <Link href={`/jugadores/${id}`}>
-          <Button variant="outline" size="sm">Ver Perfil</Button>
+          <Button variant="outline" size="sm">
+            Ver Perfil
+          </Button>
         </Link>
       </CardFooter>
     </Card>
-  )
+  );
 }

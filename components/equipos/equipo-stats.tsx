@@ -1,13 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface EquipoStatsProps {
-  partidosJugados: number
-  partidosGanados: number
-  partidosEmpatados: number
-  partidosPerdidos: number
-  golesFavor: number
-  golesContra: number
-  puntos: number
+  partidosJugados: number;
+  partidosGanados: number;
+  partidosEmpatados: number;
+  partidosPerdidos: number;
+  golesFavor: number;
+  golesContra: number;
+  puntos: number;
 }
 
 export function EquipoStats({
@@ -19,7 +19,7 @@ export function EquipoStats({
   golesContra,
   puntos,
 }: EquipoStatsProps) {
-  const diferenciaGoles = golesFavor - golesContra
+  const diferenciaGoles = golesFavor - golesContra;
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -34,7 +34,9 @@ export function EquipoStats({
 
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Partidos Jugados</CardTitle>
+          <CardTitle className="text-sm font-medium">
+            Partidos Jugados
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{partidosJugados}</div>
@@ -61,11 +63,14 @@ export function EquipoStats({
           <CardTitle className="text-sm font-medium">Diferencia</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className={`text-2xl font-bold ${diferenciaGoles >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {diferenciaGoles > 0 ? '+' : ''}{diferenciaGoles}
+          <div
+            className={`text-2xl font-bold ${diferenciaGoles >= 0 ? "text-green-600" : "text-red-600"}`}
+          >
+            {diferenciaGoles > 0 ? "+" : ""}
+            {diferenciaGoles}
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

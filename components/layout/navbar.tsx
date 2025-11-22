@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { User } from "@supabase/supabase-js"
-import { Button } from "@/components/ui/button"
-import { logout } from "@/actions/auth"
+import type { User } from "@supabase/supabase-js";
+import { logout } from "@/actions/auth";
+import { Button } from "@/components/ui/button";
 
 interface NavbarProps {
-  user?: User
+  user?: User;
 }
 
 export function Navbar({ user }: NavbarProps) {
   const handleLogout = async () => {
-    await logout()
-  }
+    await logout();
+  };
 
   return (
     <nav className="border-b bg-white">
@@ -22,15 +22,11 @@ export function Navbar({ user }: NavbarProps) {
         {/* Right: User info + logout */}
         <div className="flex items-center gap-4">
           {user && <span className="text-sm text-gray-700">{user.email}</span>}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleLogout}
-          >
+          <Button variant="outline" size="sm" onClick={handleLogout}>
             Logout
           </Button>
         </div>
       </div>
     </nav>
-  )
+  );
 }

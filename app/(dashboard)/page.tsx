@@ -1,14 +1,14 @@
-import { Trophy, Users, UserCircle, Calendar, CalendarClock } from "lucide-react"
-import { StatsCard } from "@/components/dashboard/stats-card"
-import { DashboardAlerts } from "@/components/dashboard/dashboard-alerts"
-import { RecentMatches } from "@/components/dashboard/recent-matches"
-import { UpcomingMatches } from "@/components/dashboard/upcoming-matches"
+import { Trophy, Users, UserCircle, Calendar, CalendarClock } from "lucide-react";
+import { StatsCard } from "@/components/dashboard/stats-card";
+import { DashboardAlerts } from "@/components/dashboard/dashboard-alerts";
+import { RecentMatches } from "@/components/dashboard/recent-matches";
+import { UpcomingMatches } from "@/components/dashboard/upcoming-matches";
 import {
   getDashboardStats,
   getDashboardAlerts,
   getRecentMatches,
   getUpcomingMatches,
-} from "@/actions/dashboard"
+} from "@/actions/dashboard";
 
 export default async function DashboardPage() {
   // Fetch all dashboard data in parallel
@@ -17,7 +17,7 @@ export default async function DashboardPage() {
     getDashboardAlerts(),
     getRecentMatches(),
     getUpcomingMatches(),
-  ])
+  ]);
 
   return (
     <div className="space-y-6">
@@ -83,5 +83,5 @@ export default async function DashboardPage() {
         <RecentMatches matches={recentMatches} />
       </div>
     </div>
-  )
+  );
 }

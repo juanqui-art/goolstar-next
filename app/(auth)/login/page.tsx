@@ -1,5 +1,5 @@
-import { Card } from "@/components/ui/card"
-import { LoginForm } from "@/components/auth/login-form"
+import { LoginForm } from "@/components/auth/login-form";
+import { Card } from "@/components/ui/card";
 
 export default function LoginPage() {
   return (
@@ -19,5 +19,5 @@ export default function LoginPage() {
         </div>
       </Card>
     </div>
-  )
+  );
 }
