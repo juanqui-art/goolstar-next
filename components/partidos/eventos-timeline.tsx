@@ -50,29 +50,36 @@ export function EventosTimeline({ eventos }: EventosTimelineProps) {
       case "gol":
         return (
           <span>
-            <span className="font-bold">{evento.jugador.nombre}</span> {dorsalText} anotó un gol
+            <span className="font-bold">{evento.jugador.nombre}</span>{" "}
+            {dorsalText} anotó un gol
           </span>
         );
       case "tarjeta_amarilla":
         return (
           <span>
-            <span className="font-bold">{evento.jugador.nombre}</span> {dorsalText} recibió tarjeta amarilla
+            <span className="font-bold">{evento.jugador.nombre}</span>{" "}
+            {dorsalText} recibió tarjeta amarilla
           </span>
         );
       case "tarjeta_roja":
         return (
           <span>
-            <span className="font-bold">{evento.jugador.nombre}</span> {dorsalText} recibió tarjeta roja
+            <span className="font-bold">{evento.jugador.nombre}</span>{" "}
+            {dorsalText} recibió tarjeta roja
           </span>
         );
       case "cambio":
         return (
           <span>
-            Sale <span className="font-bold">{evento.jugador.nombre}</span> {dorsalText}
+            Sale <span className="font-bold">{evento.jugador.nombre}</span>{" "}
+            {dorsalText}
             {evento.jugador_entra && (
               <>
-                , entra <span className="font-bold">{evento.jugador_entra.nombre}</span>{" "}
-                {evento.jugador_entra.dorsal ? `#${evento.jugador_entra.dorsal}` : ""}
+                , entra{" "}
+                <span className="font-bold">{evento.jugador_entra.nombre}</span>{" "}
+                {evento.jugador_entra.dorsal
+                  ? `#${evento.jugador_entra.dorsal}`
+                  : ""}
               </>
             )}
           </span>
@@ -108,7 +115,7 @@ export function EventosTimeline({ eventos }: EventosTimelineProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {sortedEventos.map(evento => (
+          {sortedEventos.map((evento) => (
             <div
               key={evento.id}
               className="flex items-start gap-4 p-3 rounded-lg border hover:bg-accent/50 transition-colors"
@@ -121,12 +128,16 @@ export function EventosTimeline({ eventos }: EventosTimelineProps) {
               </div>
 
               {/* Event Icon */}
-              <div className="text-2xl flex-shrink-0">{getEventoIcon(evento.tipo)}</div>
+              <div className="text-2xl flex-shrink-0">
+                {getEventoIcon(evento.tipo)}
+              </div>
 
               {/* Event Description */}
               <div className="flex-1 min-w-0">
                 <p className="text-sm">{getEventoText(evento)}</p>
-                <p className="text-xs text-muted-foreground mt-1">{evento.equipo.nombre}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {evento.equipo.nombre}
+                </p>
               </div>
             </div>
           ))}

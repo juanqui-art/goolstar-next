@@ -9,7 +9,7 @@
  * prerendering errors. See docs/architecture/caching-strategy.md for details.
  */
 
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 /**
  * ===========================================================================
@@ -18,28 +18,26 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
  */
 
 export async function getCategorias() {
-
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('categorias')
-    .select('*')
-    .order('nombre')
+    .from("categorias")
+    .select("*")
+    .order("nombre");
 
-  if (error) throw new Error(`Failed to fetch categorías: ${error.message}`)
-  return data || []
+  if (error) throw new Error(`Failed to fetch categorías: ${error.message}`);
+  return data || [];
 }
 
 export async function getCategoriaById(id: string) {
-
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('categorias')
-    .select('*')
-    .eq('id', id)
-    .single()
+    .from("categorias")
+    .select("*")
+    .eq("id", id)
+    .single();
 
-  if (error) throw new Error(`Failed to fetch categoría: ${error.message}`)
-  return data
+  if (error) throw new Error(`Failed to fetch categoría: ${error.message}`);
+  return data;
 }
 
 /**
@@ -49,29 +47,27 @@ export async function getCategoriaById(id: string) {
  */
 
 export async function getTorneos() {
-
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('torneos')
-    .select('*, categorias(nombre)')
-    .eq('activo', true)
-    .order('fecha_inicio', { ascending: false })
+    .from("torneos")
+    .select("*, categorias(nombre)")
+    .eq("activo", true)
+    .order("fecha_inicio", { ascending: false });
 
-  if (error) throw new Error(`Failed to fetch torneos: ${error.message}`)
-  return data || []
+  if (error) throw new Error(`Failed to fetch torneos: ${error.message}`);
+  return data || [];
 }
 
 export async function getTorneoById(id: string) {
-
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('torneos')
-    .select('*, categorias(*)')
-    .eq('id', id)
-    .single()
+    .from("torneos")
+    .select("*, categorias(*)")
+    .eq("id", id)
+    .single();
 
-  if (error) throw new Error(`Failed to fetch torneo: ${error.message}`)
-  return data
+  if (error) throw new Error(`Failed to fetch torneo: ${error.message}`);
+  return data;
 }
 
 /**
@@ -81,41 +77,38 @@ export async function getTorneoById(id: string) {
  */
 
 export async function getEquiposForTorneo(torneoId: string) {
-
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('equipos')
-    .select('*, jugadores(count)')
-    .eq('torneo_id', torneoId)
-    .order('nombre')
+    .from("equipos")
+    .select("*, jugadores(count)")
+    .eq("torneo_id", torneoId)
+    .order("nombre");
 
-  if (error) throw new Error(`Failed to fetch equipos: ${error.message}`)
-  return data || []
+  if (error) throw new Error(`Failed to fetch equipos: ${error.message}`);
+  return data || [];
 }
 
 export async function getEquipoById(id: string) {
-
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('equipos')
-    .select('*, torneos(nombre, id), jugadores(*)')
-    .eq('id', id)
-    .single()
+    .from("equipos")
+    .select("*, torneos(nombre, id), jugadores(*)")
+    .eq("id", id)
+    .single();
 
-  if (error) throw new Error(`Failed to fetch equipo: ${error.message}`)
-  return data
+  if (error) throw new Error(`Failed to fetch equipo: ${error.message}`);
+  return data;
 }
 
 export async function getTodosLosEquipos() {
-
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('equipos')
-    .select('*, torneos(nombre)')
-    .order('nombre')
+    .from("equipos")
+    .select("*, torneos(nombre)")
+    .order("nombre");
 
-  if (error) throw new Error(`Failed to fetch equipos: ${error.message}`)
-  return data || []
+  if (error) throw new Error(`Failed to fetch equipos: ${error.message}`);
+  return data || [];
 }
 
 /**
@@ -125,41 +118,38 @@ export async function getTodosLosEquipos() {
  */
 
 export async function getJugadoresForEquipo(equipoId: string) {
-
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('jugadores')
-    .select('*')
-    .eq('equipo_id', equipoId)
-    .order('nombre')
+    .from("jugadores")
+    .select("*")
+    .eq("equipo_id", equipoId)
+    .order("nombre");
 
-  if (error) throw new Error(`Failed to fetch jugadores: ${error.message}`)
-  return data || []
+  if (error) throw new Error(`Failed to fetch jugadores: ${error.message}`);
+  return data || [];
 }
 
 export async function getJugadorById(id: string) {
-
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('jugadores')
-    .select('*, equipos(nombre, id, torneos(nombre, id))')
-    .eq('id', id)
-    .single()
+    .from("jugadores")
+    .select("*, equipos(nombre, id, torneos(nombre, id))")
+    .eq("id", id)
+    .single();
 
-  if (error) throw new Error(`Failed to fetch jugador: ${error.message}`)
-  return data
+  if (error) throw new Error(`Failed to fetch jugador: ${error.message}`);
+  return data;
 }
 
 export async function getTodosLosJugadores() {
-
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('jugadores')
-    .select('*, equipos(nombre)')
-    .order('nombre')
+    .from("jugadores")
+    .select("*, equipos(nombre)")
+    .order("nombre");
 
-  if (error) throw new Error(`Failed to fetch jugadores: ${error.message}`)
-  return data || []
+  if (error) throw new Error(`Failed to fetch jugadores: ${error.message}`);
+  return data || [];
 }
 
 /**
@@ -169,19 +159,19 @@ export async function getTodosLosJugadores() {
  */
 
 export async function getTablaPosiciones(torneoId: string) {
-
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
 
   // Usar la función RPC si existe, o consulta directa a estadistica_equipo
   const { data, error } = await supabase
-    .from('estadistica_equipo')
-    .select('*, equipos(nombre)')
-    .eq('torneo_id', torneoId)
-    .order('puntos', { ascending: false })
-    .order('diferencia_goles', { ascending: false })
+    .from("estadistica_equipo")
+    .select("*, equipos(nombre)")
+    .eq("torneo_id", torneoId)
+    .order("puntos", { ascending: false })
+    .order("diferencia_goles", { ascending: false });
 
-  if (error) throw new Error(`Failed to fetch tabla posiciones: ${error.message}`)
-  return data || []
+  if (error)
+    throw new Error(`Failed to fetch tabla posiciones: ${error.message}`);
+  return data || [];
 }
 
 /**
@@ -192,27 +182,27 @@ export async function getTablaPosiciones(torneoId: string) {
 
 export async function getDocumentosPendientes() {
   // SIN 'use cache' → Siempre dinámico
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('jugador_documentos')
-    .select('*, jugadores(nombre, id), equipos(nombre, id)')
-    .eq('estado', 'pendiente')
-    .order('fecha_subida', { ascending: false })
+    .from("jugador_documentos")
+    .select("*, jugadores(nombre, id), equipos(nombre, id)")
+    .eq("estado", "pendiente")
+    .order("fecha_subida", { ascending: false });
 
-  if (error) throw new Error(`Failed to fetch documentos: ${error.message}`)
-  return data || []
+  if (error) throw new Error(`Failed to fetch documentos: ${error.message}`);
+  return data || [];
 }
 
 export async function getTodosLosDocumentos() {
   // SIN 'use cache' → Siempre dinámico
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('jugador_documentos')
-    .select('*, jugadores(nombre, id), equipos(nombre, id)')
-    .order('fecha_subida', { ascending: false })
+    .from("jugador_documentos")
+    .select("*, jugadores(nombre, id), equipos(nombre, id)")
+    .order("fecha_subida", { ascending: false });
 
-  if (error) throw new Error(`Failed to fetch documentos: ${error.message}`)
-  return data || []
+  if (error) throw new Error(`Failed to fetch documentos: ${error.message}`);
+  return data || [];
 }
 
 /**
@@ -223,36 +213,36 @@ export async function getTodosLosDocumentos() {
 
 export async function getTransacciones(equipoId?: string) {
   // SIN 'use cache' → Siempre dinámico (datos financieros críticos)
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   let query = supabase
-    .from('transacciones_pago')
-    .select('*, equipos(nombre, id)')
-    .order('fecha', { ascending: false })
+    .from("transacciones_pago")
+    .select("*, equipos(nombre, id)")
+    .order("fecha", { ascending: false });
 
   if (equipoId) {
-    query = query.eq('equipo_id', equipoId)
+    query = query.eq("equipo_id", equipoId);
   }
 
-  const { data, error } = await query
+  const { data, error } = await query;
 
-  if (error) throw new Error(`Failed to fetch transacciones: ${error.message}`)
-  return data || []
+  if (error) throw new Error(`Failed to fetch transacciones: ${error.message}`);
+  return data || [];
 }
 
 export async function getDeudaEquipo(equipoId: string) {
   // SIN 'use cache' → Siempre dinámico (financiero crítico)
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
 
   // Calcular deuda total del equipo
   const { data, error } = await supabase
-    .from('transacciones_pago')
-    .select('monto')
-    .eq('equipo_id', equipoId)
+    .from("transacciones_pago")
+    .select("monto")
+    .eq("equipo_id", equipoId);
 
-  if (error) throw new Error(`Failed to fetch deuda: ${error.message}`)
+  if (error) throw new Error(`Failed to fetch deuda: ${error.message}`);
 
-  const total = data?.reduce((sum, t) => sum + (t.monto || 0), 0) || 0
-  return total
+  const total = data?.reduce((sum, t) => sum + (t.monto || 0), 0) || 0;
+  return total;
 }
 
 /**
@@ -263,9 +253,9 @@ export async function getDeudaEquipo(equipoId: string) {
 
 export async function getPartidoById(id: string) {
   // SIN 'use cache' → Siempre dinámico (partidos pueden estar en vivo)
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('partidos')
+    .from("partidos")
     .select(`
       *,
       goles(*),
@@ -275,46 +265,46 @@ export async function getPartidoById(id: string) {
       equipo_2:equipos!equipo_2_id(id, nombre),
       torneos(id, nombre)
     `)
-    .eq('id', id)
-    .single()
+    .eq("id", id)
+    .single();
 
-  if (error) throw new Error(`Failed to fetch partido: ${error.message}`)
-  return data
+  if (error) throw new Error(`Failed to fetch partido: ${error.message}`);
+  return data;
 }
 
 export async function getPartidosDelTorneo(torneoId: string) {
   // SIN 'use cache' → Siempre dinámico (pueden tener cambios en vivo)
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('partidos')
+    .from("partidos")
     .select(`
       *,
       equipo_1:equipos!equipo_1_id(id, nombre),
       equipo_2:equipos!equipo_2_id(id, nombre),
       jornadas(numero)
     `)
-    .eq('torneo_id', torneoId)
-    .order('fecha', { ascending: false })
+    .eq("torneo_id", torneoId)
+    .order("fecha", { ascending: false });
 
-  if (error) throw new Error(`Failed to fetch partidos: ${error.message}`)
-  return data || []
+  if (error) throw new Error(`Failed to fetch partidos: ${error.message}`);
+  return data || [];
 }
 
 export async function getTodosLosPartidos() {
   // SIN 'use cache' → Siempre dinámico
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('partidos')
+    .from("partidos")
     .select(`
       *,
       equipo_1:equipos!equipo_1_id(id, nombre),
       equipo_2:equipos!equipo_2_id(id, nombre),
       torneos(nombre)
     `)
-    .order('fecha', { ascending: false })
+    .order("fecha", { ascending: false });
 
-  if (error) throw new Error(`Failed to fetch partidos: ${error.message}`)
-  return data || []
+  if (error) throw new Error(`Failed to fetch partidos: ${error.message}`);
+  return data || [];
 }
 
 /**
@@ -325,15 +315,15 @@ export async function getTodosLosPartidos() {
 
 export async function getTarjetasActivas(jugadorId: string) {
   // SIN 'use cache' → Siempre dinámico (crítico para elegibilidad)
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
-    .from('tarjetas')
-    .select('*')
-    .eq('jugador_id', jugadorId)
-    .eq('activa', true)
+    .from("tarjetas")
+    .select("*")
+    .eq("jugador_id", jugadorId)
+    .eq("activa", true);
 
-  if (error) throw new Error(`Failed to fetch tarjetas: ${error.message}`)
-  return data || []
+  if (error) throw new Error(`Failed to fetch tarjetas: ${error.message}`);
+  return data || [];
 }
 
 /**
@@ -344,11 +334,14 @@ export async function getTarjetasActivas(jugadorId: string) {
 
 export async function getUsuarios() {
   // SIN 'use cache' → Siempre dinámico (datos sensibles de usuarios)
-  const supabase = await createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient();
 
   // Obtener usuarios de Supabase Auth
-  const { data: { users }, error } = await supabase.auth.admin.listUsers()
+  const {
+    data: { users },
+    error,
+  } = await supabase.auth.admin.listUsers();
 
-  if (error) throw new Error(`Failed to fetch usuarios: ${error.message}`)
-  return users || []
+  if (error) throw new Error(`Failed to fetch usuarios: ${error.message}`);
+  return users || [];
 }

@@ -31,8 +31,12 @@ export function FinalizarPartidoForm({
 }: FinalizarPartidoFormProps) {
   const [golesEquipo1, setGolesEquipo1] = useState(initialGolesLocal);
   const [golesEquipo2, setGolesEquipo2] = useState(initialGolesVisitante);
-  const [resultadoRetiro, setResultadoRetiro] = useState<"equipo_1" | "equipo_2" | "">("");
-  const [resultadoInasistencia, setResultadoInasistencia] = useState<"equipo_1" | "equipo_2" | "">("");
+  const [resultadoRetiro, setResultadoRetiro] = useState<
+    "equipo_1" | "equipo_2" | ""
+  >("");
+  const [resultadoInasistencia, setResultadoInasistencia] = useState<
+    "equipo_1" | "equipo_2" | ""
+  >("");
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,7 +75,7 @@ export function FinalizarPartidoForm({
       toast.error(
         error instanceof Error
           ? error.message
-          : "Error al finalizar el partido. Por favor intenta de nuevo."
+          : "Error al finalizar el partido. Por favor intenta de nuevo.",
       );
     } finally {
       setSubmitting(false);
@@ -89,7 +93,7 @@ export function FinalizarPartidoForm({
             min={0}
             max={99}
             value={golesEquipo1}
-            onChange={e => setGolesEquipo1(Number(e.target.value))}
+            onChange={(e) => setGolesEquipo1(Number(e.target.value))}
           />
         </div>
 
@@ -101,14 +105,19 @@ export function FinalizarPartidoForm({
             min={0}
             max={99}
             value={golesEquipo2}
-            onChange={e => setGolesEquipo2(Number(e.target.value))}
+            onChange={(e) => setGolesEquipo2(Number(e.target.value))}
           />
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="resultado-retiro">Resultado por Retiro (Opcional)</Label>
-        <Select value={resultadoRetiro} onValueChange={(v) => setResultadoRetiro(v as any)}>
+        <Label htmlFor="resultado-retiro">
+          Resultado por Retiro (Opcional)
+        </Label>
+        <Select
+          value={resultadoRetiro}
+          onValueChange={(v) => setResultadoRetiro(v as any)}
+        >
           <SelectTrigger id="resultado-retiro">
             <SelectValue placeholder="Sin retiro" />
           </SelectTrigger>
@@ -124,15 +133,22 @@ export function FinalizarPartidoForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="resultado-inasistencia">Resultado por Inasistencia (Opcional)</Label>
-        <Select value={resultadoInasistencia} onValueChange={(v) => setResultadoInasistencia(v as any)}>
+        <Label htmlFor="resultado-inasistencia">
+          Resultado por Inasistencia (Opcional)
+        </Label>
+        <Select
+          value={resultadoInasistencia}
+          onValueChange={(v) => setResultadoInasistencia(v as any)}
+        >
           <SelectTrigger id="resultado-inasistencia">
             <SelectValue placeholder="Sin inasistencia" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="">Sin inasistencia</SelectItem>
             <SelectItem value="equipo_1">Equipo Local no asistió</SelectItem>
-            <SelectItem value="equipo_2">Equipo Visitante no asistió</SelectItem>
+            <SelectItem value="equipo_2">
+              Equipo Visitante no asistió
+            </SelectItem>
           </SelectContent>
         </Select>
         <p className="text-xs text-muted-foreground">
@@ -142,7 +158,12 @@ export function FinalizarPartidoForm({
 
       <div className="flex gap-2 pt-4">
         {onCancel && (
-          <Button type="button" variant="outline" onClick={onCancel} disabled={submitting}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={submitting}
+          >
             Cancelar
           </Button>
         )}

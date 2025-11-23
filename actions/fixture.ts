@@ -20,9 +20,19 @@ export async function generateFixture(options: {
   doubleRound?: boolean;
   startDate?: Date;
   daysInterval?: number;
-}): Promise<{ success: boolean; message: string; jornadasCreated: number; matchesCreated: number }> {
+}): Promise<{
+  success: boolean;
+  message: string;
+  jornadasCreated: number;
+  matchesCreated: number;
+}> {
   try {
-    const { torneoId, doubleRound = false, startDate, daysInterval = 7 } = options;
+    const {
+      torneoId,
+      doubleRound = false,
+      startDate,
+      daysInterval = 7,
+    } = options;
 
     const supabase = await createServerSupabaseClient();
 
@@ -62,7 +72,7 @@ export async function generateFixture(options: {
     }
 
     // 3. Generate fixture using round-robin algorithm
-    const teams: Team[] = equipos.map(e => ({ id: e.id, nombre: e.nombre }));
+    const teams: Team[] = equipos.map((e) => ({ id: e.id, nombre: e.nombre }));
     const matches = doubleRound
       ? generateDoubleRoundRobinFixture(teams)
       : generateRoundRobinFixture(teams);
@@ -79,7 +89,7 @@ export async function generateFixture(options: {
       return {
         torneo_id: torneoId,
         numero: jornadaNumber,
-        fecha_prevista: fecha ? fecha.toISOString().split('T')[0] : null,
+        fecha_prevista: fecha ? fecha.toISOString().split("T")[0] : null,
       };
     });
 
@@ -99,7 +109,7 @@ export async function generateFixture(options: {
     }
 
     // 6. Create matches
-    const matchesToCreate = matches.map(match => ({
+    const matchesToCreate = matches.map((match) => ({
       torneo_id: torneoId,
       equipo_1_id: match.equipo_local.id,
       equipo_2_id: match.equipo_visitante.id,
@@ -117,7 +127,10 @@ export async function generateFixture(options: {
       await supabase
         .from("jornadas")
         .delete()
-        .in("id", jornadas.map(j => j.id));
+        .in(
+          "id",
+          jornadas.map((j) => j.id),
+        );
 
       throw new Error(`Failed to create matches: ${matchesError.message}`);
     }
@@ -137,7 +150,8 @@ export async function generateFixture(options: {
     console.error("Error generating fixture:", error);
     return {
       success: false,
-      message: error instanceof Error ? error.message : "Failed to generate fixture",
+      message:
+        error instanceof Error ? error.message : "Failed to generate fixture",
       jornadasCreated: 0,
       matchesCreated: 0,
     };
@@ -149,7 +163,9 @@ export async function generateFixture(options: {
  *
  * Use this to reset a tournament's fixture before regenerating
  */
-export async function deleteFixture(torneoId: string): Promise<{ success: boolean; message: string }> {
+export async function deleteFixture(
+  torneoId: string,
+): Promise<{ success: boolean; message: string }> {
   try {
     const supabase = await createServerSupabaseClient();
 
@@ -168,7 +184,7 @@ export async function deleteFixture(torneoId: string): Promise<{ success: boolea
 
     // 2. Get unique jornada IDs
     const jornadaIds = Array.from(
-      new Set(partidos.map(p => p.jornada_id).filter(Boolean))
+      new Set(partidos.map((p) => p.jornada_id).filter(Boolean)),
     ) as string[];
 
     // 3. Delete matches (will cascade delete goles, tarjetas, cambios)
@@ -207,7 +223,8 @@ export async function deleteFixture(torneoId: string): Promise<{ success: boolea
     console.error("Error deleting fixture:", error);
     return {
       success: false,
-      message: error instanceof Error ? error.message : "Failed to delete fixture",
+      message:
+        error instanceof Error ? error.message : "Failed to delete fixture",
     };
   }
 }
@@ -246,8 +263,9 @@ export async function getFixture(torneoId: string) {
     }
 
     // Group matches by jornada
-    const fixture = jornadas?.map(jornada => {
-      const matches = partidos?.filter(p => p.jornada_id === jornada.id) || [];
+    const fixture = jornadas?.map((jornada) => {
+      const matches =
+        partidos?.filter((p) => p.jornada_id === jornada.id) || [];
       return {
         jornada,
         partidos: matches,
@@ -269,7 +287,7 @@ export async function getFixture(torneoId: string) {
  */
 export async function updateJornadaDates(
   torneoId: string,
-  updates: Array<{ jornadaId: string; fecha: Date }>
+  updates: Array<{ jornadaId: string; fecha: Date }>,
 ): Promise<{ success: boolean; message: string }> {
   try {
     const supabase = await createServerSupabaseClient();
@@ -278,7 +296,7 @@ export async function updateJornadaDates(
     for (const update of updates) {
       const { error } = await supabase
         .from("jornadas")
-        .update({ fecha_prevista: update.fecha.toISOString().split('T')[0] })
+        .update({ fecha_prevista: update.fecha.toISOString().split("T")[0] })
         .eq("id", update.jornadaId);
 
       if (error) {
@@ -297,7 +315,8 @@ export async function updateJornadaDates(
     console.error("Error updating jornada dates:", error);
     return {
       success: false,
-      message: error instanceof Error ? error.message : "Failed to update jornadas",
+      message:
+        error instanceof Error ? error.message : "Failed to update jornadas",
     };
   }
 }
@@ -307,7 +326,7 @@ export async function updateJornadaDates(
  */
 export async function assignMatchDates(
   jornadaId: string,
-  assignments: Array<{ partidoId: string; fecha: Date; cancha?: string }>
+  assignments: Array<{ partidoId: string; fecha: Date; cancha?: string }>,
 ): Promise<{ success: boolean; message: string }> {
   try {
     const supabase = await createServerSupabaseClient();
@@ -346,7 +365,8 @@ export async function assignMatchDates(
     console.error("Error assigning match dates:", error);
     return {
       success: false,
-      message: error instanceof Error ? error.message : "Failed to assign match dates",
+      message:
+        error instanceof Error ? error.message : "Failed to assign match dates",
     };
   }
 }

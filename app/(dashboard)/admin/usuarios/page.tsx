@@ -36,8 +36,11 @@ async function UsuariosList() {
   const usuarios = rawUsuarios.map((user: any) => ({
     id: user.id,
     email: user.email || "N/A",
-    rol: (user.user_metadata?.rol || "jugador") as "admin" | "director_equipo" | "jugador",
-    nombre: user.user_metadata?.nombre || user.email?.split('@')[0],
+    rol: (user.user_metadata?.rol || "jugador") as
+      | "admin"
+      | "director_equipo"
+      | "jugador",
+    nombre: user.user_metadata?.nombre || user.email?.split("@")[0],
     activo: !user.banned_until,
     fecha_registro: user.created_at || "",
   }));
@@ -47,8 +50,8 @@ async function UsuariosList() {
       <CardHeader>
         <CardTitle>Lista de Usuarios</CardTitle>
         <CardDescription>
-          {usuarios.length} usuario{usuarios.length !== 1 ? "s" : ""}{" "}
-          registrado{usuarios.length !== 1 ? "s" : ""}
+          {usuarios.length} usuario{usuarios.length !== 1 ? "s" : ""} registrado
+          {usuarios.length !== 1 ? "s" : ""}
         </CardDescription>
       </CardHeader>
       <CardContent>

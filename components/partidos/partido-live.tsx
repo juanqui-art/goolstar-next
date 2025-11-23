@@ -84,10 +84,14 @@ export function PartidoLive({
   const [showTarjetaDialog, setShowTarjetaDialog] = useState(false);
   const [showCambioDialog, setShowCambioDialog] = useState(false);
   const [showFinalizarDialog, setShowFinalizarDialog] = useState(false);
-  const [selectedEquipo, setSelectedEquipo] = useState<"local" | "visitante">("local");
+  const [selectedEquipo, setSelectedEquipo] = useState<"local" | "visitante">(
+    "local",
+  );
 
   const handleEventoRegistrado = (tipo: Evento["tipo"], equipoId: string) => {
-    toast.success(`${tipo === "gol" ? "Gol" : tipo === "cambio" ? "Cambio" : "Tarjeta"} registrado correctamente`);
+    toast.success(
+      `${tipo === "gol" ? "Gol" : tipo === "cambio" ? "Cambio" : "Tarjeta"} registrado correctamente`,
+    );
 
     // Reload page to show updated events
     window.location.reload();
@@ -108,7 +112,8 @@ export function PartidoLive({
     setShowCambioDialog(true);
   };
 
-  const selectedEquipoData = selectedEquipo === "local" ? equipoLocal : equipoVisitante;
+  const selectedEquipoData =
+    selectedEquipo === "local" ? equipoLocal : equipoVisitante;
 
   if (completado) {
     return (
@@ -127,12 +132,20 @@ export function PartidoLive({
           <div className="flex items-center justify-center py-8">
             <div className="text-center flex-1">
               <h3 className="text-2xl font-bold mb-2">{equipoLocal.nombre}</h3>
-              <div className="text-6xl font-bold text-primary">{golesLocal}</div>
+              <div className="text-6xl font-bold text-primary">
+                {golesLocal}
+              </div>
             </div>
-            <div className="text-4xl font-bold text-muted-foreground px-6">-</div>
+            <div className="text-4xl font-bold text-muted-foreground px-6">
+              -
+            </div>
             <div className="text-center flex-1">
-              <h3 className="text-2xl font-bold mb-2">{equipoVisitante.nombre}</h3>
-              <div className="text-6xl font-bold text-primary">{golesVisitante}</div>
+              <h3 className="text-2xl font-bold mb-2">
+                {equipoVisitante.nombre}
+              </h3>
+              <div className="text-6xl font-bold text-primary">
+                {golesVisitante}
+              </div>
             </div>
           </div>
 
@@ -153,7 +166,10 @@ export function PartidoLive({
               <div className="h-3 w-3 rounded-full bg-red-500 animate-pulse" />
               Partido en Vivo
             </CardTitle>
-            <Button onClick={() => setShowFinalizarDialog(true)} variant="default">
+            <Button
+              onClick={() => setShowFinalizarDialog(true)}
+              variant="default"
+            >
               <Flag className="mr-2 h-4 w-4" />
               Finalizar Partido
             </Button>
@@ -164,14 +180,26 @@ export function PartidoLive({
           <div className="flex items-center justify-center py-8 mb-6">
             <div className="text-center flex-1">
               <h3 className="text-2xl font-bold mb-2">{equipoLocal.nombre}</h3>
-              <div className="text-7xl font-bold text-primary">{golesLocal}</div>
-              <Badge variant="outline" className="mt-2">Local</Badge>
+              <div className="text-7xl font-bold text-primary">
+                {golesLocal}
+              </div>
+              <Badge variant="outline" className="mt-2">
+                Local
+              </Badge>
             </div>
-            <div className="text-5xl font-bold text-muted-foreground px-8">-</div>
+            <div className="text-5xl font-bold text-muted-foreground px-8">
+              -
+            </div>
             <div className="text-center flex-1">
-              <h3 className="text-2xl font-bold mb-2">{equipoVisitante.nombre}</h3>
-              <div className="text-7xl font-bold text-primary">{golesVisitante}</div>
-              <Badge variant="outline" className="mt-2">Visitante</Badge>
+              <h3 className="text-2xl font-bold mb-2">
+                {equipoVisitante.nombre}
+              </h3>
+              <div className="text-7xl font-bold text-primary">
+                {golesVisitante}
+              </div>
+              <Badge variant="outline" className="mt-2">
+                Visitante
+              </Badge>
             </div>
           </div>
 
@@ -179,7 +207,9 @@ export function PartidoLive({
           <div className="grid grid-cols-2 gap-6">
             {/* Local Team Actions */}
             <div className="space-y-2">
-              <h4 className="font-semibold mb-3 text-center">{equipoLocal.nombre}</h4>
+              <h4 className="font-semibold mb-3 text-center">
+                {equipoLocal.nombre}
+              </h4>
               <Button
                 onClick={() => openGolDialog("local")}
                 variant="default"
@@ -216,7 +246,9 @@ export function PartidoLive({
 
             {/* Visiting Team Actions */}
             <div className="space-y-2">
-              <h4 className="font-semibold mb-3 text-center">{equipoVisitante.nombre}</h4>
+              <h4 className="font-semibold mb-3 text-center">
+                {equipoVisitante.nombre}
+              </h4>
               <Button
                 onClick={() => openGolDialog("visitante")}
                 variant="default"
@@ -261,7 +293,9 @@ export function PartidoLive({
       <Dialog open={showGolDialog} onOpenChange={setShowGolDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Registrar Gol - {selectedEquipoData.nombre}</DialogTitle>
+            <DialogTitle>
+              Registrar Gol - {selectedEquipoData.nombre}
+            </DialogTitle>
             <DialogDescription>
               Selecciona el jugador que anotó el gol y el minuto del partido
             </DialogDescription>
@@ -281,7 +315,9 @@ export function PartidoLive({
       <Dialog open={showTarjetaDialog} onOpenChange={setShowTarjetaDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Registrar Tarjeta - {selectedEquipoData.nombre}</DialogTitle>
+            <DialogTitle>
+              Registrar Tarjeta - {selectedEquipoData.nombre}
+            </DialogTitle>
             <DialogDescription>
               Selecciona el jugador y el tipo de tarjeta
             </DialogDescription>
@@ -301,7 +337,9 @@ export function PartidoLive({
       <Dialog open={showCambioDialog} onOpenChange={setShowCambioDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Registrar Cambio - {selectedEquipoData.nombre}</DialogTitle>
+            <DialogTitle>
+              Registrar Cambio - {selectedEquipoData.nombre}
+            </DialogTitle>
             <DialogDescription>
               Selecciona el jugador que sale y el que entra
             </DialogDescription>
@@ -323,7 +361,8 @@ export function PartidoLive({
           <DialogHeader>
             <DialogTitle>Finalizar Partido</DialogTitle>
             <DialogDescription>
-              Confirma el resultado final del partido. Esta acción no se puede deshacer.
+              Confirma el resultado final del partido. Esta acción no se puede
+              deshacer.
             </DialogDescription>
           </DialogHeader>
           <FinalizarPartidoForm

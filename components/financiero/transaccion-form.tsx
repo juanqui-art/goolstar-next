@@ -60,7 +60,9 @@ export function TransaccionForm({
   });
 
   const handleSubmit = async (data: unknown) => {
-    const validatedData = createTransaccionSchema.parse(data) as CreateTransaccion;
+    const validatedData = createTransaccionSchema.parse(
+      data,
+    ) as CreateTransaccion;
     try {
       setIsSubmitting(true);
 

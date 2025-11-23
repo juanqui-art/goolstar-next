@@ -60,7 +60,7 @@ export function PartidoForm({
   // Set fecha to current date after component mounts (client-side only)
   useEffect(() => {
     if (!initialData?.fecha) {
-      form.setValue('fecha', new Date());
+      form.setValue("fecha", new Date());
     }
   }, [initialData, form]);
 

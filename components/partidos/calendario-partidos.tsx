@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Calendar as CalendarIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -32,11 +36,24 @@ interface CalendarioPartidosProps {
 
 const DAYS_OF_WEEK = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 const MONTHS = [
-  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  "Enero",
+  "Febrero",
+  "Marzo",
+  "Abril",
+  "Mayo",
+  "Junio",
+  "Julio",
+  "Agosto",
+  "Septiembre",
+  "Octubre",
+  "Noviembre",
+  "Diciembre",
 ];
 
-export function CalendarioPartidos({ partidos, torneoId }: CalendarioPartidosProps) {
+export function CalendarioPartidos({
+  partidos,
+  torneoId,
+}: CalendarioPartidosProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const currentYear = currentDate.getFullYear();
@@ -56,7 +73,7 @@ export function CalendarioPartidos({ partidos, torneoId }: CalendarioPartidosPro
       if (!partido.fecha) continue;
 
       const date = new Date(partido.fecha);
-      const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
       if (!map.has(dateKey)) {
         map.set(dateKey, []);
@@ -93,7 +110,7 @@ export function CalendarioPartidos({ partidos, torneoId }: CalendarioPartidosPro
   }
 
   const getPartidosForDay = (day: number): Partido[] => {
-    const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     return partidosByDate.get(dateKey) || [];
   };
 
@@ -137,7 +154,7 @@ export function CalendarioPartidos({ partidos, torneoId }: CalendarioPartidosPro
         {/* Calendar Grid */}
         <div className="grid grid-cols-7 gap-2">
           {/* Day headers */}
-          {DAYS_OF_WEEK.map(day => (
+          {DAYS_OF_WEEK.map((day) => (
             <div
               key={day}
               className="text-center font-semibold text-sm text-muted-foreground py-2"
@@ -182,7 +199,7 @@ export function CalendarioPartidos({ partidos, torneoId }: CalendarioPartidosPro
 
                 {/* Partidos for this day */}
                 <div className="space-y-1">
-                  {partidosForDay.slice(0, 2).map(partido => (
+                  {partidosForDay.slice(0, 2).map((partido) => (
                     <Link
                       key={partido.id}
                       href={`/partidos/${partido.id}`}
