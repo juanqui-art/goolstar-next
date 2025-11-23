@@ -36,7 +36,13 @@ export function CambioForm({ partidoId, equipoId, onSubmit }: CambioFormProps) {
     try {
       setSubmitting(true);
 
-      await registrarCambio(partidoId, jugadorSaleId, jugadorEntraId, equipoId, minuto);
+      await registrarCambio(
+        partidoId,
+        jugadorSaleId,
+        jugadorEntraId,
+        equipoId,
+        minuto,
+      );
 
       toast.success("Cambio registrado correctamente");
 

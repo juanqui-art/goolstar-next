@@ -131,14 +131,16 @@ export async function getPartidos(options?: {
       .from("equipos")
       .select("id, nombre");
 
-    const equiposMap = new Map((equipos || []).map(e => [e.id, e]));
+    const equiposMap = new Map((equipos || []).map((e) => [e.id, e]));
 
     // Enrich partidos with team information
-    const enrichedData: PartidoWithRelations[] = (data || []).map(partido => ({
-      ...partido,
-      equipo_local: equiposMap.get(partido.equipo_1_id) ?? null,
-      equipo_visitante: equiposMap.get(partido.equipo_2_id) ?? null,
-    }));
+    const enrichedData: PartidoWithRelations[] = (data || []).map(
+      (partido) => ({
+        ...partido,
+        equipo_local: equiposMap.get(partido.equipo_1_id) ?? null,
+        equipo_visitante: equiposMap.get(partido.equipo_2_id) ?? null,
+      }),
+    );
 
     return enrichedData;
   } catch (error) {
@@ -187,12 +189,10 @@ export async function getPartido(id: string): Promise<PartidoWithRelations> {
         .from("cambios_jugador")
         .select("*", { count: "exact", head: true })
         .eq("partido_id", id),
-      supabase
-        .from("equipos")
-        .select("id, nombre"),
+      supabase.from("equipos").select("id, nombre"),
     ]);
 
-    const equiposMap = new Map((equipos || []).map(e => [e.id, e]));
+    const equiposMap = new Map((equipos || []).map((e) => [e.id, e]));
 
     return {
       ...partido,

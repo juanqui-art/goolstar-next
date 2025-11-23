@@ -53,7 +53,7 @@ export function TorneoForm({
   // Set fecha_inicio to current date after component mounts (client-side only)
   useEffect(() => {
     if (!initialData?.fecha_inicio) {
-      form.setValue('fecha_inicio', new Date());
+      form.setValue("fecha_inicio", new Date());
     }
   }, [initialData, form]);
 

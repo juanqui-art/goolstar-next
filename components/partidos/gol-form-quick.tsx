@@ -65,7 +65,7 @@ export function GolFormQuick({
       toast.error(
         error instanceof Error
           ? error.message
-          : "Error al registrar el gol. Por favor intenta de nuevo."
+          : "Error al registrar el gol. Por favor intenta de nuevo.",
       );
     } finally {
       setSubmitting(false);
@@ -86,7 +86,7 @@ export function GolFormQuick({
                 No hay jugadores disponibles
               </SelectItem>
             ) : (
-              jugadores.map(jugador => (
+              jugadores.map((jugador) => (
                 <SelectItem key={jugador.id} value={jugador.id}>
                   {jugador.dorsal ? `#${jugador.dorsal} - ` : ""}
                   {jugador.primer_nombre} {jugador.primer_apellido}
@@ -105,7 +105,7 @@ export function GolFormQuick({
           min={1}
           max={120}
           value={minuto}
-          onChange={e => setMinuto(Number(e.target.value))}
+          onChange={(e) => setMinuto(Number(e.target.value))}
           placeholder="ej: 45"
         />
       </div>

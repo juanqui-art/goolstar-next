@@ -51,7 +51,7 @@ export function generateRoundRobinFixture(teams: Team[]): Match[] {
 
   // If odd number of teams, add a "bye" placeholder
   const teamsWithBye = isOdd
-    ? [...teams, { id: 'bye', nombre: 'BYE' }]
+    ? [...teams, { id: "bye", nombre: "BYE" }]
     : [...teams];
 
   const totalTeams = teamsWithBye.length;
@@ -74,7 +74,7 @@ export function generateRoundRobinFixture(teams: Team[]): Match[] {
     const opponent = rotatingTeams[rotatingTeams.length - 1];
 
     // Skip if either team is BYE
-    if (fixed.id !== 'bye' && opponent.id !== 'bye') {
+    if (fixed.id !== "bye" && opponent.id !== "bye") {
       matches.push({
         equipo_local: round % 2 === 0 ? fixed : opponent,
         equipo_visitante: round % 2 === 0 ? opponent : fixed,
@@ -88,7 +88,7 @@ export function generateRoundRobinFixture(teams: Team[]): Match[] {
       const away = rotatingTeams[rotatingTeams.length - 2 - i];
 
       // Skip if either team is BYE
-      if (home.id !== 'bye' && away.id !== 'bye') {
+      if (home.id !== "bye" && away.id !== "bye") {
         matches.push({
           equipo_local: home,
           equipo_visitante: away,
@@ -129,10 +129,10 @@ export function generateRoundRobinFixture(teams: Team[]): Match[] {
  */
 export function generateDoubleRoundRobinFixture(teams: Team[]): Match[] {
   const firstRound = generateRoundRobinFixture(teams);
-  const numRounds = Math.max(...firstRound.map(m => m.jornada));
+  const numRounds = Math.max(...firstRound.map((m) => m.jornada));
 
   // Second round: reverse home/away and shift jornada numbers
-  const secondRound = firstRound.map(match => ({
+  const secondRound = firstRound.map((match) => ({
     equipo_local: match.equipo_visitante,
     equipo_visitante: match.equipo_local,
     jornada: match.jornada + numRounds,
@@ -153,15 +153,20 @@ export function generateDoubleRoundRobinFixture(teams: Team[]): Match[] {
  * // Returns: { 1: [...matches in round 1], 2: [...matches in round 2], ... }
  * ```
  */
-export function groupMatchesByJornada(matches: Match[]): Record<number, Match[]> {
-  return matches.reduce((groups, match) => {
-    const jornada = match.jornada;
-    if (!groups[jornada]) {
-      groups[jornada] = [];
-    }
-    groups[jornada].push(match);
-    return groups;
-  }, {} as Record<number, Match[]>);
+export function groupMatchesByJornada(
+  matches: Match[],
+): Record<number, Match[]> {
+  return matches.reduce(
+    (groups, match) => {
+      const jornada = match.jornada;
+      if (!groups[jornada]) {
+        groups[jornada] = [];
+      }
+      groups[jornada].push(match);
+      return groups;
+    },
+    {} as Record<number, Match[]>,
+  );
 }
 
 /**
@@ -178,7 +183,10 @@ export function groupMatchesByJornada(matches: Match[]): Record<number, Match[]>
  * calculateNumJornadas(7, false) // Returns 7 (odd number)
  * ```
  */
-export function calculateNumJornadas(numTeams: number, doubleRound = false): number {
+export function calculateNumJornadas(
+  numTeams: number,
+  doubleRound = false,
+): number {
   if (numTeams < 2) return 0;
 
   const singleRound = numTeams % 2 === 0 ? numTeams - 1 : numTeams;
@@ -207,10 +215,10 @@ export function calculateNumJornadas(numTeams: number, doubleRound = false): num
  */
 export function validateFixture(
   matches: Match[],
-  teams: Team[]
+  teams: Team[],
 ): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
-  const teamIds = new Set(teams.map(t => t.id));
+  const teamIds = new Set(teams.map((t) => t.id));
   const matchCounts = new Map<string, number>();
 
   // Initialize match counts
@@ -230,17 +238,19 @@ export function validateFixture(
 
     // Check teams are different
     if (match.equipo_local.id === match.equipo_visitante.id) {
-      errors.push(`Team cannot play against itself: ${match.equipo_local.nombre}`);
+      errors.push(
+        `Team cannot play against itself: ${match.equipo_local.nombre}`,
+      );
     }
 
     // Count matches per team
     matchCounts.set(
       match.equipo_local.id,
-      (matchCounts.get(match.equipo_local.id) || 0) + 1
+      (matchCounts.get(match.equipo_local.id) || 0) + 1,
     );
     matchCounts.set(
       match.equipo_visitante.id,
-      (matchCounts.get(match.equipo_visitante.id) || 0) + 1
+      (matchCounts.get(match.equipo_visitante.id) || 0) + 1,
     );
   }
 
@@ -250,9 +260,9 @@ export function validateFixture(
 
   for (const [teamId, count] of matchCounts.entries()) {
     if (count !== expectedMatches) {
-      const team = teams.find(t => t.id === teamId);
+      const team = teams.find((t) => t.id === teamId);
       errors.push(
-        `Team ${team?.nombre} has ${count} matches, expected ${expectedMatches}`
+        `Team ${team?.nombre} has ${count} matches, expected ${expectedMatches}`,
       );
     }
   }
