@@ -13,8 +13,8 @@ export const partidoSchema = z
     jornada_id: z.string().uuid("Invalid match day").optional(),
     fase_eliminatoria_id: z.string().uuid("Invalid knockout phase").optional(),
     arbitro_id: z.string().uuid("Invalid referee").optional(),
-    fecha: z.coerce.date().optional(),
-    cancha: z.string().max(100).optional(),
+    fecha: z.coerce.date(),
+    cancha: z.string().min(1, "Field location is required").max(100),
   })
   .refine((data) => data.equipo_1_id !== data.equipo_2_id, {
     message: "Teams must be different",
@@ -50,3 +50,47 @@ export const partidoResultadoSchema = z.object({
 });
 
 export type PartidoResultado = z.infer<typeof partidoResultadoSchema>;
+
+/**
+ * Schema for recording a goal
+ */
+export const golSchema = z.object({
+  partido_id: z.string().uuid("Invalid match"),
+  jugador_id: z.string().uuid("Invalid player"),
+  equipo_id: z.string().uuid("Invalid team"),
+  minuto: z.number().min(0, "Minute must be positive").max(120, "Minute must be <= 120"),
+  es_propio: z.boolean().default(false),
+});
+
+export type Gol = z.infer<typeof golSchema>;
+
+/**
+ * Schema for recording a card
+ */
+export const tarjetaSchema = z.object({
+  partido_id: z.string().uuid("Invalid match"),
+  jugador_id: z.string().uuid("Invalid player"),
+  equipo_id: z.string().uuid("Invalid team"),
+  tipo: z.enum(["AMARILLA", "ROJA", "AMARILLA_ROJA"]),
+  minuto: z.number().min(0, "Minute must be positive").max(120, "Minute must be <= 120"),
+  razon: z.string().max(255).optional(),
+});
+
+export type Tarjeta = z.infer<typeof tarjetaSchema>;
+
+/**
+ * Schema for recording a substitution
+ */
+export const cambioSchema = z.object({
+  partido_id: z.string().uuid("Invalid match"),
+  equipo_id: z.string().uuid("Invalid team"),
+  jugador_sale_id: z.string().uuid("Invalid player"),
+  jugador_entra_id: z.string().uuid("Invalid player"),
+  minuto: z.number().min(0, "Minute must be positive").max(120, "Minute must be <= 120"),
+})
+.refine((data) => data.jugador_sale_id !== data.jugador_entra_id, {
+  message: "Players must be different",
+  path: ["jugador_entra_id"],
+});
+
+export type Cambio = z.infer<typeof cambioSchema>;

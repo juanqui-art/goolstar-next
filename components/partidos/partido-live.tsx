@@ -150,7 +150,7 @@ export function PartidoLive({
           </div>
 
           {/* Events Timeline */}
-          <EventosTimeline eventos={eventos} />
+          <EventosTimeline partidoId={partidoId} />
         </CardContent>
       </Card>
     );
@@ -287,7 +287,7 @@ export function PartidoLive({
       </Card>
 
       {/* Events Timeline */}
-      <EventosTimeline eventos={eventos} />
+      <EventosTimeline partidoId={partidoId} />
 
       {/* Dialogs */}
       <Dialog open={showGolDialog} onOpenChange={setShowGolDialog}>

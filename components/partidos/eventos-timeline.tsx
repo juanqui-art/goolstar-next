@@ -1,148 +1,165 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Clock } from "lucide-react";
+import { Target, AlertTriangle, ArrowLeftRight } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 interface Evento {
   id: string;
-  tipo: "gol" | "tarjeta_amarilla" | "tarjeta_roja" | "cambio";
+  tipo: "gol" | "tarjeta" | "cambio";
   minuto: number;
-  jugador: {
-    nombre: string;
-    dorsal: number | null;
-  };
-  equipo: {
-    id: string;
-    nombre: string;
-  };
-  jugador_entra?: {
-    nombre: string;
-    dorsal: number | null;
-  };
+  descripcion: string;
 }
 
 interface EventosTimelineProps {
-  eventos: Evento[];
+  partidoId: string;
 }
 
-export function EventosTimeline({ eventos }: EventosTimelineProps) {
-  // Sort eventos by minuto (most recent first)
-  const sortedEventos = [...eventos].sort((a, b) => b.minuto - a.minuto);
+export function EventosTimeline({ partidoId }: EventosTimelineProps) {
+  const [eventos, setEventos] = useState<Evento[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const getEventoIcon = (tipo: Evento["tipo"]) => {
-    switch (tipo) {
-      case "gol":
-        return "⚽";
-      case "tarjeta_amarilla":
-        return "🟨";
-      case "tarjeta_roja":
-        return "🟥";
-      case "cambio":
-        return "🔄";
-    }
-  };
+  useEffect(() => {
+    const fetchEventos = async () => {
+      try {
+        const supabase = createClient();
 
-  const getEventoText = (evento: Evento) => {
-    const dorsalText = evento.jugador.dorsal ? `#${evento.jugador.dorsal}` : "";
+        const [golesRes, tarjetasRes, cambiosRes] = await Promise.all([
+          supabase
+            .from("goles")
+            .select(
+              `
+              id,
+              minuto,
+              es_propio,
+              jugadores (primer_nombre, primer_apellido),
+              equipos (nombre)
+            `,
+            )
+            .eq("partido_id", partidoId)
+            .order("minuto", { ascending: true }),
 
-    switch (evento.tipo) {
-      case "gol":
-        return (
-          <span>
-            <span className="font-bold">{evento.jugador.nombre}</span>{" "}
-            {dorsalText} anotó un gol
-          </span>
-        );
-      case "tarjeta_amarilla":
-        return (
-          <span>
-            <span className="font-bold">{evento.jugador.nombre}</span>{" "}
-            {dorsalText} recibió tarjeta amarilla
-          </span>
-        );
-      case "tarjeta_roja":
-        return (
-          <span>
-            <span className="font-bold">{evento.jugador.nombre}</span>{" "}
-            {dorsalText} recibió tarjeta roja
-          </span>
-        );
-      case "cambio":
-        return (
-          <span>
-            Sale <span className="font-bold">{evento.jugador.nombre}</span>{" "}
-            {dorsalText}
-            {evento.jugador_entra && (
-              <>
-                , entra{" "}
-                <span className="font-bold">{evento.jugador_entra.nombre}</span>{" "}
-                {evento.jugador_entra.dorsal
-                  ? `#${evento.jugador_entra.dorsal}`
-                  : ""}
-              </>
-            )}
-          </span>
-        );
-    }
-  };
+          supabase
+            .from("tarjetas")
+            .select(
+              `
+              id,
+              minuto,
+              tipo,
+              jugadores (primer_nombre, primer_apellido),
+              equipos (nombre)
+            `,
+            )
+            .eq("partido_id", partidoId)
+            .order("minuto", { ascending: true }),
+
+          supabase
+            .from("cambios_jugador")
+            .select("id, minuto, jugador_sale_id, jugador_entra_id, equipo_id")
+            .eq("partido_id", partidoId)
+            .order("minuto", { ascending: true }),
+        ]);
+
+        const eventosArray: Evento[] = [];
+
+        if (golesRes.data) {
+          for (const gol of golesRes.data) {
+            const tipoText = gol.es_propio ? " (Autogol)" : "";
+            eventosArray.push({
+              id: gol.id,
+              tipo: "gol",
+              minuto: gol.minuto,
+              descripcion: `Gol de ${gol.jugadores?.primer_nombre || "Jugador"} ${gol.jugadores?.primer_apellido || ""}${tipoText} - ${gol.equipos?.nombre || "Equipo"}`,
+            });
+          }
+        }
+
+        if (tarjetasRes.data) {
+          for (const tarjeta of tarjetasRes.data) {
+            const tipoText = tarjeta.tipo.replace("_", " ").toLowerCase();
+            eventosArray.push({
+              id: tarjeta.id,
+              tipo: "tarjeta",
+              minuto: tarjeta.minuto,
+              descripcion: `Tarjeta ${tipoText} para ${tarjeta.jugadores?.primer_nombre || "Jugador"} ${tarjeta.jugadores?.primer_apellido || ""} - ${tarjeta.equipos?.nombre || "Equipo"}`,
+            });
+          }
+        }
+
+        if (cambiosRes.data) {
+          for (const cambio of cambiosRes.data) {
+            eventosArray.push({
+              id: cambio.id,
+              tipo: "cambio",
+              minuto: cambio.minuto,
+              descripcion: `Cambio realizado`,
+            });
+          }
+        }
+
+        eventosArray.sort((a, b) => a.minuto - b.minuto);
+        setEventos(eventosArray);
+      } catch (error) {
+        console.error("Error fetching eventos:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEventos();
+  }, [partidoId]);
+
+  if (loading) {
+    return (
+      <div className="space-y-2">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-16 bg-muted animate-pulse rounded-lg" />
+        ))}
+      </div>
+    );
+  }
 
   if (eventos.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Clock className="h-5 w-5" />
-            Eventos del Partido
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-center text-muted-foreground py-8">
-            No hay eventos registrados aún
-          </p>
-        </CardContent>
-      </Card>
+      <div className="text-center py-8 text-muted-foreground">
+        <p>No hay eventos registrados para este partido.</p>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Clock className="h-5 w-5" />
-          Eventos del Partido
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          {sortedEventos.map((evento) => (
-            <div
-              key={evento.id}
-              className="flex items-start gap-4 p-3 rounded-lg border hover:bg-accent/50 transition-colors"
-            >
-              {/* Minute Badge */}
-              <div className="flex-shrink-0">
-                <Badge variant="outline" className="font-mono font-bold">
-                  {evento.minuto}'
-                </Badge>
-              </div>
+    <div className="space-y-2">
+      {eventos.map((evento) => (
+        <div
+          key={evento.id}
+          className={`flex items-center gap-4 p-4 border rounded-lg transition-colors ${
+            evento.tipo === "gol"
+              ? "border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-800"
+              : evento.tipo === "tarjeta"
+                ? "border-yellow-200 bg-yellow-50 dark:bg-yellow-950 dark:border-yellow-800"
+                : "border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800"
+          }`}
+        >
+          {evento.tipo === "gol" && (
+            <Target className="h-6 w-6 text-green-600 dark:text-green-400 flex-shrink-0" />
+          )}
+          {evento.tipo === "tarjeta" && (
+            <AlertTriangle className="h-6 w-6 text-yellow-600 dark:text-yellow-400 flex-shrink-0" />
+          )}
+          {evento.tipo === "cambio" && (
+            <ArrowLeftRight className="h-6 w-6 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+          )}
 
-              {/* Event Icon */}
-              <div className="text-2xl flex-shrink-0">
-                {getEventoIcon(evento.tipo)}
-              </div>
+          <Badge variant="outline" className="font-mono font-bold min-w-[50px] justify-center">
+            {evento.minuto}'
+          </Badge>
 
-              {/* Event Description */}
-              <div className="flex-1 min-w-0">
-                <p className="text-sm">{getEventoText(evento)}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {evento.equipo.nombre}
-                </p>
-              </div>
-            </div>
-          ))}
+          <div className="flex-1">
+            <div className="text-sm font-medium">{evento.descripcion}</div>
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      ))}
+    </div>
   );
 }
