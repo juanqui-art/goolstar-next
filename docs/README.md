@@ -43,11 +43,13 @@ Understand the system design and architecture decisions:
 | **[architecture/decision-monolito.md](architecture/decision-monolito.md)** | ADR: Why we chose monolito architecture |
 | **[architecture/future-monorepo-migration.md](architecture/future-monorepo-migration.md)** | When & how to migrate to monorepo |
 | **[architecture/business-rules.md](architecture/business-rules.md)** | Business logic and tournament rules |
+| **[architecture/caching-strategy.md](architecture/caching-strategy.md)** | ⭐ Caching strategy with 'use cache: private' |
 
 **Key Topics:**
 - Directory organization & component patterns
 - Library structure & import conventions
 - Data flow examples
+- **Caching strategy for Supabase + Next.js 16**
 - Points system & tiebreaker criteria
 - Suspension rules & financial system
 - Tournament phases (groups + knockout)
