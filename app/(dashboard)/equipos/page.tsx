@@ -17,7 +17,6 @@ import {
 import { getTodosLosEquipos } from "@/lib/data";
 
 export default async function EquiposPage() {
-  // Cached data - revalidates hourly
   const equipos = await getTodosLosEquipos();
 
   return (

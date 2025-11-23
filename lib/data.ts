@@ -1,9 +1,12 @@
 /**
  * Data Layer for GoolStar
  *
- * This file contains all data fetching functions.
- * Note: Cache Components ('use cache') removed due to incompatibility with Supabase cookies authentication.
- * Caching should be handled at the page level using export const revalidate = X
+ * CACHING STRATEGY:
+ * - Cache Components disabled due to incompatibility with Supabase cookies + prerendering
+ * - Caching handled at page level with export const revalidate = X when needed
+ *
+ * INVESTIGATION NOTE: Attempted 'use cache: private' strategy but encountered
+ * prerendering errors. See docs/architecture/caching-strategy.md for details.
  */
 
 import { createServerSupabaseClient } from '@/lib/supabase/server'
@@ -166,6 +169,7 @@ export async function getTodosLosJugadores() {
  */
 
 export async function getTablaPosiciones(torneoId: string) {
+
   const supabase = await createServerSupabaseClient()
 
   // Usar la función RPC si existe, o consulta directa a estadistica_equipo

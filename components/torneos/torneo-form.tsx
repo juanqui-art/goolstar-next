@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { createTorneo, updateTorneo } from "@/actions/torneos";
@@ -44,11 +44,18 @@ export function TorneoForm({
     defaultValues: (initialData || {
       nombre: "",
       categoria_id: "",
-      fecha_inicio: new Date(),
+      fecha_inicio: undefined,
       tiene_fase_grupos: true,
       tiene_eliminacion_directa: true,
     }) as Torneo,
   });
+
+  // Set fecha_inicio to current date after component mounts (client-side only)
+  useEffect(() => {
+    if (!initialData?.fecha_inicio) {
+      form.setValue('fecha_inicio', new Date());
+    }
+  }, [initialData, form]);
 
   const handleSubmit = async (data: Torneo) => {
     try {
