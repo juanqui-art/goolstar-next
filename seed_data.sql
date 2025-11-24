@@ -8,6 +8,7 @@ DECLARE
     v_equipo4_id UUID;
     v_partido1_id UUID;
     v_partido2_id UUID;
+    v_team_count INT;
 BEGIN
     -- 1. Obtener o Crear Categoría
     SELECT id INTO v_categoria_id FROM categorias LIMIT 1;
@@ -31,7 +32,15 @@ BEGIN
         RAISE NOTICE 'Usando Torneo existente: %', v_torneo_id;
     END IF;
 
-    -- 3. Insertar Equipos
+    -- 3. Verificar si ya existen equipos para este torneo
+    SELECT COUNT(*) INTO v_team_count FROM equipos WHERE torneo_id = v_torneo_id;
+    
+    IF v_team_count > 0 THEN
+        RAISE NOTICE 'El torneo ya tiene % equipos. Saltando creación de datos.', v_team_count;
+        RETURN;
+    END IF;
+
+    -- 4. Insertar Equipos
     INSERT INTO equipos (nombre, torneo_id, categoria_id, nivel, color_principal, activo)
     VALUES ('Los Rayos FC', v_torneo_id, v_categoria_id, '3', '#FFD700', true)
     RETURNING id INTO v_equipo1_id;
@@ -48,7 +57,7 @@ BEGIN
     VALUES ('Huracanes', v_torneo_id, v_categoria_id, '3', '#00FF00', true)
     RETURNING id INTO v_equipo4_id;
 
-    -- 4. Insertar Partidos (ayer y hoy)
+    -- 5. Insertar Partidos (ayer y hoy)
     INSERT INTO partidos (torneo_id, equipo_1_id, equipo_2_id, fecha, cancha, completado)
     VALUES (v_torneo_id, v_equipo1_id, v_equipo2_id, NOW() - INTERVAL '1 day', 'Cancha 1', false)
     RETURNING id INTO v_partido1_id;
@@ -60,7 +69,7 @@ BEGIN
     INSERT INTO partidos (torneo_id, equipo_1_id, equipo_2_id, fecha, cancha, completado)
     VALUES (v_torneo_id, v_equipo1_id, v_equipo3_id, NOW() + INTERVAL '1 day', 'Cancha 1', false);
 
-    -- 5. Finalizar Partidos (esto disparará los triggers de estadísticas)
+    -- 6. Finalizar Partidos (esto disparará los triggers de estadísticas)
     -- Partido 1: 3-1
     UPDATE partidos
     SET 
