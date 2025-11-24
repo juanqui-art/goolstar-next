@@ -357,3 +357,30 @@ export async function getTorneoStats(torneoId: string) {
     throw new Error("Failed to fetch tournament statistics");
   }
 }
+
+/**
+ * Get top scorers for a tournament
+ */
+export async function getTopScorers(torneoId: string, limit = 10) {
+  try {
+    const supabase = await createServerSupabaseClient();
+
+    // Use database function for top scorers
+    const { data, error } = await supabase.rpc("get_jugadores_destacados", {
+      p_torneo_id: torneoId,
+      p_limit: limit,
+    });
+
+    if (error) {
+      console.error("Error fetching top scorers:", error);
+      throw new Error(`Failed to fetch top scorers: ${error.message}`);
+    }
+
+    return data || [];
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Failed to fetch top scorers");
+  }
+}

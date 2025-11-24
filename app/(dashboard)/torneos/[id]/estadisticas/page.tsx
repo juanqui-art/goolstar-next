@@ -1,74 +1,68 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getTopScorers, getTorneo, getTorneoStats } from "@/actions/torneos";
+import { TeamStatsCard } from "@/components/torneos/team-stats-card";
+import { TopScorers } from "@/components/torneos/top-scorers";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Table as TableIcon } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
-export default function EstadisticasTorneoPage({
+export default async function EstadisticasPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  // TODO: Replace with getTorneoStats(params.id) Server Action
-  const stats = {
-    totalGoles: 0,
-    totalTarjetas: 0,
-    maxGoleador: null,
-    equipoMasGoles: null,
-  };
+  const { id } = await params;
+
+  // Fetch data in parallel
+  const [torneo, stats, topScorers] = await Promise.all([
+    getTorneo(id).catch(() => null),
+    getTorneoStats(id).catch(() => ({
+      totalEquipos: 0,
+      totalPartidos: 0,
+      partidosCompletados: 0,
+      partidosPendientes: 0,
+      topScorers: [],
+    })),
+    getTopScorers(id).catch(() => []),
+  ]);
+
+  if (!torneo) {
+    notFound();
+  }
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Estadísticas</h1>
-        <p className="text-gray-600">Estadísticas del torneo</p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <Link
+              href={`/torneos/${id}`}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+            <h1 className="text-3xl font-bold tracking-tight">Estadísticas</h1>
+          </div>
+          <p className="text-muted-foreground">
+            {torneo.nombre}
+            {torneo.categorias?.nombre ? ` - ${torneo.categorias.nombre}` : ""}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Link href={`/torneos/${id}/tabla`}>
+            <Button variant="outline" className="gap-2">
+              <TableIcon className="h-4 w-4" />
+              Ver Tabla
+            </Button>
+          </Link>
+        </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Total Goles</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalGoles}</div>
-          </CardContent>
-        </Card>
+      {/* Tournament Stats Cards */}
+      <TeamStatsCard stats={stats} />
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">
-              Total Tarjetas
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalTarjetas}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">
-              Máximo Goleador
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-gray-500">
-              {stats.maxGoleador || "N/A"}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">
-              Equipo Más Goles
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-gray-500">
-              {stats.equipoMasGoles || "N/A"}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* TODO: Add charts and detailed statistics */}
+      {/* Top Scorers */}
+      <TopScorers scorers={topScorers} />
     </div>
   );
 }

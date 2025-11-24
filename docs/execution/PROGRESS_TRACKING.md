@@ -126,8 +126,8 @@
 ## 📈 SPRINT 3: Statistics & Standings
 
 **Target:** 2-3 días
-**Status:** 🔄 IN PROGRESS
-**Completion:** 33% ███░░░░░░░░░░░░░░░░░░░░░░░ Target: 100%
+**Status:** ✅ COMPLETED (Track C deferred)
+**Completion:** 66% ████████████████░░░░░░░░░░ (Track A & B complete, Track C pendiente)
 
 ### Track A - Standings Table
 - [x] Tabla posiciones component (3h)
@@ -135,15 +135,17 @@
 - [x] Query using DB function (1h)
 
 ### Track B - General Stats
-- [ ] Top scorers component (2h)
-- [ ] Team stats component (2h)
-- [ ] Stats page (1h)
-- [ ] Utility functions (1h)
+- [x] Top scorers component (2h)
+- [x] Team stats component (2h)
+- [x] Stats page (1h)
+- [x] Utility functions (1h)
 
-### Track C - Realtime Updates
+### Track C - Realtime Updates (DEFERRED - No crítico para MVP)
 - [ ] Realtime subscriptions (2h)
 - [ ] Live standings component (2h)
 - [ ] Testing realtime (1h)
+
+> **Nota:** Track C se implementará en una fase posterior. No es crítico para el MVP inicial.
 
 ### Sprint 3 Acceptance
 - [ ] Standings display correctly
