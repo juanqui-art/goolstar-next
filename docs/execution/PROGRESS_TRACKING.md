@@ -126,13 +126,13 @@
 ## 📈 SPRINT 3: Statistics & Standings
 
 **Target:** 2-3 días
-**Status:** ⏳ NOT STARTED
-**Completion:** 0% ░░░░░░░░░░░░░░░░░░░░░░░░░░ Target: 100%
+**Status:** 🔄 IN PROGRESS
+**Completion:** 33% ███░░░░░░░░░░░░░░░░░░░░░░░ Target: 100%
 
 ### Track A - Standings Table
-- [ ] Tabla posiciones component (3h)
-- [ ] Standings page (2h)
-- [ ] Query using DB function (1h)
+- [x] Tabla posiciones component (3h)
+- [x] Standings page (2h)
+- [x] Query using DB function (1h)
 
 ### Track B - General Stats
 - [ ] Top scorers component (2h)

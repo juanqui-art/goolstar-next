@@ -1,9 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { torneoSchema } from "@/lib/validations/torneo";
 import type { Database } from "@/types/database";
+import { revalidatePath } from "next/cache";
 
 type TorneoRow = Database["public"]["Tables"]["torneos"]["Row"];
 type TorneoInsert = Database["public"]["Tables"]["torneos"]["Insert"];
@@ -245,9 +245,9 @@ export async function getStandings(torneoId: string, grupo?: string) {
 
     // Use database function for standings calculation
     // The function is defined in migration 008_functions.sql
+    // Note: The database function only accepts p_torneo_id
     const { data, error } = await supabase.rpc("get_tabla_posiciones", {
       p_torneo_id: torneoId,
-      p_grupo: grupo || null,
     });
 
     if (error) {
@@ -255,7 +255,14 @@ export async function getStandings(torneoId: string, grupo?: string) {
       throw new Error(`Failed to fetch standings: ${error.message}`);
     }
 
-    return data || [];
+    let standings = data || [];
+
+    // Filter by group if provided
+    if (grupo) {
+      standings = standings.filter((team) => team.grupo === grupo);
+    }
+
+    return standings;
   } catch (error) {
     if (error instanceof Error) {
       throw error;

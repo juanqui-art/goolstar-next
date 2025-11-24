@@ -1,20 +1,21 @@
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
 import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
 import { getTorneos } from "@/lib/data";
+import Link from "next/link";
 
 export default async function TorneosPage() {
   // Cached data - revalidates hourly
@@ -65,32 +66,45 @@ export default async function TorneosPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {/* TODO: Map torneos data here */}
-                {/* Example row structure:
-                <TableRow>
-                  <TableCell className="font-medium">{torneo.nombre}</TableCell>
-                  <TableCell>{torneo.categoria.nombre}</TableCell>
-                  <TableCell>{formatDate(torneo.fecha_inicio)}</TableCell>
-                  <TableCell>{formatDate(torneo.fecha_fin)}</TableCell>
-                  <TableCell>
-                    <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                      Activo
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Link href={`/torneos/${torneo.id}`}>
-                      <Button variant="ghost" size="sm">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </Link>
-                    <Link href={`/torneos/${torneo.id}/editar`}>
-                      <Button variant="ghost" size="sm">
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-                */}
+                {torneos.map((torneo) => (
+                  <TableRow key={torneo.id}>
+                    <TableCell className="font-medium">{torneo.nombre}</TableCell>
+                    <TableCell>{torneo.categorias?.nombre || "N/A"}</TableCell>
+                    <TableCell>
+                      {torneo.fecha_inicio
+                        ? new Date(torneo.fecha_inicio).toLocaleDateString()
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      {torneo.fecha_fin
+                        ? new Date(torneo.fecha_fin).toLocaleDateString()
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${
+                          torneo.activo
+                            ? "bg-green-100 text-green-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {torneo.activo ? "Activo" : "Inactivo"}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right space-x-2">
+                      <Link href={`/torneos/${torneo.id}`}>
+                        <Button variant="ghost" size="sm">
+                          Ver
+                        </Button>
+                      </Link>
+                      <Link href={`/torneos/${torneo.id}/tabla`}>
+                        <Button variant="outline" size="sm">
+                          Tabla
+                        </Button>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           )}
