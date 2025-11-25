@@ -243,13 +243,41 @@ Generated types from Supabase CLI ensure type safety (`types/database.ts`).
 
 ## Documentation
 
-See **[docs/README.md](docs/README.md)** for complete documentation index.
+### Documentation Structure
 
-Key files:
+The project documentation is organized in the `docs/` folder with a clear hierarchical structure. See **[docs/README.md](docs/README.md)** for the complete documentation index.
+
+**Documentation was reorganized on 2025-11-25** - See [docs/REORGANIZATION_MAP.md](docs/REORGANIZATION_MAP.md) for details on what changed.
+
+### Key Documentation Files
+
+**Database:**
 - `docs/database/schema.md` - Complete database schema with all 20+ tables
 - `docs/database/triggers.md` - Automated database operations
 - `docs/database/functions.md` - SQL functions for complex queries
+- `docs/database/migrations-step-by-step.md` - Migration guide
+- `docs/database/migrations-quick-reference.md` - Quick migration reference
+
+**Architecture:**
 - `docs/architecture/business-rules.md` - Business logic and rules
+- `docs/architecture/caching-strategy.md` - Next.js 16 caching strategy
+- `docs/architecture/current-structure.md` - Project structure details
+- `docs/architecture/infrastructure.md` - Infrastructure overview
+
+**Guides:**
+- `docs/guides/quick-start.md` - Quick start guide
+- `docs/guides/setup-checklist.md` - Setup checklist
+- `docs/guides/senior-setup.md` - Senior developer setup
+- `docs/guides/team-guide.md` - Team collaboration guide
+
+**Troubleshooting:**
+- `docs/troubleshooting/react-context-error-solutions.md` - React Context error solutions
+- `docs/troubleshooting/cache-components-overview.md` - Cache Components analysis
+- `docs/troubleshooting/cache-implementation.md` - Cache implementation guide
+
+**Execution & Progress:**
+- `docs/execution/MASTER_EXECUTION_PLAN.md` - Master execution plan
+- `docs/execution/PROGRESS_TRACKING.md` - Current progress tracking
 - `.env.example` - Environment variables template
 
 ## Common Workflows

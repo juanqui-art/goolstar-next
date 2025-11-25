@@ -212,7 +212,8 @@ Complete documentation is organized in the [docs/](docs/) directory:
 - [Triggers](docs/database/triggers.md) - Automated database operations
 - [Functions](docs/database/functions.md) - SQL functions
 - [RLS Policies](docs/database/rls-policies.md) - Security policies
-- [Migration Guide](docs/database/migration-guide.md) - How to run migrations
+- [Migration Guide](docs/database/migrations-step-by-step.md) - How to run migrations
+- [Migration Reference](docs/database/migrations-quick-reference.md) - Quick migration commands
 
 ### Development
 - [Authentication](docs/development/authentication.md) - Auth implementation
@@ -221,8 +222,11 @@ Complete documentation is organized in the [docs/](docs/) directory:
 - [Deployment](docs/development/deployment.md) - Deploy to production
 
 ### Troubleshooting
-- [Build Errors](docs/troubleshooting/build-errors.md) - Common build issues
-- [Cache Components](docs/troubleshooting/cache-implementation.md) - Caching strategies
+- [React Context Errors](docs/troubleshooting/react-context-error-solutions.md) - Solutions for React Context issues
+- [Cache Components Overview](docs/troubleshooting/cache-components-overview.md) - Cache Components analysis
+- [Cache Implementation](docs/troubleshooting/cache-implementation.md) - Caching strategies and implementation
+
+> **Note:** Documentation was reorganized on 2025-11-25. See [docs/REORGANIZATION_MAP.md](docs/REORGANIZATION_MAP.md) for a complete map of changes.
 
 ---
 

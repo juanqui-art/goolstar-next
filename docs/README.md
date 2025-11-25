@@ -2,6 +2,8 @@
 
 **Complete documentation for the GoolStar tournament management system (Next.js + Supabase)**
 
+> **📌 Documentation was reorganized on 2025-11-25** - Files have been renamed and consolidated for better clarity. See [REORGANIZATION_MAP.md](REORGANIZATION_MAP.md) for a complete map of changes.
+
 ---
 
 ## 🚀 Start Here
@@ -66,8 +68,8 @@ Complete database schema, automation, and security:
 | **[database/triggers.md](database/triggers.md)** | Automated database triggers (9 triggers) |
 | **[database/functions.md](database/functions.md)** | SQL functions for complex queries (9 functions) |
 | **[database/rls-policies.md](database/rls-policies.md)** | Row-Level Security policies |
-| **[database/migration-guide.md](database/migration-guide.md)** | Step-by-step migration guide |
-| **[database/migration-reference.md](database/migration-reference.md)** | Quick migration reference |
+| **[database/migrations-step-by-step.md](database/migrations-step-by-step.md)** | Step-by-step migration guide |
+| **[database/migrations-quick-reference.md](database/migrations-quick-reference.md)** | Quick migration reference |
 
 **Database Stats:**
 - 21 tables with proper relationships
@@ -94,8 +96,6 @@ Development practices, testing, and deployment:
 | **[development/conventions.md](development/conventions.md)** | Code conventions and standards |
 | **[development/testing.md](development/testing.md)** | Testing strategy and guidelines |
 | **[development/deployment.md](development/deployment.md)** | Deployment to production |
-| **[development/phase2-completion.md](development/phase2-completion.md)** | Phase 2 completion summary |
-| **[development/phase2-task1-completion.md](development/phase2-task1-completion.md)** | Task 1 completion details |
 
 **Key Topics:**
 - Login and registration pages
@@ -114,6 +114,8 @@ Track implementation progress and status:
 | Document | Description |
 |----------|-------------|
 | **[phases/phase-1-complete.md](phases/phase-1-complete.md)** | Phase 1: Infrastructure completion summary |
+| **[phases/phase-2-complete.md](phases/phase-2-complete.md)** | Phase 2: Dashboard completion summary |
+| **[phases/phase-2-task1-complete.md](phases/phase-2-task1-complete.md)** | Phase 2 Task 1: Tournament pages completion |
 | **[phases/infrastructure-status.md](phases/infrastructure-status.md)** | Infrastructure setup status |
 | **[phases/infrastructure-overview.md](phases/infrastructure-overview.md)** | Infrastructure architecture diagrams |
 | **[phases/junior-tasks-phase2.md](phases/junior-tasks-phase2.md)** | Junior developer tasks for Phase 2 |
@@ -132,11 +134,12 @@ Common issues and solutions:
 
 | Document | Description |
 |----------|-------------|
-| **[troubleshooting/build-errors.md](troubleshooting/build-errors.md)** | Common build errors and fixes |
-| **[troubleshooting/cache-components-analysis.md](troubleshooting/cache-components-analysis.md)** | Cache Components analysis |
+| **[troubleshooting/react-context-error-solutions.md](troubleshooting/react-context-error-solutions.md)** | React Context error solutions (complete) |
+| **[troubleshooting/cache-components-overview.md](troubleshooting/cache-components-overview.md)** | Cache Components overview and analysis |
 | **[troubleshooting/cache-implementation.md](troubleshooting/cache-implementation.md)** | Cache implementation guide |
 | **[troubleshooting/implementation-steps.md](troubleshooting/implementation-steps.md)** | Implementation step-by-step |
-| **[troubleshooting/solution-summary.md](troubleshooting/solution-summary.md)** | Solution comparison summary |
+
+> **Note:** Legacy troubleshooting docs have been moved to [archive/](archive/) - see [REORGANIZATION_MAP.md](REORGANIZATION_MAP.md) for details.
 
 **Common Issues:**
 - `TypeError: Cannot read properties of null (reading 'useContext')`
@@ -160,6 +163,9 @@ Legacy documentation (historical reference):
 | **[archive/junior-tasks-phase1.md](archive/junior-tasks-phase1.md)** | Phase 1 junior tasks (deprecated) |
 | **[archive/docs-index-old.md](archive/docs-index-old.md)** | Old documentation index |
 | **[archive/documentation-summary.md](archive/documentation-summary.md)** | Legacy documentation summary |
+| **[archive/legacy-build-errors.md](archive/legacy-build-errors.md)** | Legacy build errors (consolidated) |
+| **[archive/legacy-build-analysis.md](archive/legacy-build-analysis.md)** | Legacy build analysis (consolidated) |
+| **[archive/legacy-solution-summary.md](archive/legacy-solution-summary.md)** | Legacy solution summary (consolidated) |
 
 ---
 
@@ -181,7 +187,7 @@ Legacy documentation (historical reference):
 ### For Database Work
 1. Review [database/schema.md](database/schema.md)
 2. Understand [database/triggers.md](database/triggers.md)
-3. Follow [database/migration-guide.md](database/migration-guide.md)
+3. Follow [database/migrations-step-by-step.md](database/migrations-step-by-step.md)
 4. Check [database/functions.md](database/functions.md)
 
 ### For Frontend Work
@@ -193,8 +199,8 @@ Legacy documentation (historical reference):
 ### For DevOps/Deployment
 1. Review [development/deployment.md](development/deployment.md)
 2. Check [guides/setup-checklist.md](guides/setup-checklist.md)
-3. Review [database/migration-guide.md](database/migration-guide.md)
-4. Monitor [troubleshooting/build-errors.md](troubleshooting/build-errors.md)
+3. Review [database/migrations-step-by-step.md](database/migrations-step-by-step.md)
+4. Monitor [troubleshooting/react-context-error-solutions.md](troubleshooting/react-context-error-solutions.md)
 
 ---
 
@@ -330,15 +336,31 @@ See [development/conventions.md](development/conventions.md) for:
 
 ## 📊 Documentation Statistics
 
-- **Total Documents:** 25+ markdown files
-- **Total Lines:** 15,000+ lines of documentation
-- **Categories:** 6 (guides, architecture, database, development, phases, troubleshooting)
-- **Last Updated:** 2025-11-22
+- **Total Documents:** 45+ markdown files
+- **Total Lines:** 26,000+ lines of documentation
+- **Categories:** 7 (guides, architecture, database, development, phases, troubleshooting, archive)
+- **Last Updated:** 2025-11-25
 - **Maintained By:** GoolStar Development Team
+
+**Recent Reorganization (2025-11-25):**
+- Removed 13 duplicate/temp files from root
+- Consolidated 7 troubleshooting files → 4 files
+- Moved 8 files to better locations
+- Archived 3 legacy build error docs
 
 ---
 
 ## 🔄 Recent Updates
+
+**2025-11-25:**
+- ✅ **Major documentation reorganization** - See [REORGANIZATION_MAP.md](REORGANIZATION_MAP.md)
+- ✅ Cleaned root directory (removed 13 duplicate/temp files)
+- ✅ Consolidated troubleshooting/ folder (7→4 files)
+- ✅ Renamed migration files for clarity (migrations-step-by-step.md, migrations-quick-reference.md)
+- ✅ Moved phase completion docs from development/ to phases/
+- ✅ Archived legacy build error documentation
+- ✅ Updated all documentation references and links
+- ✅ Removed empty ai-prompts/ folder
 
 **2025-11-22:**
 - ✅ Reorganized documentation into categorized folders
