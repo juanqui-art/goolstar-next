@@ -1,77 +1,90 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { notFound } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { BalanceCard } from "@/components/financiero/balance-card";
+import { DeudaDetalle } from "@/components/financiero/deuda-detalle";
 import { HistorialPagos } from "@/components/financiero/historial-pagos";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getEquipoBalance } from "@/actions/financiero";
 
-interface Transaction {
-  id: string;
-  fecha: string;
-  concepto: string;
-  monto: number;
-  es_ingreso: boolean;
-  pagado: boolean;
-  observaciones?: string;
-}
-
-export default function EquipoFinancieroPage({
-  params,
+export default async function EquipoFinancieroPage({
+	params,
 }: {
-  params: { id: string };
+	params: Promise<{ id: string }>;
 }) {
-  // TODO: Replace with getEquipoFinanciero(params.id) Server Action
-  const transactions: Transaction[] = [];
-  const balance = {
-    total: 0,
-    pagado: 0,
-    pendiente: 0,
-  };
+	const { id } = await params;
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Finanzas del Equipo</h1>
-        <p className="text-gray-600">Historial de pagos y deudas</p>
-      </div>
+	// Fetch team financial data
+	let balanceData;
+	try {
+		balanceData = await getEquipoBalance(id);
+	} catch (error) {
+		console.error("Error fetching team balance:", error);
+		notFound();
+	}
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Total</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${balance.total}</div>
-          </CardContent>
-        </Card>
+	const {
+		equipoNombre,
+		totalCargos,
+		totalPagos,
+		deudaPendiente,
+		porcentajePagado,
+		transacciones,
+	} = balanceData;
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Pagado</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              ${balance.pagado}
-            </div>
-          </CardContent>
-        </Card>
+	return (
+		<div className="space-y-6">
+			{/* Header */}
+			<div className="flex items-center justify-between">
+				<div>
+					<div className="flex items-center gap-2 mb-2">
+						<Link href={`/equipos/${id}`}>
+							<Button variant="ghost" size="sm">
+								<ArrowLeft className="h-4 w-4 mr-1" />
+								Volver
+							</Button>
+						</Link>
+					</div>
+					<h1 className="text-3xl font-bold">Finanzas - {equipoNombre}</h1>
+					<p className="text-muted-foreground">
+						Historial de pagos y deudas del equipo
+					</p>
+				</div>
+				<Link href={`/equipos/${id}`}>
+					<Button variant="outline">Ver Equipo</Button>
+				</Link>
+			</div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Pendiente</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">
-              ${balance.pendiente}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+			{/* Balance Card */}
+			<BalanceCard
+				equipoNombre={equipoNombre}
+				totalCargos={totalCargos}
+				totalPagos={totalPagos}
+				deudaPendiente={deudaPendiente}
+				porcentajePagado={porcentajePagado}
+				showTitle={true}
+			/>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Historial de Transacciones</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <HistorialPagos transactions={transactions} />
-        </CardContent>
-      </Card>
-    </div>
-  );
+			{/* Debt Detail */}
+			<DeudaDetalle
+				equipoNombre={equipoNombre}
+				transacciones={transacciones}
+				totalCargos={totalCargos}
+				totalPagos={totalPagos}
+				deudaPendiente={deudaPendiente}
+				showTitle={true}
+			/>
+
+			{/* Transaction History */}
+			<Card>
+				<CardHeader>
+					<CardTitle>Historial Completo de Transacciones</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<HistorialPagos transactions={transacciones} showActions={false} />
+				</CardContent>
+			</Card>
+		</div>
+	);
 }

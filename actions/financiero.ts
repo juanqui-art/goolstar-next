@@ -3,117 +3,93 @@
 import { revalidatePath } from "next/cache";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import {
-  calculateDebtBreakdown,
-  calculateTotalDebt,
-  type Transaction,
-} from "@/lib/utils/debt";
-import {
-  createTransaccionSchema,
-  marcarPagadoSchema,
+	createTransaccionSchema,
+	updateTransaccionSchema,
+	registrarPagoSchema,
 } from "@/lib/validations/financiero";
 import type { Database } from "@/types/database";
 
 type TransaccionRow = Database["public"]["Tables"]["transacciones_pago"]["Row"];
 type TransaccionInsert =
-  Database["public"]["Tables"]["transacciones_pago"]["Insert"];
+	Database["public"]["Tables"]["transacciones_pago"]["Insert"];
+type TransaccionUpdate =
+	Database["public"]["Tables"]["transacciones_pago"]["Update"];
 
 /**
  * Transaccion with related data
+ * Maps database fields to frontend-friendly names
  */
 export interface TransaccionWithRelations extends TransaccionRow {
-  equipos?: {
-    id: string;
-    nombre: string;
-  } | null;
-  torneos?: {
-    id: string;
-    nombre: string;
-  } | null;
-  partidos?: {
-    id: string;
-    fecha: string;
-  } | null;
-  jugadores?: {
-    id: string;
-    nombre_completo: string;
-  } | null;
+	fecha: string; // Mapped from created_at (for display purposes)
+	concepto: string; // Mapped from descripcion
+	observaciones?: string | null; // Mapped from razon
+	equipos?: {
+		id: string;
+		nombre: string;
+	} | null;
+	partidos?: {
+		id: string;
+		fecha: string;
+	} | null;
+	jugadores?: {
+		id: string;
+		nombre_completo: string;
+	} | null;
 }
 
 /**
  * Financial dashboard statistics
  */
 export interface FinancieroStats {
-  totalIngresos: number;
-  totalEgresos: number;
-  balance: number;
-  transaccionesPendientes: number;
-  montoPendiente: number;
-  equiposConDeuda: number;
+	totalIngresos: number;
+	totalEgresos: number;
+	balance: number;
+	totalTransacciones: number;
 }
 
 /**
- * Team balance information
- */
-export interface EquipoBalance {
-  equipoId: string;
-  equipoNombre: string;
-  totalCargos: number;
-  totalPagos: number;
-  deudaPendiente: number;
-  porcentajePagado: number;
-  transacciones: TransaccionWithRelations[];
-}
-
-/**
- * Get financial dashboard statistics
+ * Get financial dashboard statistics (simplified for now)
  */
 export async function getFinancieroStats(): Promise<FinancieroStats> {
-  try {
-    const supabase = await createServerSupabaseClient();
+	try {
+		const supabase = await createServerSupabaseClient();
 
-    // Get all transactions
-    const { data: transacciones, error } = await supabase
-      .from("transacciones_pago")
-      .select("*");
+		// Get all transactions
+		const { data: transacciones, error } = await supabase
+			.from("transacciones_pago")
+			.select("*");
 
-    if (error) {
-      console.error("Error fetching transactions:", error);
-      throw new Error(`Failed to fetch statistics: ${error.message}`);
-    }
+		if (error) {
+			console.error("Error fetching transactions:", error);
+			throw new Error(`Failed to fetch statistics: ${error.message}`);
+		}
 
-    // Calculate stats
-    const ingresos = transacciones.filter((t) => t.es_ingreso);
-    const egresos = transacciones.filter((t) => !t.es_ingreso);
-    const pendientes = transacciones.filter((t) => !t.pagado);
+		// Calculate basic stats
+		const totalIngresos = transacciones
+			.filter((t) => t.es_ingreso)
+			.reduce((sum, t) => sum + Number(t.monto), 0);
 
-    const totalIngresos = ingresos.reduce((sum, t) => sum + Number(t.monto), 0);
-    const totalEgresos = egresos.reduce((sum, t) => sum + Number(t.monto), 0);
-    const montoPendiente = pendientes.reduce(
-      (sum, t) => sum + Number(t.monto),
-      0,
-    );
+		const totalEgresos = transacciones
+			.filter((t) => !t.es_ingreso)
+			.reduce((sum, t) => sum + Number(t.monto), 0);
 
-    // Get unique teams with debt
-    const equiposConDeudaSet = new Set(pendientes.map((t) => t.equipo_id));
-
-    return {
-      totalIngresos,
-      totalEgresos,
-      balance: totalIngresos - totalEgresos,
-      transaccionesPendientes: pendientes.length,
-      montoPendiente,
-      equiposConDeuda: equiposConDeudaSet.size,
-    };
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error;
-    }
-    throw new Error("Failed to get financial statistics");
-  }
+		return {
+			totalIngresos,
+			totalEgresos,
+			balance: totalIngresos - totalEgresos,
+			totalTransacciones: transacciones.length,
+		};
+	} catch (error) {
+		if (error instanceof Error) {
+			throw error;
+		}
+		throw new Error("Failed to get financial statistics");
+	}
 }
 
 /**
  * Get all transactions with related data
+ * Maps database fields to frontend-friendly names
  */
 export async function getTransacciones(): Promise<TransaccionWithRelations[]> {
   try {
@@ -129,7 +105,13 @@ export async function getTransacciones(): Promise<TransaccionWithRelations[]> {
       throw new Error(`Failed to fetch transactions: ${error.message}`);
     }
 
-    return data as TransaccionWithRelations[];
+    // Map database fields to frontend-friendly names
+    return data.map((t) => ({
+      ...t,
+      fecha: t.created_at, // Map created_at to fecha for display
+      concepto: t.descripcion || "",
+      observaciones: t.razon,
+    })) as TransaccionWithRelations[];
   } catch (error) {
     if (error instanceof Error) {
       throw error;
@@ -140,6 +122,7 @@ export async function getTransacciones(): Promise<TransaccionWithRelations[]> {
 
 /**
  * Get transactions for a specific team
+ * Maps database fields to frontend-friendly names
  */
 export async function getTransaccionesByEquipo(
   equipoId: string,
@@ -158,7 +141,13 @@ export async function getTransaccionesByEquipo(
       throw new Error(`Failed to fetch team transactions: ${error.message}`);
     }
 
-    return data as TransaccionWithRelations[];
+    // Map database fields to frontend-friendly names
+    return data.map((t) => ({
+      ...t,
+      fecha: t.created_at, // Map created_at to fecha for display
+      concepto: t.descripcion || "",
+      observaciones: t.razon,
+    })) as TransaccionWithRelations[];
   } catch (error) {
     if (error instanceof Error) {
       throw error;
@@ -168,253 +157,402 @@ export async function getTransaccionesByEquipo(
 }
 
 /**
- * Register a new financial transaction
+ * Create a new financial transaction
  */
-export async function registrarTransaccion(
-  data: unknown,
+export async function createTransaccion(
+	data: unknown,
 ): Promise<{ id: string }> {
-  try {
-    // 1. Validate with schema
-    const validated = createTransaccionSchema.parse(data);
+	try {
+		// 1. Validate with schema
+		const validated = createTransaccionSchema.parse(data);
 
-    // 2. Get Supabase client
-    const supabase = await createServerSupabaseClient();
+		// 2. Get Supabase client
+		const supabase = await createServerSupabaseClient();
 
-    // 3. Prepare data for insert
-    const transaccionData: TransaccionInsert = {
-      equipo_id: validated.equipo_id,
-      torneo_id: validated.torneo_id,
-      tipo: validated.tipo,
-      monto: validated.monto,
-      es_ingreso: validated.es_ingreso,
-      descripcion: validated.descripcion || null,
-      razon: validated.razon || null,
-      metodo_pago: validated.metodo_pago || null,
-      referencia_externa: validated.referencia_externa || null,
-      pagado: validated.pagado,
-      fecha_pago: validated.fecha_pago
-        ? validated.fecha_pago.toISOString().split("T")[0]
-        : null,
-    };
+		// 3. Get torneo_id from equipo
+		const { data: equipo, error: equipoError } = await supabase
+			.from("equipos")
+			.select("torneo_id")
+			.eq("id", validated.equipo_id)
+			.single();
 
-    // 4. Insert transaction
-    const { data: newTransaccion, error } = await supabase
-      .from("transacciones_pago")
-      .insert(transaccionData)
-      .select()
-      .single();
+		if (equipoError || !equipo) {
+			throw new Error("Team not found or has no tournament");
+		}
 
-    if (error) {
-      console.error("Error creating transaction:", error);
-      throw new Error(`Failed to create transaction: ${error.message}`);
-    }
+		// 4. Prepare data for insert (map concepto to descripcion)
+		const transaccionData: TransaccionInsert = {
+			equipo_id: validated.equipo_id,
+			torneo_id: equipo.torneo_id,
+			partido_id: validated.partido_id || null,
+			tipo: validated.tipo,
+			monto: validated.monto,
+			es_ingreso: validated.es_ingreso,
+			descripcion: validated.concepto, // Map concepto to descripcion
+			razon: validated.observaciones || null,
+			metodo_pago: validated.metodo_pago || "efectivo",
+			referencia_externa: validated.referencia_pago || null,
+			pagado: validated.es_ingreso, // If es_ingreso, it's already paid
+			fecha_pago: validated.fecha_real_transaccion
+				? validated.fecha_real_transaccion.toISOString().split("T")[0]
+				: null,
+		};
 
-    // 5. Revalidate paths
-    revalidatePath("/financiero");
-    revalidatePath(`/equipos/${validated.equipo_id}`);
-    revalidatePath(`/torneos/${validated.torneo_id}`);
+		// 5. Insert transaction
+		const { data: newTransaccion, error } = await supabase
+			.from("transacciones_pago")
+			.insert(transaccionData)
+			.select()
+			.single();
 
-    return { id: newTransaccion.id };
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error;
-    }
-    throw new Error("Failed to register transaction");
-  }
+		if (error) {
+			console.error("Error creating transaction:", error);
+			throw new Error(`Failed to create transaction: ${error.message}`);
+		}
+
+		// 6. Revalidate paths
+		revalidatePath("/financiero");
+		revalidatePath(`/equipos/${validated.equipo_id}`);
+		revalidatePath("/");
+
+		return { id: newTransaccion.id };
+	} catch (error) {
+		if (error instanceof Error) {
+			throw error;
+		}
+		throw new Error("Failed to create transaction");
+	}
 }
 
 /**
- * Mark a transaction as paid
+ * Get a single transaction by ID
  */
-export async function marcarPagado(
-  data: unknown,
+export async function getTransaccion(
+	id: string,
+): Promise<TransaccionWithRelations> {
+	try {
+		const supabase = await createServerSupabaseClient();
+
+		const { data, error } = await supabase
+			.from("transacciones_pago")
+			.select("*")
+			.eq("id", id)
+			.single();
+
+		if (error) {
+			console.error("Error fetching transaction:", error);
+			throw new Error(`Transaction not found: ${error.message}`);
+		}
+
+		return data as TransaccionWithRelations;
+	} catch (error) {
+		if (error instanceof Error) {
+			throw error;
+		}
+		throw new Error("Failed to fetch transaction");
+	}
+}
+
+/**
+ * Update a transaction
+ */
+export async function updateTransaccion(
+	id: string,
+	data: unknown,
+): Promise<TransaccionRow> {
+	try {
+		// 1. Validate with schema
+		const validated = updateTransaccionSchema.parse(data);
+
+		// 2. Get Supabase client
+		const supabase = await createServerSupabaseClient();
+
+		// 3. Build update data
+		const updateData: TransaccionUpdate = {};
+
+		if (validated.equipo_id) updateData.equipo_id = validated.equipo_id;
+		if (validated.partido_id !== undefined)
+			updateData.partido_id = validated.partido_id;
+		if (validated.tipo) updateData.tipo = validated.tipo;
+		if (validated.monto !== undefined) updateData.monto = validated.monto;
+		if (validated.es_ingreso !== undefined)
+			updateData.es_ingreso = validated.es_ingreso;
+		if (validated.concepto) updateData.descripcion = validated.concepto;
+		if (validated.metodo_pago) updateData.metodo_pago = validated.metodo_pago;
+		if (validated.referencia_pago !== undefined)
+			updateData.referencia_externa = validated.referencia_pago;
+		if (validated.fecha_real_transaccion)
+			updateData.fecha_pago =
+				validated.fecha_real_transaccion.toISOString().split("T")[0];
+		if (validated.observaciones !== undefined)
+			updateData.razon = validated.observaciones;
+
+		// 4. Update transaction
+		const { data: updatedTransaccion, error } = await supabase
+			.from("transacciones_pago")
+			.update(updateData)
+			.eq("id", id)
+			.select()
+			.single();
+
+		if (error) {
+			console.error("Error updating transaction:", error);
+			throw new Error(`Failed to update transaction: ${error.message}`);
+		}
+
+		// 5. Revalidate paths
+		revalidatePath("/financiero");
+		revalidatePath(`/equipos/${updatedTransaccion.equipo_id}`);
+		revalidatePath("/");
+
+		return updatedTransaccion;
+	} catch (error) {
+		if (error instanceof Error) {
+			throw error;
+		}
+		throw new Error("Failed to update transaction");
+	}
+}
+
+/**
+ * Delete a transaction (soft delete)
+ */
+export async function deleteTransaccion(
+	id: string,
 ): Promise<{ success: boolean }> {
-  try {
-    // 1. Validate input
-    const validated = marcarPagadoSchema.parse(data);
+	try {
+		const supabase = await createServerSupabaseClient();
 
-    // 2. Get Supabase client
-    const supabase = await createServerSupabaseClient();
+		// Get equipo_id before deletion for revalidation
+		const { data: transaccion } = await supabase
+			.from("transacciones_pago")
+			.select("equipo_id")
+			.eq("id", id)
+			.single();
 
-    // 3. Update transaction
-    const updateData: Partial<TransaccionRow> = {
-      pagado: true,
-      fecha_pago: validated.fecha_pago
-        ? validated.fecha_pago.toISOString().split("T")[0]
-        : new Date().toISOString().split("T")[0],
-    };
+		// Delete the transaction (actual delete, not soft delete)
+		const { error } = await supabase
+			.from("transacciones_pago")
+			.delete()
+			.eq("id", id);
 
-    if (validated.metodo_pago) {
-      updateData.metodo_pago = validated.metodo_pago;
-    }
+		if (error) {
+			console.error("Error deleting transaction:", error);
+			throw new Error(`Failed to delete transaction: ${error.message}`);
+		}
 
-    if (validated.referencia_externa) {
-      updateData.referencia_externa = validated.referencia_externa;
-    }
+		// Revalidate paths
+		revalidatePath("/financiero");
+		if (transaccion?.equipo_id) {
+			revalidatePath(`/equipos/${transaccion.equipo_id}`);
+		}
+		revalidatePath("/");
 
-    const { error } = await supabase
-      .from("transacciones_pago")
-      .update(updateData)
-      .eq("id", validated.transaccion_id);
+		return { success: true };
+	} catch (error) {
+		if (error instanceof Error) {
+			throw error;
+		}
+		throw new Error("Failed to delete transaction");
+	}
+}
 
-    if (error) {
-      console.error("Error marking transaction as paid:", error);
-      throw new Error(`Failed to mark transaction as paid: ${error.message}`);
-    }
-
-    // 4. Get transaction to revalidate related paths
-    const { data: transaccion } = await supabase
-      .from("transacciones_pago")
-      .select("equipo_id, torneo_id")
-      .eq("id", validated.transaccion_id)
-      .single();
-
-    // 5. Revalidate paths
-    revalidatePath("/financiero");
-    if (transaccion) {
-      revalidatePath(`/equipos/${transaccion.equipo_id}`);
-      revalidatePath(`/torneos/${transaccion.torneo_id}`);
-    }
-
-    return { success: true };
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error;
-    }
-    throw new Error("Failed to mark transaction as paid");
-  }
+/**
+ * Team balance information
+ */
+export interface EquipoBalance {
+	equipoId: string;
+	equipoNombre: string;
+	totalCargos: number;
+	totalPagos: number;
+	deudaPendiente: number;
+	porcentajePagado: number;
+	transacciones: TransaccionWithRelations[];
 }
 
 /**
  * Get balance information for a specific team
  */
 export async function getEquipoBalance(
-  equipoId: string,
+	equipoId: string,
 ): Promise<EquipoBalance> {
-  try {
-    const supabase = await createServerSupabaseClient();
+	try {
+		const supabase = await createServerSupabaseClient();
 
-    // 1. Get team info
-    const { data: equipo, error: equipoError } = await supabase
-      .from("equipos")
-      .select("id, nombre")
-      .eq("id", equipoId)
-      .single();
+		// 1. Get team info
+		const { data: equipo, error: equipoError } = await supabase
+			.from("equipos")
+			.select("id, nombre")
+			.eq("id", equipoId)
+			.single();
 
-    if (equipoError) {
-      console.error("Error fetching team:", equipoError);
-      throw new Error(`Failed to fetch team: ${equipoError.message}`);
-    }
+		if (equipoError) {
+			console.error("Error fetching team:", equipoError);
+			throw new Error(`Failed to fetch team: ${equipoError.message}`);
+		}
 
-    // 2. Get all transactions for team
-    const transacciones = await getTransaccionesByEquipo(equipoId);
+		// 2. Get all transactions for team
+		const transacciones = await getTransaccionesByEquipo(equipoId);
 
-    // 3. Convert to Transaction type for debt utils
-    const transaccionesForCalc: Transaction[] = transacciones.map((t) => ({
-      monto: Number(t.monto),
-      es_ingreso: t.es_ingreso,
-      pagado: t.pagado,
-    }));
+		// 3. Calculate totals
+		const totalCargos = transacciones
+			.filter((t) => !t.es_ingreso)
+			.reduce((sum, t) => sum + Number(t.monto), 0);
 
-    // 4. Calculate using debt utilities
-    const deudaPendiente = calculateTotalDebt(transaccionesForCalc);
-    const breakdown = calculateDebtBreakdown(transaccionesForCalc);
+		const totalPagos = transacciones
+			.filter((t) => t.es_ingreso)
+			.reduce((sum, t) => sum + Number(t.monto), 0);
 
-    // 5. Calculate totals
-    const totalCargos = transacciones
-      .filter((t) => !t.es_ingreso)
-      .reduce((sum, t) => sum + Number(t.monto), 0);
+		const deudaPendiente = totalCargos - totalPagos;
+		const porcentajePagado =
+			totalCargos > 0 ? (totalPagos / totalCargos) * 100 : 0;
 
-    const totalPagos = transacciones
-      .filter((t) => t.es_ingreso)
-      .reduce((sum, t) => sum + Number(t.monto), 0);
-
-    return {
-      equipoId: equipo.id,
-      equipoNombre: equipo.nombre,
-      totalCargos,
-      totalPagos,
-      deudaPendiente,
-      porcentajePagado: breakdown.percentagePaid,
-      transacciones,
-    };
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error;
-    }
-    throw new Error("Failed to get team balance");
-  }
+		return {
+			equipoId: equipo.id,
+			equipoNombre: equipo.nombre,
+			totalCargos,
+			totalPagos,
+			deudaPendiente,
+			porcentajePagado,
+			transacciones,
+		};
+	} catch (error) {
+		if (error instanceof Error) {
+			throw error;
+		}
+		throw new Error("Failed to get team balance");
+	}
 }
 
 /**
  * Get all teams with outstanding debt
  */
 export async function getEquiposConDeuda(): Promise<
-  Array<{
-    equipoId: string;
-    equipoNombre: string;
-    deuda: number;
-  }>
+	Array<{
+		equipoId: string;
+		equipoNombre: string;
+		deuda: number;
+	}>
 > {
-  try {
-    const supabase = await createServerSupabaseClient();
+	try {
+		const supabase = await createServerSupabaseClient();
 
-    // 1. Get all teams
-    const { data: equipos, error: equiposError } = await supabase
-      .from("equipos")
-      .select("id, nombre");
+		// 1. Get all teams
+		const { data: equipos, error: equiposError } = await supabase
+			.from("equipos")
+			.select("id, nombre")
+			.eq("activo", true);
 
-    if (equiposError) {
-      console.error("Error fetching teams:", equiposError);
-      throw new Error(`Failed to fetch teams: ${equiposError.message}`);
-    }
+		if (equiposError) {
+			console.error("Error fetching teams:", equiposError);
+			throw new Error(`Failed to fetch teams: ${equiposError.message}`);
+		}
 
-    // 2. Get transactions for each team and calculate debt
-    const equiposConDeuda: Array<{
-      equipoId: string;
-      equipoNombre: string;
-      deuda: number;
-    }> = [];
+		// 2. Get transactions for each team and calculate debt
+		const equiposConDeuda: Array<{
+			equipoId: string;
+			equipoNombre: string;
+			deuda: number;
+		}> = [];
 
-    for (const equipo of equipos) {
-      const { data: transacciones, error: transError } = await supabase
-        .from("transacciones_pago")
-        .select("monto, es_ingreso, pagado")
-        .eq("equipo_id", equipo.id);
+		for (const equipo of equipos) {
+			const { data: transacciones, error: transError } = await supabase
+				.from("transacciones_pago")
+				.select("monto, es_ingreso")
+				.eq("equipo_id", equipo.id);
 
-      if (transError) {
-        console.error(
-          `Error fetching transactions for team ${equipo.id}:`,
-          transError,
-        );
-        continue;
-      }
+			if (transError) {
+				console.error(
+					`Error fetching transactions for team ${equipo.id}:`,
+					transError,
+				);
+				continue;
+			}
 
-      // Calculate debt
-      const transaccionesForCalc: Transaction[] = transacciones.map((t) => ({
-        monto: Number(t.monto),
-        es_ingreso: t.es_ingreso,
-        pagado: t.pagado,
-      }));
+			// Calculate debt (cargos - pagos)
+			const totalCargos = transacciones
+				.filter((t) => !t.es_ingreso)
+				.reduce((sum, t) => sum + Number(t.monto), 0);
 
-      const deuda = calculateTotalDebt(transaccionesForCalc);
+			const totalPagos = transacciones
+				.filter((t) => t.es_ingreso)
+				.reduce((sum, t) => sum + Number(t.monto), 0);
 
-      // Only include teams with debt > 0
-      if (deuda > 0) {
-        equiposConDeuda.push({
-          equipoId: equipo.id,
-          equipoNombre: equipo.nombre,
-          deuda,
-        });
-      }
-    }
+			const deuda = totalCargos - totalPagos;
 
-    // 3. Sort by debt (highest first)
-    return equiposConDeuda.sort((a, b) => b.deuda - a.deuda);
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error;
-    }
-    throw new Error("Failed to get teams with debt");
-  }
+			// Only include teams with debt > 0
+			if (deuda > 0) {
+				equiposConDeuda.push({
+					equipoId: equipo.id,
+					equipoNombre: equipo.nombre,
+					deuda,
+				});
+			}
+		}
+
+		// 3. Sort by debt (highest first)
+		return equiposConDeuda.sort((a, b) => b.deuda - a.deuda);
+	} catch (error) {
+		if (error instanceof Error) {
+			throw error;
+		}
+		throw new Error("Failed to get teams with debt");
+	}
+}
+
+/**
+ * Get tournament financial summary
+ */
+export async function getTorneoFinanciero(torneoId: string) {
+	try {
+		const supabase = await createServerSupabaseClient();
+
+		// Get all teams in tournament
+		const { data: equipos, error: equiposError } = await supabase
+			.from("equipos")
+			.select("id")
+			.eq("torneo_id", torneoId);
+
+		if (equiposError) {
+			throw new Error(`Failed to fetch tournament teams: ${equiposError.message}`);
+		}
+
+		const equipoIds = equipos.map((e) => e.id);
+
+		// Get all transactions for tournament teams
+		const { data: transacciones, error: transError } = await supabase
+			.from("transacciones_pago")
+			.select("*")
+			.in("equipo_id", equipoIds);
+
+		if (transError) {
+			throw new Error(`Failed to fetch tournament transactions: ${transError.message}`);
+		}
+
+		// Calculate totals
+		const totalIngresos = transacciones
+			.filter((t) => t.es_ingreso)
+			.reduce((sum, t) => sum + Number(t.monto), 0);
+
+		const totalEgresos = transacciones
+			.filter((t) => !t.es_ingreso)
+			.reduce((sum, t) => sum + Number(t.monto), 0);
+
+		const balance = totalIngresos - totalEgresos;
+		const deudaPendiente = totalEgresos - totalIngresos;
+
+		return {
+			totalIngresos,
+			totalEgresos,
+			balance,
+			deudaPendiente: deudaPendiente > 0 ? deudaPendiente : 0,
+			totalTransacciones: transacciones.length,
+			equiposCount: equipos.length,
+		};
+	} catch (error) {
+		if (error instanceof Error) {
+			throw error;
+		}
+		throw new Error("Failed to get tournament finances");
+	}
 }
