@@ -1,31 +1,39 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
+/**
+ * Proxy function for Next.js 16 (formerly middleware)
+ *
+ * Purpose: Perform OPTIMISTIC auth checks for fast redirects
+ * - Only reads session from cookie (no database calls)
+ * - Redirects unauthenticated users from protected routes
+ * - Redirects authenticated users away from auth pages
+ *
+ * Security Note: This is NOT the only line of defense!
+ * Always verify sessions in Server Components, Actions, and Route Handlers
+ * using the Data Access Layer (DAL) for secure database checks.
+ */
 export async function proxy(request: NextRequest) {
-  // Create response object for cookie updates
   let response = NextResponse.next({
     request,
   });
 
-  // Create Supabase client with cookies
+  // Create Supabase client with cookie management
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-    process.env.SUPABASE_SECRET_KEY || "",
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
     {
       cookies: {
         getAll() {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          // Use for...of instead of forEach to avoid returning values
           for (const { name, value } of cookiesToSet) {
             request.cookies.set(name, value);
           }
-          // Create new response with updated cookies
           response = NextResponse.next({
             request,
           });
-          // Use for...of instead of forEach to avoid returning values
           for (const { name, value, options } of cookiesToSet) {
             response.cookies.set(name, value, options);
           }
@@ -34,25 +42,51 @@ export async function proxy(request: NextRequest) {
     },
   );
 
-  // Get current user
+  // OPTIMISTIC CHECK: Read session from cookie only (fast, no DB query)
+  // This is sufficient for redirects, but NOT for data access control
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Protect dashboard routes - redirect to login if not authenticated
-  if (request.nextUrl.pathname.startsWith("/(dashboard)") && !user) {
+  const path = request.nextUrl.pathname;
+
+  // Define public routes (accessible without authentication)
+  const publicRoutes = ["/", "/login", "/register"];
+  const isPublicRoute = publicRoutes.includes(path);
+
+  // Redirect unauthenticated users to login when accessing protected routes
+  if (!isPublicRoute && !user) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // Redirect to dashboard if logged in and trying to access auth pages
-  if (request.nextUrl.pathname.startsWith("/(auth)") && user) {
+  // Redirect authenticated users away from auth pages to dashboard
+  if ((path === "/login" || path === "/register") && user) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
   return response;
 }
 
-// Configure which routes trigger the proxy
+/**
+ * Matcher configuration
+ *
+ * Uses negative lookahead regex to match ALL routes EXCEPT:
+ * - /api/* - API routes
+ * - /_next/static/* - Static files
+ * - /_next/image/* - Image optimization
+ * - Metadata files (favicon.ico, sitemap.xml, robots.txt)
+ *
+ * This ensures proxy runs on actual page routes only
+ */
 export const config = {
-  matcher: ["/(auth)/:path*", "/(dashboard)/:path*"],
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+  ],
 };
