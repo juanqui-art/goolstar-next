@@ -58,7 +58,10 @@ export const golSchema = z.object({
   partido_id: z.string().uuid("Invalid match"),
   jugador_id: z.string().uuid("Invalid player"),
   equipo_id: z.string().uuid("Invalid team"),
-  minuto: z.number().min(0, "Minute must be positive").max(120, "Minute must be <= 120"),
+  minuto: z
+    .number()
+    .min(0, "Minute must be positive")
+    .max(120, "Minute must be <= 120"),
   es_propio: z.boolean().default(false),
 });
 
@@ -72,7 +75,10 @@ export const tarjetaSchema = z.object({
   jugador_id: z.string().uuid("Invalid player"),
   equipo_id: z.string().uuid("Invalid team"),
   tipo: z.enum(["AMARILLA", "ROJA", "AMARILLA_ROJA"]),
-  minuto: z.number().min(0, "Minute must be positive").max(120, "Minute must be <= 120"),
+  minuto: z
+    .number()
+    .min(0, "Minute must be positive")
+    .max(120, "Minute must be <= 120"),
   razon: z.string().max(255).optional(),
 });
 
@@ -81,16 +87,20 @@ export type Tarjeta = z.infer<typeof tarjetaSchema>;
 /**
  * Schema for recording a substitution
  */
-export const cambioSchema = z.object({
-  partido_id: z.string().uuid("Invalid match"),
-  equipo_id: z.string().uuid("Invalid team"),
-  jugador_sale_id: z.string().uuid("Invalid player"),
-  jugador_entra_id: z.string().uuid("Invalid player"),
-  minuto: z.number().min(0, "Minute must be positive").max(120, "Minute must be <= 120"),
-})
-.refine((data) => data.jugador_sale_id !== data.jugador_entra_id, {
-  message: "Players must be different",
-  path: ["jugador_entra_id"],
-});
+export const cambioSchema = z
+  .object({
+    partido_id: z.string().uuid("Invalid match"),
+    equipo_id: z.string().uuid("Invalid team"),
+    jugador_sale_id: z.string().uuid("Invalid player"),
+    jugador_entra_id: z.string().uuid("Invalid player"),
+    minuto: z
+      .number()
+      .min(0, "Minute must be positive")
+      .max(120, "Minute must be <= 120"),
+  })
+  .refine((data) => data.jugador_sale_id !== data.jugador_entra_id, {
+    message: "Players must be different",
+    path: ["jugador_entra_id"],
+  });
 
 export type Cambio = z.infer<typeof cambioSchema>;

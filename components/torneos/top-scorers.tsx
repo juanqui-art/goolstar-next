@@ -2,12 +2,12 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { Trophy } from "lucide-react";
 
@@ -55,7 +55,9 @@ export function TopScorers({ scorers, className }: TopScorersProps) {
               <TableHead className="w-12 text-center font-bold">#</TableHead>
               <TableHead>Jugador</TableHead>
               <TableHead>Equipo</TableHead>
-              <TableHead className="text-center w-20 font-bold">Goles</TableHead>
+              <TableHead className="text-center w-20 font-bold">
+                Goles
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

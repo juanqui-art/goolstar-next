@@ -1,18 +1,18 @@
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { getTorneos } from "@/lib/data";
 import Link from "next/link";
@@ -68,7 +68,9 @@ export default async function TorneosPage() {
               <TableBody>
                 {torneos.map((torneo) => (
                   <TableRow key={torneo.id}>
-                    <TableCell className="font-medium">{torneo.nombre}</TableCell>
+                    <TableCell className="font-medium">
+                      {torneo.nombre}
+                    </TableCell>
                     <TableCell>{torneo.categorias?.nombre || "N/A"}</TableCell>
                     <TableCell>
                       {torneo.fecha_inicio

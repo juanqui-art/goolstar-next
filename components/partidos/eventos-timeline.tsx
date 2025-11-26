@@ -151,7 +151,10 @@ export function EventosTimeline({ partidoId }: EventosTimelineProps) {
             <ArrowLeftRight className="h-6 w-6 text-blue-600 dark:text-blue-400 flex-shrink-0" />
           )}
 
-          <Badge variant="outline" className="font-mono font-bold min-w-[50px] justify-center">
+          <Badge
+            variant="outline"
+            className="font-mono font-bold min-w-[50px] justify-center"
+          >
             {evento.minuto}'
           </Badge>
 

@@ -3,12 +3,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
@@ -67,7 +67,9 @@ export function TablaPosiciones({
         <Card key={grupo} className="overflow-hidden">
           <CardHeader className="bg-muted/50 pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
-              {grupo !== "General" && <Badge variant="outline">Grupo {grupo}</Badge>}
+              {grupo !== "General" && (
+                <Badge variant="outline">Grupo {grupo}</Badge>
+              )}
               {grupo === "General" ? "Tabla General" : ""}
             </CardTitle>
           </CardHeader>
@@ -75,27 +77,50 @@ export function TablaPosiciones({
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/20 hover:bg-muted/20">
-                  <TableHead className="w-12 text-center font-bold">#</TableHead>
+                  <TableHead className="w-12 text-center font-bold">
+                    #
+                  </TableHead>
                   <TableHead className="min-w-[150px]">Equipo</TableHead>
-                  <TableHead className="text-center w-12" title="Partidos Jugados">
+                  <TableHead
+                    className="text-center w-12"
+                    title="Partidos Jugados"
+                  >
                     PJ
                   </TableHead>
-                  <TableHead className="text-center w-12 hidden sm:table-cell" title="Ganados">
+                  <TableHead
+                    className="text-center w-12 hidden sm:table-cell"
+                    title="Ganados"
+                  >
                     G
                   </TableHead>
-                  <TableHead className="text-center w-12 hidden sm:table-cell" title="Empatados">
+                  <TableHead
+                    className="text-center w-12 hidden sm:table-cell"
+                    title="Empatados"
+                  >
                     E
                   </TableHead>
-                  <TableHead className="text-center w-12 hidden sm:table-cell" title="Perdidos">
+                  <TableHead
+                    className="text-center w-12 hidden sm:table-cell"
+                    title="Perdidos"
+                  >
                     P
                   </TableHead>
-                  <TableHead className="text-center w-12 hidden md:table-cell" title="Goles a Favor">
+                  <TableHead
+                    className="text-center w-12 hidden md:table-cell"
+                    title="Goles a Favor"
+                  >
                     GF
                   </TableHead>
-                  <TableHead className="text-center w-12 hidden md:table-cell" title="Goles en Contra">
+                  <TableHead
+                    className="text-center w-12 hidden md:table-cell"
+                    title="Goles en Contra"
+                  >
                     GC
                   </TableHead>
-                  <TableHead className="text-center w-12 font-medium" title="Diferencia de Goles">
+                  <TableHead
+                    className="text-center w-12 font-medium"
+                    title="Diferencia de Goles"
+                  >
                     DG
                   </TableHead>
                   <TableHead className="text-center w-16 font-bold bg-muted/30">
@@ -148,8 +173,8 @@ export function TablaPosiciones({
                         equipo.diferencia_goles > 0
                           ? "text-green-600"
                           : equipo.diferencia_goles < 0
-                          ? "text-red-600"
-                          : "text-muted-foreground",
+                            ? "text-red-600"
+                            : "text-muted-foreground",
                       )}
                     >
                       {equipo.diferencia_goles > 0 ? "+" : ""}

@@ -1,13 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  Calendar,
-  MapPin,
-  Clock,
-  Edit,
-  FileText,
-  Users,
-} from "lucide-react";
+import { Calendar, MapPin, Clock, Edit, FileText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -177,7 +170,8 @@ export default async function PartidoDetailPage({
                   <div className="text-sm">
                     <span className="font-medium">Retiro:</span>{" "}
                     <span className="text-muted-foreground">
-                      Equipo {partido.resultado_retiro === "equipo_1" ? "1" : "2"}
+                      Equipo{" "}
+                      {partido.resultado_retiro === "equipo_1" ? "1" : "2"}
                     </span>
                   </div>
                 )}
@@ -185,7 +179,10 @@ export default async function PartidoDetailPage({
                   <div className="text-sm">
                     <span className="font-medium">Inasistencia:</span>{" "}
                     <span className="text-muted-foreground">
-                      Equipo {partido.resultado_inasistencia === "equipo_1" ? "1" : "2"}
+                      Equipo{" "}
+                      {partido.resultado_inasistencia === "equipo_1"
+                        ? "1"
+                        : "2"}
                     </span>
                   </div>
                 )}
