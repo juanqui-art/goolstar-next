@@ -129,7 +129,7 @@ Backend:
 └── actions/preinscripciones.ts
 
 Landing Page:
-├── app/(marketing)/torneos/[slug]/inscripcion/page.tsx
+├── app/(marketing)/torneos/[id]/inscripcion/page.tsx
 ├── components/marketing/hero-section.tsx
 ├── components/marketing/features-section.tsx
 ├── components/marketing/pre-registration-section.tsx
@@ -220,7 +220,7 @@ bun run build
 ### URL de la Landing Page
 
 ```
-https://tudominio.com/torneos/[slug]/inscripcion
+https://tudominio.com/torneos/[id]/inscripcion
 ```
 
 **Ejemplo:**
@@ -230,7 +230,7 @@ https://goolstar.com/torneos/copa-verano-2025/inscripcion
 
 ### Personalización del Torneo
 
-Edita `app/(marketing)/torneos/[slug]/inscripcion/page.tsx`:
+Edita `app/(marketing)/torneos/[id]/inscripcion/page.tsx`:
 
 ```typescript
 // TODO: Reemplazar con datos reales desde la base de datos

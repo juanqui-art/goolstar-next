@@ -55,7 +55,7 @@ ADMIN_EMAIL=admin@goolstar.com
 
 ```bash
 # Editar página principal
-code app/(marketing)/torneos/[slug]/inscripcion/page.tsx
+code app/(marketing)/torneos/[id]/inscripcion/page.tsx
 ```
 
 **Buscar y cambiar:**
@@ -268,7 +268,7 @@ code .env.local
 # https://app.supabase.com/project/[tu-project]/sql
 
 # 5. Personalizar torneo
-code app/(marketing)/torneos/[slug]/inscripcion/page.tsx
+code app/(marketing)/torneos/[id]/inscripcion/page.tsx
 
 # 6. Test local
 bun run dev

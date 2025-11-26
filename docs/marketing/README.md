@@ -13,7 +13,7 @@ Sistema completo de pre-inscripción para campañas de Facebook Ads.
    NEXT_PUBLIC_GA4_ID=G-XXXXXXXXXX
    ADMIN_EMAIL=admin@goolstar.com
    ```
-3. **Personalizar torneo:** `app/(marketing)/torneos/[slug]/inscripcion/page.tsx`
+3. **Personalizar torneo:** `app/(marketing)/torneos/[id]/inscripcion/page.tsx`
 4. **Test:** `bun run dev` → http://localhost:3000/torneos/copa-verano-2025/inscripcion
 
 **Ver:** [SETUP_COMMANDS.md](./SETUP_COMMANDS.md) para comandos completos.
@@ -53,7 +53,7 @@ Backend:
 └── actions/preinscripciones.ts
 
 Landing Page:
-├── app/(marketing)/torneos/[slug]/inscripcion/page.tsx
+├── app/(marketing)/torneos/[id]/inscripcion/page.tsx
 ├── components/marketing/hero-section.tsx
 ├── components/marketing/features-section.tsx
 ├── components/marketing/pre-registration-section.tsx

@@ -11,7 +11,7 @@ import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { initScrollDepthTracking, trackUTMParameters } from "@/lib/analytics/track-events";
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
 }
 
 // TODO: Replace with real data from database
@@ -26,7 +26,7 @@ const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID || "";
 const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID || "";
 
 export default function LandingPage({ params }: PageProps) {
-  const { slug } = use(params);
+  const { id } = use(params);
 
   useEffect(() => {
     // Initialize scroll depth tracking

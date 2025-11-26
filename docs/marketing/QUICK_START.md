@@ -29,7 +29,7 @@
 
 ### 3️⃣ Configurar WhatsApp Number (2 min)
 
-- [ ] Editar `app/(marketing)/torneos/[slug]/inscripcion/page.tsx`
+- [ ] Editar `app/(marketing)/torneos/[id]/inscripcion/page.tsx`
 - [ ] Buscar: `whatsapp_number: "593999999999"`
 - [ ] Reemplazar con tu número real (formato: 593XXXXXXXXX)
 
@@ -319,7 +319,7 @@ bun add react-hook-form @hookform/resolvers zod
 **Documentación Completa:** `docs/marketing/LANDING_PAGE_GUIDE.md`
 
 **Archivos Clave:**
-- Landing Page: `app/(marketing)/torneos/[slug]/inscripcion/page.tsx`
+- Landing Page: `app/(marketing)/torneos/[id]/inscripcion/page.tsx`
 - Admin: `app/(dashboard)/admin/preinscripciones/page.tsx`
 - Server Actions: `actions/preinscripciones.ts`
 - Migración: `supabase/migrations/20250125000011_preinscripciones_simple.sql`

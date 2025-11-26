@@ -101,7 +101,7 @@ Un sistema completo de captura de leads desde Facebook Ads con:
 
 ### Pages (2 archivos)
 ```
-✅ app/(marketing)/torneos/[slug]/inscripcion/page.tsx
+✅ app/(marketing)/torneos/[id]/inscripcion/page.tsx
    - Landing page principal
    - Integra todos los componentes
    - Analytics setup
@@ -296,7 +296,7 @@ ADMIN_EMAIL=admin@goolstar.com
 
 ### 3. Personalizar Datos del Torneo
 
-Editar `app/(marketing)/torneos/[slug]/inscripcion/page.tsx`:
+Editar `app/(marketing)/torneos/[id]/inscripcion/page.tsx`:
 
 ```typescript
 const MOCK_TORNEO = {
