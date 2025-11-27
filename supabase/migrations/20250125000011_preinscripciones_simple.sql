@@ -129,7 +129,8 @@ CREATE POLICY "Authenticated users can update preinscripciones"
 -- =====================================================
 
 -- View: Conversion funnel by campaign
-CREATE OR REPLACE VIEW vista_conversion_por_campana AS
+CREATE OR REPLACE VIEW vista_conversion_por_campana
+WITH (security_invoker = true) AS
 SELECT
   utm_campaign,
   utm_source,
@@ -149,7 +150,8 @@ GROUP BY utm_campaign, utm_source
 ORDER BY total_leads DESC;
 
 -- View: Daily registrations
-CREATE OR REPLACE VIEW vista_inscripciones_diarias AS
+CREATE OR REPLACE VIEW vista_inscripciones_diarias
+WITH (security_invoker = true) AS
 SELECT
   DATE(created_at) as fecha,
   COUNT(*) as total,

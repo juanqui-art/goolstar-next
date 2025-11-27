@@ -2,15 +2,12 @@
 # For both local development and cloud deployments
 
 # Project setup
-[project]
 project_id = "omvpzlbbfwkyqwbwqnjf"
-account_id = "default"
 
 # Database Configuration
 [db]
 port = 54321
 major_version = 15
-ssl_mode = "disable"
 
 # API Configuration
 [api]
@@ -18,30 +15,23 @@ enabled = true
 port = 54321
 schemas = ["public"]
 max_rows = 1000
-tls_enforce_upgrade = true
 
 # Auth Configuration
 [auth]
 enabled = true
-use_session_table = false
 
 # Realtime Configuration
 [realtime]
 enabled = true
-max_bytes_per_second = 104857600
 
 # Storage Configuration
 [storage]
 enabled = true
 file_size_limit = 52428800
 
-# Vector/Embedding Configuration (optional)
-[vector]
-enabled = false
 
-# Edge Functions Configuration (optional)
-[functions]
-enabled = false
+
+
 
 # Analytics
 [analytics]
