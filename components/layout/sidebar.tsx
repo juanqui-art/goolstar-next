@@ -1,14 +1,15 @@
 "use client";
 
+import type { UserWithRole } from "@/lib/auth/types";
 import {
-  DollarSign,
-  LayoutDashboard,
-  type LucideIcon,
-  Play,
-  Settings,
-  Trophy,
-  User,
-  Users,
+    DollarSign,
+    LayoutDashboard,
+    type LucideIcon,
+    Play,
+    Settings,
+    Trophy,
+    User,
+    Users,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -21,15 +22,25 @@ interface NavItem {
 
 interface SidebarProps {
   items: NavItem[];
+  user: UserWithRole | null;
 }
 
-export function Sidebar({ items }: SidebarProps) {
+export function Sidebar({ items, user }: SidebarProps) {
   const pathname = usePathname();
+
+  // Filter items based on user role
+  // Hide admin section if user is not admin
+  const visibleItems = items.filter((item) => {
+    if (item.href === "/dashboard/admin" && user?.role !== "admin") {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <aside className="w-64 border-r bg-gray-50">
       <nav className="space-y-2 p-4">
-        {items.map((item) => {
+        {visibleItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
 
@@ -53,11 +64,11 @@ export function Sidebar({ items }: SidebarProps) {
 
 // Export default navigation items for convenience
 export const defaultNavItems: NavItem[] = [
-  { label: "Dashboard", href: "/", icon: LayoutDashboard },
-  { label: "Torneos", href: "/torneos", icon: Trophy },
-  { label: "Equipos", href: "/equipos", icon: Users },
-  { label: "Jugadores", href: "/jugadores", icon: User },
-  { label: "Partidos", href: "/partidos", icon: Play },
-  { label: "Financiero", href: "/financiero", icon: DollarSign },
-  { label: "Admin", href: "/admin", icon: Settings },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Torneos", href: "/dashboard/torneos", icon: Trophy },
+  { label: "Equipos", href: "/dashboard/equipos", icon: Users },
+  { label: "Jugadores", href: "/dashboard/jugadores", icon: User },
+  { label: "Partidos", href: "/dashboard/partidos", icon: Play },
+  { label: "Financiero", href: "/dashboard/financiero", icon: DollarSign },
+  { label: "Admin", href: "/dashboard/admin", icon: Settings },
 ];

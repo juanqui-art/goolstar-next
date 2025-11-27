@@ -1,15 +1,16 @@
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 import { defaultNavItems, Sidebar } from "@/components/layout/sidebar";
+import { getCurrentUser } from "@/lib/auth/dal";
 import { Suspense } from "react";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // TODO: Get current user from auth when implemented
-  const user = null;
+  // Get current user with REAL validation from database
+  const user = await getCurrentUser();
 
   return (
     <div className="flex h-screen flex-col">
@@ -20,7 +21,7 @@ export default function DashboardLayout({
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <Suspense fallback={<div className="w-64 border-r bg-gray-50" />}>
-          <Sidebar items={defaultNavItems} />
+          <Sidebar items={defaultNavItems} user={user} />
         </Suspense>
 
         {/* Content area */}

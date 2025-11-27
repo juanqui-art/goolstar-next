@@ -1,11 +1,11 @@
 "use client";
 
-import type { User } from "@supabase/supabase-js";
 import { logout } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
+import type { UserWithRole } from "@/lib/auth/types";
 
 interface NavbarProps {
-  user?: User;
+  user?: UserWithRole;
 }
 
 export function Navbar({ user }: NavbarProps) {
