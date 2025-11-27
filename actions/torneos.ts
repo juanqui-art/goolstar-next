@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/auth/dal";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { torneoSchema } from "@/lib/validations/torneo";
 import type { Database } from "@/types/database";
@@ -29,6 +30,9 @@ export interface TorneoWithRelations extends TorneoRow {
  */
 export async function createTorneo(data: unknown): Promise<{ id: string }> {
   try {
+    // 0. Verify admin role
+    await requireAdmin();
+
     // 1. Validate with torneoSchema
     const validated = torneoSchema.parse(data);
 
@@ -161,6 +165,9 @@ export async function updateTorneo(
   data: unknown,
 ): Promise<TorneoRow> {
   try {
+    // 0. Verify admin role
+    await requireAdmin();
+
     // 1. Validate with torneoSchema
     const validated = torneoSchema.parse(data);
 
@@ -209,6 +216,9 @@ export async function updateTorneo(
  */
 export async function deleteTorneo(id: string): Promise<{ success: boolean }> {
   try {
+    // 0. Verify admin role
+    await requireAdmin();
+
     const supabase = await createServerSupabaseClient();
 
     // Soft delete: set activo to false instead of deleting

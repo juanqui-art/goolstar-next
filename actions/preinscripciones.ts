@@ -1,12 +1,12 @@
 "use server";
 
-import { createServerClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/dal";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 import {
-  type PreinscripcionFormData,
-  type UpdatePreinscripcionData,
-  type PreinscripcionFilters,
-  preinscripcionSchema,
-  updatePreinscripcionSchema,
+    type PreinscripcionFilters,
+    type PreinscripcionFormData,
+    preinscripcionSchema,
+    updatePreinscripcionSchema
 } from "@/lib/validations/preinscripcion";
 import type { Database } from "@/types/database";
 
@@ -30,8 +30,8 @@ export async function createPreinscripcion(
     // Validate input
     const validatedData = preinscripcionSchema.parse(formData);
 
-    // Create Supabase client (no auth required for this action)
-    const supabase = await createServerClient();
+    // Create Supabase client (no auth required for this action - public endpoint)
+    const supabase = await createServerSupabaseClient();
 
     // Check for duplicates using helper function
     const { data: isDuplicate } = await supabase.rpc("existe_preinscripcion", {
@@ -103,15 +103,10 @@ export async function getPreinscripciones(
   filters?: PreinscripcionFilters,
 ): Promise<ActionResult<PreinscripcionRow[]>> {
   try {
-    const supabase = await createServerClient();
+    // Verify admin role using DAL
+    await requireAdmin();
 
-    // Verify admin role
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      return { success: false, error: "No autenticado" };
-    }
+    const supabase = await createServerSupabaseClient();
 
     // Build query
     let query = supabase
@@ -162,15 +157,10 @@ export async function updatePreinscripcion(
   updateData: unknown,
 ): Promise<ActionResult<PreinscripcionRow>> {
   try {
-    const supabase = await createServerClient();
+    // Verify admin role using DAL
+    await requireAdmin();
 
-    // Verify admin role
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      return { success: false, error: "No autenticado" };
-    }
+    const supabase = await createServerSupabaseClient();
 
     // Validate input
     const validatedData = updatePreinscripcionSchema.parse(updateData);
@@ -205,15 +195,10 @@ export async function updatePreinscripcion(
 
 export async function deletePreinscripcion(id: string): Promise<ActionResult<void>> {
   try {
-    const supabase = await createServerClient();
+    // Verify admin role using DAL
+    await requireAdmin();
 
-    // Verify admin role
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      return { success: false, error: "No autenticado" };
-    }
+    const supabase = await createServerSupabaseClient();
 
     // Soft delete by setting estado to 'rechazado'
     const { error } = await supabase
@@ -241,15 +226,10 @@ export async function exportPreinscripcionesCSV(
   torneoId?: string,
 ): Promise<ActionResult<string>> {
   try {
-    const supabase = await createServerClient();
+    // Verify admin role using DAL
+    await requireAdmin();
 
-    // Verify admin role
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      return { success: false, error: "No autenticado" };
-    }
+    const supabase = await createServerSupabaseClient();
 
     // Build query
     let query = supabase
@@ -320,15 +300,10 @@ export async function getPreinscripcionesStats(torneoId?: string): Promise<
   }>
 > {
   try {
-    const supabase = await createServerClient();
+    // Verify admin role using DAL
+    await requireAdmin();
 
-    // Verify admin role
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      return { success: false, error: "No autenticado" };
-    }
+    const supabase = await createServerSupabaseClient();
 
     // Build query
     let query = supabase.from("preinscripciones_torneo").select("estado");

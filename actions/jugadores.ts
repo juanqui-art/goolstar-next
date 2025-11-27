@@ -1,9 +1,10 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { canManageJugadores, requireAdmin, requireAuth } from "@/lib/auth/dal";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { jugadorSchema } from "@/lib/validations/jugador";
 import type { Database } from "@/types/database";
+import { revalidatePath } from "next/cache";
 
 type JugadorRow = Database["public"]["Tables"]["jugadores"]["Row"];
 type JugadorInsert = Database["public"]["Tables"]["jugadores"]["Insert"];
@@ -33,10 +34,18 @@ export async function createJugador(data: unknown): Promise<{ id: string }> {
     // 1. Validate with jugadorSchema
     const validated = jugadorSchema.parse(data);
 
-    // 2. Get Supabase client
+    // 2. Verify permissions
+    const user = await requireAuth();
+    const canManage = await canManageJugadores(user, validated.equipo_id);
+
+    if (!canManage) {
+      throw new Error("Forbidden: You cannot add players to this team");
+    }
+
+    // 3. Get Supabase client
     const supabase = await createServerSupabaseClient();
 
-    // 3. Insert into jugadores
+    // 4. Insert into jugadores
     const jugadorData: JugadorInsert = {
       equipo_id: validated.equipo_id,
       primer_nombre: validated.primer_nombre,
@@ -61,7 +70,7 @@ export async function createJugador(data: unknown): Promise<{ id: string }> {
       throw new Error(`Failed to create player: ${error.message}`);
     }
 
-    // 4. Revalidate paths
+    // 5. Revalidate paths
     revalidatePath("/jugadores");
     revalidatePath(`/equipos/${validated.equipo_id}`);
     revalidatePath("/");
@@ -184,13 +193,31 @@ export async function updateJugador(
   data: unknown,
 ): Promise<JugadorRow> {
   try {
-    // 1. Validate with jugadorSchema
-    const validated = jugadorSchema.parse(data);
-
-    // 2. Get Supabase client
     const supabase = await createServerSupabaseClient();
 
-    // 3. Update jugador
+    // 1. Get current player to check permissions
+    const { data: currentPlayer, error: fetchError } = await supabase
+      .from("jugadores")
+      .select("equipo_id")
+      .eq("id", id)
+      .single();
+
+    if (fetchError || !currentPlayer) {
+      throw new Error("Player not found");
+    }
+
+    // 2. Verify permissions
+    const user = await requireAuth();
+    const canManage = await canManageJugadores(user, currentPlayer.equipo_id);
+
+    if (!canManage) {
+      throw new Error("Forbidden: You cannot manage this player");
+    }
+
+    // 3. Validate with jugadorSchema
+    const validated = jugadorSchema.parse(data);
+
+    // 4. Update jugador
     const updateData: JugadorUpdate = {
       equipo_id: validated.equipo_id,
       primer_nombre: validated.primer_nombre,
@@ -216,7 +243,7 @@ export async function updateJugador(
       throw new Error(`Failed to update player: ${error.message}`);
     }
 
-    // 4. Revalidate paths
+    // 5. Revalidate paths
     revalidatePath("/jugadores");
     revalidatePath(`/jugadores/${id}`);
     revalidatePath(`/equipos/${validated.equipo_id}`);
@@ -236,6 +263,9 @@ export async function updateJugador(
  */
 export async function deleteJugador(id: string): Promise<{ success: boolean }> {
   try {
+    // 0. Verify admin role
+    await requireAdmin();
+
     const supabase = await createServerSupabaseClient();
 
     // Get equipo_id before deletion for revalidation
@@ -347,7 +377,26 @@ export async function uploadDocumento(
   try {
     const supabase = await createServerSupabaseClient();
 
-    // Insert documento record
+    // 1. Get player to check permissions
+    const { data: player, error: fetchError } = await supabase
+      .from("jugadores")
+      .select("equipo_id")
+      .eq("id", jugadorId)
+      .single();
+
+    if (fetchError || !player) {
+      throw new Error("Player not found");
+    }
+
+    // 2. Verify permissions
+    const user = await requireAuth();
+    const canManage = await canManageJugadores(user, player.equipo_id);
+
+    if (!canManage) {
+      throw new Error("Forbidden: You cannot manage this player's documents");
+    }
+
+    // 3. Insert documento record
     const { data: documento, error } = await supabase
       .from("jugador_documentos")
       .insert({
@@ -393,6 +442,25 @@ export async function uploadDocumento(
 export async function getJugadorDocumentos(jugadorId: string) {
   try {
     const supabase = await createServerSupabaseClient();
+
+    // 1. Get player to check permissions
+    const { data: player, error: fetchError } = await supabase
+      .from("jugadores")
+      .select("equipo_id")
+      .eq("id", jugadorId)
+      .single();
+
+    if (fetchError || !player) {
+      throw new Error("Player not found");
+    }
+
+    // 2. Verify permissions
+    const user = await requireAuth();
+    const canManage = await canManageJugadores(user, player.equipo_id);
+
+    if (!canManage) {
+      throw new Error("Forbidden: You cannot view this player's documents");
+    }
 
     const { data: documentos, error } = await supabase
       .from("jugador_documentos")

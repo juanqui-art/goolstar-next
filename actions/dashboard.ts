@@ -170,8 +170,8 @@ export async function getRecentMatches() {
       goles_equipo_1,
       goles_equipo_2,
       completado,
-      equipo_local:equipos!partidos_equipo_local_id_fkey(nombre),
-      equipo_visitante:equipos!partidos_equipo_visitante_id_fkey(nombre)
+      equipo_local:equipos!equipo_1_id(nombre),
+      equipo_visitante:equipos!equipo_2_id(nombre)
     `)
     .eq("completado", true)
     .order("fecha", { ascending: false })
@@ -199,8 +199,8 @@ export async function getUpcomingMatches() {
       fecha,
       cancha,
       completado,
-      equipo_local:equipos!partidos_equipo_local_id_fkey(nombre),
-      equipo_visitante:equipos!partidos_equipo_visitante_id_fkey(nombre)
+      equipo_local:equipos!equipo_1_id(nombre),
+      equipo_visitante:equipos!equipo_2_id(nombre)
     `)
     .eq("completado", false)
     .gte("fecha", today.toISOString())

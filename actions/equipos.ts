@@ -1,9 +1,10 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { requireAdmin, requireDirector } from "@/lib/auth/dal";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { equipoSchema } from "@/lib/validations/equipo";
 import type { Database } from "@/types/database";
+import { revalidatePath } from "next/cache";
 
 type EquipoRow = Database["public"]["Tables"]["equipos"]["Row"];
 type EquipoInsert = Database["public"]["Tables"]["equipos"]["Insert"];
@@ -37,6 +38,9 @@ export interface EquipoWithRelations extends EquipoRow {
  */
 export async function createEquipo(data: unknown): Promise<{ id: string }> {
   try {
+    // 0. Verify admin role
+    await requireAdmin();
+
     // 1. Validate with equipoSchema
     const validated = equipoSchema.parse(data);
 
@@ -180,6 +184,9 @@ export async function updateEquipo(
   data: unknown,
 ): Promise<EquipoRow> {
   try {
+    // 0. Verify director or admin role
+    await requireDirector(id);
+
     // 1. Validate with equipoSchema
     const validated = equipoSchema.parse(data);
 
@@ -231,6 +238,9 @@ export async function updateEquipo(
  */
 export async function deleteEquipo(id: string): Promise<{ success: boolean }> {
   try {
+    // 0. Verify admin role
+    await requireAdmin();
+
     const supabase = await createServerSupabaseClient();
 
     // Get torneo_id before deletion for revalidation
@@ -308,6 +318,9 @@ export async function getEquipoStats(equipoId: string) {
  */
 export async function getEquipoFinanciero(equipoId: string) {
   try {
+    // 0. Verify director or admin role
+    await requireDirector(equipoId);
+
     const supabase = await createServerSupabaseClient();
 
     // Get all transactions for this team

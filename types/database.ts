@@ -1239,6 +1239,72 @@ export type Database = {
           },
         ];
       };
+      preinscripciones_torneo: {
+        Row: {
+          id: string;
+          torneo_id: string | null;
+          nombre_completo: string;
+          email: string;
+          telefono: string;
+          utm_source: string | null;
+          utm_medium: string | null;
+          utm_campaign: string | null;
+          utm_content: string | null;
+          utm_term: string | null;
+          referrer: string | null;
+          landing_page_url: string | null;
+          estado: string;
+          fecha_contacto: string | null;
+          notas_seguimiento: string | null;
+          user_agent: string | null;
+          ip_address: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          torneo_id?: string | null;
+          nombre_completo: string;
+          email: string;
+          telefono: string;
+          utm_source?: string | null;
+          utm_medium?: string | null;
+          utm_campaign?: string | null;
+          utm_content?: string | null;
+          utm_term?: string | null;
+          referrer?: string | null;
+          landing_page_url?: string | null;
+          estado?: string;
+          fecha_contacto?: string | null;
+          notas_seguimiento?: string | null;
+          user_agent?: string | null;
+          ip_address?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          torneo_id?: string | null;
+          nombre_completo?: string;
+          email?: string;
+          telefono?: string;
+          utm_source?: string | null;
+          utm_medium?: string | null;
+          utm_campaign?: string | null;
+          utm_content?: string | null;
+          utm_term?: string | null;
+          referrer?: string | null;
+          landing_page_url?: string | null;
+          estado?: string;
+          fecha_contacto?: string | null;
+          notas_seguimiento?: string | null;
+          user_agent?: string | null;
+          ip_address?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {};
     Functions: {
@@ -1251,6 +1317,14 @@ export type Database = {
           p_equipo_id: string;
         };
         Returns: number;
+      };
+      existe_preinscripcion: {
+        Args: {
+          p_torneo_id: string;
+          p_email: string;
+          p_telefono: string;
+        };
+        Returns: boolean;
       };
       crear_estadistica_equipo: {
         Args: Record<PropertyKey, never>;

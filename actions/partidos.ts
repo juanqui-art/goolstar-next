@@ -1,12 +1,13 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/lib/auth/dal";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import {
-  partidoResultadoSchema,
-  partidoSchema,
+    partidoResultadoSchema,
+    partidoSchema,
 } from "@/lib/validations/partido";
 import type { Database } from "@/types/database";
+import { revalidatePath } from "next/cache";
 
 type PartidoRow = Database["public"]["Tables"]["partidos"]["Row"];
 type PartidoInsert = Database["public"]["Tables"]["partidos"]["Insert"];
@@ -41,6 +42,9 @@ export interface PartidoWithRelations extends PartidoRow {
  */
 export async function createPartido(data: unknown): Promise<{ id: string }> {
   try {
+    // 0. Verify admin role
+    await requireAdmin();
+
     // 1. Validate with partidoSchema
     const validated = partidoSchema.parse(data);
 
@@ -220,6 +224,9 @@ export async function updatePartido(
   data: unknown,
 ): Promise<PartidoRow> {
   try {
+    // 0. Verify admin role
+    await requireAdmin();
+
     // 1. Validate with partidoSchema
     const validated = partidoSchema.parse(data);
 
@@ -270,6 +277,9 @@ export async function updatePartido(
  */
 export async function deletePartido(id: string): Promise<{ success: boolean }> {
   try {
+    // 0. Verify admin role
+    await requireAdmin();
+
     const supabase = await createServerSupabaseClient();
 
     // Get torneo_id before deletion for revalidation
@@ -313,6 +323,9 @@ export async function registrarGol(
   minuto: number,
 ): Promise<{ id: string }> {
   try {
+    // 0. Verify admin role
+    await requireAdmin();
+
     const supabase = await createServerSupabaseClient();
 
     // Get partido and torneo_id
@@ -369,6 +382,9 @@ export async function registrarTarjeta(data: {
   minuto: number;
 }): Promise<{ id: string }> {
   try {
+    // 0. Verify admin role
+    await requireAdmin();
+
     const supabase = await createServerSupabaseClient();
 
     // Insert tarjeta
@@ -413,6 +429,9 @@ export async function registrarCambio(
   minuto: number,
 ): Promise<{ id: string }> {
   try {
+    // 0. Verify admin role
+    await requireAdmin();
+
     const supabase = await createServerSupabaseClient();
 
     // Insert cambio
@@ -453,6 +472,9 @@ export async function finalizarPartido(
   resultado: unknown,
 ): Promise<{ success: boolean }> {
   try {
+    // 0. Verify admin role
+    await requireAdmin();
+
     // Validate result
     const validatedResultado = partidoResultadoSchema.parse(resultado);
 
