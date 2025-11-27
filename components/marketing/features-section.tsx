@@ -1,12 +1,12 @@
-import {
-  Trophy,
-  BarChart3,
-  Calendar,
-  Users,
-  Whistle,
-  DollarSign,
-} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+    BarChart3,
+    Calendar,
+    DollarSign,
+    Flag,
+    Trophy,
+    Users,
+} from "lucide-react";
 
 const features = [
   {
@@ -42,7 +42,7 @@ const features = [
     bgColor: "bg-purple-500/10",
   },
   {
-    icon: Whistle,
+    icon: Flag,
     title: "Arbitraje Profesional",
     description:
       "Árbitros capacitados y certificados garantizan partidos justos y transparentes.",
