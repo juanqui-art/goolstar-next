@@ -1,9 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { loginSchema, registerSchema } from "@/lib/validations/auth";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 /**
  * Login with email and password
@@ -23,9 +23,11 @@ export async function login(formData: unknown) {
 
     if (error) throw error;
 
-    // Revalidate and redirect
+    // Revalidate cache
     revalidatePath("/", "layout");
-    redirect("/");
+    
+    // Return success - let client handle redirect
+    return { success: true };
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : "Login failed",

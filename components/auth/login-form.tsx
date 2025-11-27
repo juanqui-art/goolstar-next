@@ -1,23 +1,25 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useActionState } from "react";
-import { useForm } from "react-hook-form";
 import { login } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { type Login, loginSchema } from "@/lib/validations/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 
 export function LoginForm() {
+  const router = useRouter();
   const form = useForm<Login>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -34,6 +36,13 @@ export function LoginForm() {
     },
     null,
   );
+
+  // Handle successful login
+  useEffect(() => {
+    if (state?.success) {
+      router.push("/dashboard");
+    }
+  }, [state, router]);
 
   // Show error if login failed
   const errorMessage =
