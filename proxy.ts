@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
 /**
- * Proxy function for Next.js 16 (formerly middleware)
+ * Proxy function for Next.js 16
  *
  * Purpose: Perform OPTIMISTIC auth checks for fast redirects
  * - Only reads session from cookie (no database calls)
@@ -12,6 +12,8 @@ import { type NextRequest, NextResponse } from "next/server";
  * Security Note: This is NOT the only line of defense!
  * Always verify sessions in Server Components, Actions, and Route Handlers
  * using the Data Access Layer (DAL) for secure database checks.
+ *
+ * This replaces the deprecated middleware.ts file in Next.js 16+
  */
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({
@@ -39,7 +41,7 @@ export async function proxy(request: NextRequest) {
           }
         },
       },
-    },
+    }
   );
 
   // OPTIMISTIC CHECK: Read session from cookie only (fast, no DB query)
@@ -52,7 +54,12 @@ export async function proxy(request: NextRequest) {
 
   // Define public routes (accessible without authentication)
   const publicRoutes = ["/", "/login", "/register"];
-  const isPublicRoute = publicRoutes.includes(path);
+
+  // Check if path is public or matches public patterns
+  const isPublicRoute =
+    publicRoutes.includes(path) ||
+    // Allow public access to tournament registration pages
+    (path.startsWith("/torneos/") && path.endsWith("/inscripcion"));
 
   // Redirect unauthenticated users to login when accessing protected routes
   if (!isPublicRoute && !user) {
@@ -61,7 +68,7 @@ export async function proxy(request: NextRequest) {
 
   // Redirect authenticated users away from auth pages to dashboard
   if ((path === "/login" || path === "/register") && user) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return response;
@@ -86,7 +93,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     * - Files with extensions (images, fonts, etc.)
      */
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf|eot)$).*)",
   ],
 };
