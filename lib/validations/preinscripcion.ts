@@ -15,7 +15,16 @@ export const preinscripcionSchema = z.object({
     message: "ID de torneo inválido",
   }),
 
-  // Datos de contacto (3 campos mínimos)
+  // Datos del Equipo
+  nombre_equipo: z
+    .string()
+    .min(3, { message: "El nombre del equipo debe tener al menos 3 caracteres" })
+    .max(50, { message: "El nombre del equipo no puede superar 50 caracteres" })
+    .transform((val) => val.trim()),
+
+  categoria_id: z.string().min(1, { message: "Selecciona una categoría" }),
+
+  // Datos de contacto (Capitán/Representante)
   nombre_completo: z
     .string()
     .min(3, { message: "El nombre debe tener al menos 3 caracteres" })
@@ -41,6 +50,11 @@ export const preinscripcionSchema = z.object({
       message: "El teléfono solo puede contener números, +, espacios, paréntesis y guiones",
     })
     .transform((val) => val.trim()),
+
+  // Términos
+  acepta_terminos: z.literal(true, {
+    errorMap: () => ({ message: "Debes aceptar los términos y condiciones" }),
+  }),
 
   // UTM parameters (optional)
   utm_source: z.string().max(100).optional(),

@@ -7,7 +7,7 @@
   --color-card-foreground: hsl(216 12% 84%);
   --color-popover: hsl(220 13% 9%);
   --color-popover-foreground: hsl(216 12% 84%);
-  --color-primary: hsl(48 94% 63%);
+  --color-primary: #FFD700;
   --color-primary-foreground: hsl(220 13% 9%);
   --color-secondary: hsl(191 100% 50%);
   --color-secondary-foreground: hsl(220 13% 9%);
@@ -19,8 +19,11 @@
   --color-destructive-foreground: hsl(210 40% 98%);
   --color-border: hsl(220 13% 20%);
   --color-input: hsl(220 13% 20%);
-  --color-ring: hsl(48 94% 63%);
+  --color-ring: #FFD700;
   --radius: 0.5rem;
+  
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-rajdhani), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {

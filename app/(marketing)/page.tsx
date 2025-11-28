@@ -2,17 +2,22 @@
 
 import { FAQSection } from "@/components/marketing/faq-section";
 import { FeaturesSection } from "@/components/marketing/features-section";
+import { GallerySection } from "@/components/marketing/gallery-section";
 import { HeroSection } from "@/components/marketing/hero-section";
 import { PreRegistrationSection } from "@/components/marketing/pre-registration-section";
+import { PricingSection } from "@/components/marketing/pricing-section";
+import { SponsorsSection } from "@/components/marketing/sponsors-section";
+import { StatsSection } from "@/components/marketing/stats-section";
+import { TestimonialsSection } from "@/components/marketing/testimonials-section";
 import { WhatsAppFloatingButton } from "@/components/marketing/whatsapp-floating-button";
 import { useCallback } from "react";
 
 // CONSTANTS - TODO: Replace with actual data from CMS or config
 const TORNEO_DATA = {
   id: "00000000-0000-0000-0000-000000000000", // Placeholder UUID - Replace with real Tournament ID
-  nombre: "Torneo GoolStar 2025",
-  fechaInicio: new Date("2025-03-15"), // Example date
-  whatsapp: "593999999999", // Example number - Replace with real WhatsApp number
+  nombre: "Torneo GoolStar 2026",
+  fechaInicio: new Date("2026-01-10"),
+  whatsapp: "593978692269",
 };
 
 export default function LandingPage() {
@@ -32,7 +37,17 @@ export default function LandingPage() {
         onScrollToForm={scrollToForm}
       />
 
+      <StatsSection />
+
       <FeaturesSection />
+
+      <GallerySection />
+
+      <TestimonialsSection />
+
+      <SponsorsSection />
+
+      <PricingSection />
 
       <PreRegistrationSection
         torneoId={TORNEO_DATA.id}

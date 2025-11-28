@@ -1,20 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { MessageCircle, Loader2, CheckCircle2 } from "lucide-react";
+import { createPreinscripcion } from "@/actions/preinscripciones";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { createPreinscripcion } from "@/actions/preinscripciones";
 import {
-  preinscripcionSchema,
-  type PreinscripcionFormData,
-  extractUtmParams,
+    extractUtmParams,
+    preinscripcionSchema,
+    type PreinscripcionFormData,
 } from "@/lib/validations/preinscripcion";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckCircle2, Loader2, MessageCircle } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface PreRegistrationSectionProps {
   torneoId: string;
@@ -133,7 +133,7 @@ export function PreRegistrationSection({
       <div className="mx-auto max-w-2xl">
         <Card className="border-2 shadow-xl">
           <CardHeader className="text-center pb-6">
-            <CardTitle className="text-3xl font-bold sm:text-4xl">
+            <CardTitle className="text-3xl font-bold sm:text-4xl font-display uppercase">
               {submitSuccess ? "¡Registro Exitoso!" : "Inscribe tu Equipo"}
             </CardTitle>
             <CardDescription className="text-base sm:text-lg">
@@ -154,7 +154,7 @@ export function PreRegistrationSection({
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-semibold">¡Gracias por tu interés!</h3>
+                  <h3 className="text-2xl font-semibold font-display">¡Gracias por tu interés!</h3>
                   <p className="text-muted-foreground">
                     Hemos recibido tu pre-inscripción. Te enviaremos un correo de
                     confirmación y nos contactaremos contigo en las próximas 24 horas.
@@ -263,7 +263,7 @@ export function PreRegistrationSection({
                   type="submit"
                   size="lg"
                   disabled={isSubmitting}
-                  className="h-14 w-full text-base font-semibold sm:text-lg"
+                  className="h-14 w-full text-base font-semibold sm:text-lg font-display tracking-wider uppercase"
                 >
                   {isSubmitting ? (
                     <>
@@ -291,7 +291,7 @@ export function PreRegistrationSection({
                   asChild
                   variant="outline"
                   size="lg"
-                  className="h-14 w-full border-2 border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white"
+                  className="h-14 w-full border-2 border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white font-display tracking-wider uppercase"
                   onClick={() => {
                     if (window.gtag) {
                       window.gtag("event", "whatsapp_click", {

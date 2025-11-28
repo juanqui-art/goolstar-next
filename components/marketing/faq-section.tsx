@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 const faqs = [
   {
@@ -46,11 +46,11 @@ export function FAQSection() {
   };
 
   return (
-    <section className="bg-muted/30 py-16 px-4 sm:py-20 lg:py-24">
+    <section id="faq" className="bg-muted/30 py-16 px-4 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-4xl">
         {/* Section header */}
         <div className="mb-12 text-center sm:mb-16">
-          <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+          <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl font-display uppercase">
             Preguntas Frecuentes
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground sm:text-xl">
